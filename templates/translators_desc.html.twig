@@ -1,0 +1,46 @@
+{% extends 'page_root.html.twig' %} {% block content %}
+<div class="jumbotron" id="translator_desc_jumbotron">
+    <div class="row">
+        <div class="secondaryNav text-left col-sm-2 mx-auto">
+            <a href="poems.php?action=show&translator_id={{ translator_id }}" class="badge secondaryNavButton">< Bсе стихи переводчика</a>
+       </div>
+       <div class="col-10 mx-auto">
+            <h4 class="translators name" id="translators_name">{{ header }}</h4>
+            <h4 class="translators dates" id="translators_dates">{{ dates }}</h4>
+
+        </div>
+    </div>
+    {% if summary and img %}
+    <div class="row align-items-center">
+        <div class="col-sm-4">
+            {{ img|raw }}
+        </div>
+        <div class="col-sm-8">
+            <span class="tr_summary">
+            {{ summary|raw }}
+            </span>
+        </div>            
+    </div>
+    {% elseif summary %}
+    <div class="row">
+         <div class="col-8 mx-auto">
+            <span class="tr_summary">
+                {{ summary|raw }}
+            </span>
+        </div>            
+    </div>
+    {% elseif img %}
+    <div class="row">
+        <div class="col-sm-4">
+            {{ img|raw }}
+        </div>
+    </div>
+     {% endif %}
+    <div class="row">
+        <div class="col-11 mx-auto">
+            <p>&nbsp;</p>
+            {{ doc_text|raw }}
+        </div>            
+    </div>
+</div>
+{% endblock %}

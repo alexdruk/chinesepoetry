@@ -1,0 +1,592 @@
+body {
+    font-family: 'Times New Roman'
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+p {
+    margin: 0pt
+}
+
+li,
+table {
+    margin-top: 0pt;
+    margin-bottom: 0pt
+}
+
+h1 {
+    margin-top: 24pt;
+    margin-bottom: 6pt;
+    page-break-before: always;
+    font-size: 1.17em;
+    font-weight: bold;
+    text-decoration: underline
+}
+
+h2 {
+    margin-top: 18pt;
+    margin-bottom: 3pt;
+    page-break-after: avoid;
+    font-family: 'Arial Narrow';
+    font-size: 1.17em;
+    font-weight: bold
+}
+
+h3 {
+    margin-top: 18pt;
+    margin-bottom: 6pt;
+    page-break-after: avoid;
+    font-family: 'Arial Narrow';
+    font-weight: bold;
+    color: #1f497d
+}
+
+h4 {
+    margin-top: 6pt;
+    margin-bottom: 6pt;
+    line-height: 115%;
+    widows: 0;
+    orphans: 0;
+    font-size: 0.92em;
+    font-weight: bold;
+    color: #0070c0
+}
+
+h5 {
+    margin-top: 12pt;
+    margin-left: 28.35pt;
+    margin-bottom: 6pt;
+    font-size: 0.92em;
+    font-weight: normal;
+    color: #4f81bd
+}
+
+.BodyText {
+    margin-bottom: 6pt
+}
+
+.HTMLPreformatted {
+    font-family: 'Courier New'
+}
+
+.-\35 {
+    margin-top: 12pt;
+    font-size: 0.92em;
+    font-weight: bold;
+    color: #7030a0
+}
+
+.-\36 {
+    font-size: 0.92em;
+    color: #7030a0
+}
+
+.a14 {
+    margin-bottom: 6pt
+}
+
+.-\33 {
+    margin-top: 12pt;
+    font-size: 0.92em;
+    font-weight: bold;
+    color: #9bbb59
+}
+
+.-\34 {
+    font-size: 0.92em;
+    color: #9bbb59
+}
+
+.a5 {
+    margin-top: 6pt;
+    margin-left: 14.2pt;
+    font-size: 0.83em;
+    font-style: italic;
+    color: #3d3b3b
+}
+
+.a35 {
+    margin-top: 10pt;
+    margin-bottom: 6pt;
+    text-align: center;
+    font-family: 'Arial Narrow'
+}
+
+.a24 {
+    text-indent: 0pt;
+    font-size: 1.17em;
+    font-weight: bold;
+    color: #7030a0
+}
+
+.\33 1 {
+    margin-top: 12pt;
+    margin-bottom: 6pt;
+    page-break-after: avoid;
+    font-family: 'Arial Narrow';
+    font-size: 1.33em;
+    font-weight: bold;
+    color: #1f497d
+}
+
+.\33 2 {
+    margin-top: 12pt;
+    margin-bottom: 6pt;
+    page-break-after: avoid;
+    font-family: 'Arial Narrow';
+    font-weight: bold;
+    color: #1f497d
+}
+
+.\31 6 {
+    margin-left: 79pt;
+    margin-bottom: 11pt;
+    text-indent: 1pt;
+    line-height: 110%;
+    widows: 0;
+    orphans: 0;
+    font-family: Georgia;
+    font-size: 0.85em;
+    background-color: #ffffff
+}
+
+.\32 4 {
+    margin-bottom: 102pt;
+    widows: 0;
+    orphans: 0;
+    font-size: 0.85em;
+    font-style: italic;
+    background-color: #ffffff
+}
+
+.\31 0 {
+    margin-top: 12pt;
+    margin-bottom: 6pt;
+    page-break-after: avoid;
+    font-family: Arial;
+    font-size: 1.17em
+}
+
+.\33- {
+    margin-top: 18pt;
+    margin-bottom: 6pt;
+    page-break-after: avoid;
+    font-family: 'Times New Roman';
+    font-size: 1.17em;
+    font-weight: bold;
+    color: #c00000
+}
+
+.a15 {
+    margin: 6pt 0pt 12pt;
+    font-weight: bold;
+    font-style: normal;
+    color: #000000
+}
+
+.a17 {
+    margin-bottom: 6pt;
+    font-family: Arial
+}
+
+.\32 2 {
+    widows: 0;
+    orphans: 0;
+    font-size: 0.83em;
+    background-color: #ffffff
+}
+
+.a3 {
+    margin-top: 6pt;
+    margin-left: 14.2pt;
+    font-size: 0.85em;
+    font-style: italic;
+    color: #3d3b3b
+}
+
+.a11 {
+    margin-top: 6pt;
+    margin-bottom: 6pt;
+    font-size: 0.92em;
+    font-weight: bold;
+    font-style: normal;
+    color: #8064a2
+}
+
+.a34 {
+    margin: 6pt 0pt;
+    text-align: center;
+    font-size: 0.83em;
+    font-weight: normal;
+    font-style: italic;
+    color: #31312f
+}
+
+.\31 1 {
+    margin-top: 6pt;
+    margin-bottom: 6pt;
+    font-style: italic
+}
+
+.\31 3 {
+    margin-bottom: 10pt;
+    line-height: 115%;
+    widows: 0;
+    orphans: 0;
+    font-family: Calibri;
+    font-size: 0.92em
+}
+
+.\- {
+    text-indent: 30pt;
+    color: #000000
+}
+
+.a6 {
+    margin-left: 19.85pt
+}
+
+.-\31 3 {
+    margin-left: 30pt;
+    font-size: 1.33em;
+    font-weight: bold;
+    text-decoration: underline;
+    color: #b2a1c7
+}
+
+.-\31 2 {
+    margin-left: 30pt;
+    font-size: 1.17em;
+    color: #b2a1c7
+}
+
+.\32 0 {
+    line-height: 9.55pt;
+    widows: 0;
+    orphans: 0;
+    font-size: 0.85em;
+    background-color: #ffffff
+}
+
+.\33 0 {
+    margin-bottom: 88pt;
+    widows: 0;
+    orphans: 0;
+    font-family: Arial;
+    font-size: 0.85em;
+    font-style: italic;
+    background-color: #ffffff
+}
+
+.\35 0 {
+    margin-top: 3pt;
+    line-height: 9.55pt;
+    widows: 0;
+    orphans: 0;
+    font-size: 0.85em;
+    background-color: #ffffff
+}
+
+.\36 0 {
+    line-height: 9.7pt;
+    widows: 0;
+    orphans: 0;
+    font-size: 0.85em;
+    background-color: #ffffff
+}
+
+.\38 0 {
+    margin-top: 9pt;
+    text-align: justify;
+    line-height: 10.6pt;
+    widows: 0;
+    orphans: 0;
+    font-size: 0.85em;
+    background-color: #ffffff
+}
+
+
+.a2 {
+    margin-top: 10pt;
+    text-indent: 28.35pt;
+    font-size: 1.17em;
+    font-weight: bold;
+    font-style: italic;
+    color: #76923c
+}
+
+.a28 {
+    margin-left: 35.4pt;
+    text-indent: 35.4pt;
+    widows: 0;
+    orphans: 0;
+    font-size: 0.83em;
+    font-style: italic;
+    color: #4bacc6
+}
+
+.-\31 4 {
+    margin-top: 10pt
+}
+
+.a10 {
+    margin-top: 12pt;
+    margin-bottom: 3pt;
+    font-size: 0.92em;
+    font-weight: bold;
+    color: #5f497a
+}
+
+.a12 {
+    margin-top: 3pt;
+    margin-bottom: 3pt;
+    line-height: normal;
+    widows: 0;
+    orphans: 0;
+    font-size: 0.92em;
+    font-weight: normal;
+    color: #7030a0
+}
+
+.a32 {
+    margin: 6pt 0pt;
+    text-align: left;
+    font-size: 0.92em;
+    font-weight: bold;
+    font-style: normal;
+    color: #42413f
+}
+
+.-\32 {
+    margin-top: 12pt;
+    font-size: 0.92em;
+    font-weight: bold;
+    color: #4bacc6
+}
+
+.-\37 {
+    font-size: 0.92em;
+    color: #31849b
+}
+
+.a37 {
+    margin-left: 36pt;
+    text-indent: -18pt
+}
+
+.a4 {
+    font-size: 0.67em
+}
+
+.\31 8 {
+    margin: 0.05pt 13.55pt 14pt 59.3pt;
+    text-align: center;
+    border-bottom: 0.75pt solid #4f81bd;
+    padding-bottom: 4pt;
+    font-size: 0.92em;
+    font-weight: normal;
+    font-style: normal;
+    color: #42413f
+}
+
+.a36 {
+    margin-top: 6pt;
+    margin-bottom: 6pt;
+    font-size: 0.83em;
+    font-style: normal;
+    color: #943634
+}
+
+.a38 {
+    margin-top: 6pt;
+    margin-bottom: 6pt;
+    text-align: center;
+    font-size: 0.83em;
+    font-style: italic;
+    color: #943634
+}
+
+.\31 4 {
+    line-height: 5pt;
+    widows: 0;
+    orphans: 0;
+    font-family: Tahoma;
+    font-size: 0.67em
+}
+
+.a33 {
+    margin: 6pt 0pt;
+    text-align: left;
+    font-size: 0.83em;
+    font-weight: normal;
+    font-style: normal;
+    color: #31312f
+}
+
+.a22 {
+    text-align: right
+}
+
+.a27 {
+    margin-left: 35.4pt;
+    widows: 0;
+    orphans: 0;
+    font-size: 0.92em;
+    color: #4f81bd
+}
+
+.a25 {
+    margin: 0pt 46.8pt 0pt 106.3pt;
+    font-size: 0.83em;
+    font-weight: normal;
+    font-style: italic;
+    color: #1f497d
+}
+
+.a {
+    margin-top: 6pt;
+    margin-bottom: 6pt;
+    font-size: 0.92em;
+    font-style: italic;
+    color: #76923c
+}
+
+.a18 {
+    margin-bottom: 6pt;
+    border-top: 0.75pt solid #000000;
+    padding-top: 1pt
+}
+
+span.Emphasis {
+    font-style: italic
+}
+
+span.Heading3Char {
+    font-family: 'Arial Narrow';
+    font-size: 1.08em;
+    font-weight: bold;
+    color: #1f497d
+}
+
+span.Hyperlink {
+    text-decoration: underline;
+    color: #0000ff
+}
+
+span.Strong {
+    font-weight: bold
+}
+
+span.\34 {
+    font-family: 'Times New Roman';
+    font-weight: bold
+}
+
+span.\31 5 {
+    font-family: Georgia;
+    font-size: 0.85em
+}
+
+span.\32 3 {
+    font-style: italic
+}
+
+span.-\30 {
+    color: #c00000
+}
+
+span.\32 {
+    font-size: 0.85em
+}
+
+span.\33 {
+    font-family: Arial;
+    font-size: 0.85em;
+    font-style: italic
+}
+
+span.\34 0 {
+    font-family: Sylfaen;
+    font-variant: small-caps;
+    letter-spacing: 0pt;
+    vertical-align: 0pt;
+    color: #000000;
+    background-color: #ffffff
+}
+
+span.\35 9,
+span.\35pt {
+    font-size: 0.85em
+}
+
+span.\35 {
+    font-size: 0.85em
+}
+
+span.\36 {
+    font-size: 0.85em
+}
+
+span.\38 {
+    font-size: 0.85em
+}
+
+span.\31 9 {
+    font-family: SimSun;
+    font-size: 0.85em;
+    text-decoration: none
+}
+
+span.a21 {
+    font-size: 0.85em
+}
+
+span.a9 {
+    font-size: 1.0em;
+    font-style: italic;
+    color: black;
+}
+
+span.a1 {
+    font-family: Tahoma;
+    font-size: 0.85em
+}
+.-\39 {	
+    margin-top: 12pt;	
+    font-size: 0.92em;	
+    font-weight: bold;	
+    color: #0070c0	
+}	
+
+.-\31 0 {	
+    font-size: 0.92em;	
+    color: #0070c0	
+}
+.\31 7 {	
+    margin-top: 6pt;	
+    margin-bottom: 6pt;	
+    text-indent: -20pt;	
+    text-align: center;	
+    line-height: 10.1pt;	
+    font-size: 0.85em;	
+    background-color: #ffffff	
+}	
+
+.-\31 {	
+    margin-top: 12pt;	
+    margin-bottom: 0pt;	
+    line-height: 115%;	
+    widows: 0;	
+    orphans: 0;	
+    font-size: 0.92em;	
+    font-weight: bold;	
+    color: #7030a0	
+}	
+
+.-\38 {	
+    font-size: 0.92em;	
+    color: #7030a0	
+}

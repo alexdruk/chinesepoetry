@@ -1,0 +1,54 @@
+{% extends 'page.html.twig' %} {% block content %} {% if success %}
+<div class="alert alert-success" role="alert">
+    {{ success }}
+</div>
+{% endif %} {% if error %}
+<div class="alert alert-danger" role="alert">
+    {{ error }}
+</div>
+{% endif %} {% if header %}
+<h2>{{ header }}</h2> {% endif %}
+<script src="/js/tinymce/js/tinymce/tinymce.min.js"></script>
+{% if insertfile %}
+<form action="./admin_authors.php?action=insertfile" method="POST">
+    <div class="form-group" width="20">
+        <label for="inputfull_name">Введите id автора из таблицы "Все авторы"</label>
+        <input type="text" class="form-control" name="author_id" id="author_id"  required>
+    </div>
+    <div class="form-group">
+        <label for="inputproper_name">Введите и отредактируйте HTML описания</label>
+        <textarea class="form-control" name="description" id="author_description" rows="30"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% else %}
+<form action="./admin_authors.php?action=modifyfile&record_id={{ author_id }}" method="POST">
+    <div class="form-group" width="20">
+        <label for="inputfull_name">id автора</label>
+        <input type="text" class="form-control" name="author_id" id="author_id"  value="{{ author_id }}">
+    </div>
+    <div class="form-group">
+        <label for="inputproper_name">Oтредактируйте HTML описания</label>
+        <textarea class="form-control" name="description" id="author_description" rows="30">{{ desc }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endif %}
+
+<script>
+    tinymce.init({
+    content_css : "/css/bootstrap.css,/css/chinesepoetry2.css,/css/chinesepoetry.css",
+    selector: 'textarea#author_description',
+    height: 500,
+
+    plugins: [
+      'advlist autolink lists link image charmap print preview anchor',
+      'searchreplace visualblocks code fullscreen',
+      'insertdatetime media table code help template'
+    ],
+    toolbar: 'undo redo | formatselect | ' +
+    'bold italic backcolor | alignleft aligncenter ' +
+    'alignright alignjustify | bullist numlist outdent indent | ' +
+    'removeformat | template | help'});
+</script> 
+{% endblock %}

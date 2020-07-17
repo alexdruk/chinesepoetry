@@ -1,0 +1,107 @@
+{% extends 'page.html.twig' %} {% block content %} {% if success %}
+<div class="alert alert-success" role="alert">
+    {{ success }}
+</div>
+{% endif %} {% if error %}
+<div class="alert alert-danger" role="alert">
+    {{ error }}
+</div>
+{% endif %}
+{% if header %}
+<h2>{{ header }}</h2> {% endif %}
+<script src="/js/tinymce/js/tinymce/tinymce.min.js"></script>
+<form action="./admin_poems.php?action=insert" method="POST">
+    <div class="form-row text-center justify-content-center">
+        <div class="col-auto">
+            <label for="inputCode">ID автора</label>
+            <input type="text" class="form-control" name="author_id" placeholder="22" required>
+        </div>
+        <div class="col-auto">
+            <label for="inputYear">ID переводчика1</label>
+            <input type="text" class="form-control" name="translator1_id" placeholder="113" required>
+        </div>
+        <div class="col-auto">
+            <label for="inputYear">ID переводчика2</label>
+            <input type="text" class="form-control" name="translator2_id" placeholder="125">
+        </div>
+    </div>
+    <div class="form-row text-center justify-content-center">
+        <div class="col-auto">
+            <label for="inputISBN">Тема 1</label>
+            <input type="text" class="form-control" name="topic1_id" placeholder="1"  required>
+        </div>
+        <div class="col-auto">
+            <label for="inputISBN">Тема 2</label>
+            <input type="text" class="form-control" name="topic2_id" placeholder="2">
+        </div>
+        <div class="col-auto">
+            <label for="inputISBN">Тема 3</label>
+            <input type="text" class="form-control" name="topic3_id" placeholder="3">
+        </div>
+        <div class="col-auto">
+            <label for="inputISBN">Тема 4</label>
+            <input type="text" class="form-control" name="topic4_id" placeholder="4">
+        </div>
+        <div class="col-auto">
+            <label for="inputISBN">Тема 5</label>
+            <input type="text" class="form-control" name="topic5_id" placeholder="5">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="inputAuthor">Название цикла кит.</label>
+        <input type="text" class="form-control" name="cycle_zh" placeholder="失去的传统 ">
+    </div>
+    <div class="form-group">
+        <label for="inputbook_name">Название цикла рус.</label>
+        <input type="text" class="form-control" name="cycle_ru"   placeholder="100 Ancient Chineese poems">
+    </div>
+    <div class="form-group">
+        <label for="inputtranslator">Название подцикла кит.</label>
+        <input type="text" class="form-control" name="subcycle_zh" placeholder="失去的传统 ">
+    </div>
+    <div class="form-group">
+        <label for="inputref_name">Название подцикла рус.</label>
+        <input type="text" class="form-control" name="subcycle_ru" placeholder="Ушедший в бессмертие (поэма)">
+    </div>
+    <div class="form-group">
+        <label for="inputseria">Название стиха кит.</label>
+        <input type="text" class="form-control" name="poem_name_zh"  placeholder="失去的传统 ">
+    </div>
+    <div class="form-group">
+        <label for="inputpublisher">Название стиха рус.</label>
+        <input type="text" class="form-control" name="poem_name_ru" placeholder="Зеленый мир" required>
+    </div>
+    <div class="form-row text-center justify-content-center">
+        <div class="col-auto">
+            <label for="inputCode">Код стиха</label>
+            <input type="text" class="form-control" name="poem_code" placeholder="АН-19">
+        </div>
+        <div class="col-auto">
+            <label for="inputYear">ID источника (книги)</label>
+            <input type="text" class="form-control" name="biblio_id" placeholder="20" required>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="inputFull">Введите и отредактируйте HTML текста стиха</label>
+        <textarea class="form-control" name="poem_text" id="poem_text" rows="30"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+<script>
+    tinymce.init({
+    content_css : "/css/bootstrap.css,/css/chinesepoetry2.css,/css/chinesepoetry.css",
+    selector: 'textarea#poem_text',
+    height: 500,
+
+    plugins: [
+      'advlist autolink lists link image charmap print preview anchor',
+      'searchreplace visualblocks code fullscreen',
+      'insertdatetime media table code help template'
+    ],
+    toolbar: 'undo redo | formatselect | ' +
+    'bold italic backcolor | alignleft aligncenter ' +
+    'alignright alignjustify | bullist numlist outdent indent | ' +
+    'removeformat | template | help'});
+</script> 
+
+{% endblock %}

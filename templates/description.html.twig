@@ -1,0 +1,51 @@
+{% extends 'page_root.html.twig' %} {% block content %}
+<div class="jumbotron" id="description_jumbotron">
+    <div class="row">
+        <div class="secondaryNav text-left col-sm-2 mx-auto">
+             <a href="/poems.php?action=show&author_id={{ author_id }}" class="badge secondaryNavButton">< Bсе стихи автора</a>
+        </div>
+        <div class="col-sm-8 mx-auto">
+            {% if atribs %}
+            <h4 class="description header tip" id="description_header" data-tip="tip_author">{{ header|raw }}</h4>
+            <div  id="tip_author" class="tip-content">
+                <div style="overflow-x:auto">
+                    <table class="author_atrib" id="author_atrib">
+                        <tr><th></th><th>В системе Палладия</th><th>Кит. традицион.</th><th>Кит. упрощенн.</th><th>Пиньинь</th></tr>
+                        {% if name %}
+                        <tr><td><b>Разночтения имени</b></td><td>{{ atribs[2] }}</td><td>{{ atribs[3] }}</td><td>{{ atribs[4] }}</td><td>{{ atribs[5] }}</td></tr>
+                        {% endif %}
+                        {% if real_name %}
+                        <tr><td><b>Настоящее имя</b></td><td>{{ atribs[6] }}</td><td>{{ atribs[7] }}</td><td>{{ atribs[8] }}</td> <td>{{ atribs[9] }}</td></tr>
+                        {% endif %}
+                        {% if s_name %}
+                        <tr><td><b>Второе имя</b></td><td>{{ atribs[10] }}</td><td>{{ atribs[11] }}</td><td>{{ atribs[12] }}</td><td>{{ atribs[13] }}</td><td></tr>
+                        {% endif %}
+                        {% if p_name %}
+                        <tr><td><b>Посмертное имя</b></td><td>{{ atribs[14] }}</td><td>{{ atribs[15] }}</td><td>{{ atribs[16] }}</td><td>{{ atribs[17] }}</td></tr>
+                        {% endif %}
+                        {% if pseudo %}
+                        <tr><td><b>Псевдоним</b></td><td>{{ atribs[18] }}</td><td>{{ atribs[19] }}</td><td>{{ atribs[20] }}</td><td>{{ atribs[21] }}</td></tr>
+                        {% endif %}
+                        {% if nick %}
+                        <tr><td><b>Прозвище</b></td><td>{{ atribs[22] }}</td><td>{{ atribs[23] }}</td><td>{{ atribs[24] }}</td><td>{{ atribs[25] }}</td></tr>
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
+            {% else %}
+            <h4 class="description header" id="description_header" >{{ header|raw }}</h4>
+            {% endif %}
+        </div>
+        <div class="secondaryNav col-sm-2 mx-auto"></div>
+    </div>
+    <div class="row">
+        <div class="col-12 mx-auto">
+            <p class="epoch" id="epoch_name">{{ epoch|raw }}</p>
+            <p>&nbsp;</p>
+        </div>
+        <div class="col-11 mx-auto" id="doc_description">
+            {{ doc_text|raw }}
+        </div>
+    </div>
+</div>
+{% endblock %}

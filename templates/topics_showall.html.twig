@@ -1,0 +1,37 @@
+{% extends 'page_root.html.twig' %} {% block content %}
+<div class="jumbotron" id="topics_jumbotron">
+    {% if showall %}
+    <div class="row">
+        <div class="col-8 mx-auto">
+            <h4 class="topics header" id="topics_header">{{ header }}</h4>
+            <div id="topics_content_table">
+            <ol>
+                {% for record in records %}
+                <li class="topics list"><a href="./topics.php?action=show&record_id={{ record[0] }}">{{ record[1] }}</a></li>
+                {% endfor %}
+            </ol>
+            </div>
+        </div>
+    </div>
+    {% elseif desc %}
+    <div class="row">
+        <div class="col-sm-8 mx-auto">
+            <h4 class="topics header" id="topics_header">{{ header|raw }}</h4>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-11 mx-auto topics description" id="topic_description">
+            {{ topic_desc|raw }}
+        </div>
+    </div>
+    {% elseif search %}
+    <form action="./topics.php?action=search&posted=1" method="POST">
+        <div class="form-group">
+            <label for="inputPattern">Введите слово или словосочитание для поиска</label>
+            <input type="text" class="form-control" name="pattern" id="inputPattern" placeholder="Родная мать" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+{% endif %}
+</div>
+{% endblock %}

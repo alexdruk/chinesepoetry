@@ -1,0 +1,33 @@
+{% extends 'page.html.twig' %} {% block content %} {% if success %}
+<div class="alert alert-success" role="alert">
+    {{ success }}
+</div>
+{% endif %} {% if error %}
+<div class="alert alert-danger" role="alert">
+    {{ error }}
+</div>
+{% endif %}
+<div class="row justify-content-center">
+    <div class="col-auto w-50">
+        <form action="./admin_topics.php?action=addtopic" method="POST">
+            <div class="form-group">
+                <label for="inputTopicName">Название темы</label>
+                <input type="text" class="form-control" name="topicName" id="inputTopicName" placeholder="Название темы" required>
+            </div>
+            <div class="form-group">
+                <label for="inputTopicSynonym">Синоним названия</label>
+                <input type="text" class="form-control" name="topicSynonym" id="inputTopicSynonym " placeholder="Синоним названия ">
+            </div>
+            <div class="form-group ">
+                <label for="inputPresent ">Есть ли в антологии</label>
+                <select class="form-control w-25" id="inputPresent" name="inputPresent">
+                    <option value="0 ">0</option>
+                    <option value="1 ">1</option>
+                </select>
+            </div>
+            <button type="submit " class="btn btn-primary ">Submit</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

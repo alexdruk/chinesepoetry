@@ -1,0 +1,71 @@
+{% extends 'page.html.twig' %} {% block content %} {% if success %}
+<div class="alert alert-success" role="alert">
+    {{ success }}
+</div>
+{% endif %} {% if error %}
+<div class="alert alert-danger" role="alert">
+    {{ error }}
+</div>
+{% endif %} {% if header %}
+<h2>{{ header }}</h2> {% endif %}
+<script src="/js/tinymce/js/tinymce/tinymce.min.js"></script>
+<form action="./admin_originals.php?action=insert" method="POST">
+    <div class="form-group" width="20">
+        <label for="inputfull_name">Введите id автора из таблицы "Все авторы"</label>
+        <input type="text" class="form-control" name="author_id" id="author_id" placeholder="111" required>
+    </div>
+    <div class="form-group" width="20">
+        <label for="inputfull_name">Цикл  кит.</label>
+        <input type="text" class="form-control" name="cycle_zh" id="cycle_zh" placeholder="芣苡 ">
+    </div>
+    <div class="form-group" width="20">
+        <label for="inputfull_name">Цикл  рус.</label>
+        <input type="text" class="form-control" name="cycle_ru" id="cycle_ru" placeholder="Гофын. 'Нравы царств'">
+    </div>
+    <div class="form-group" width="20">
+        <label for="inputfull_name">Подцикл кит.</label>
+        <input type="text" class="form-control" name="subcycle_zh" id="subcycle_zh" placeholder="芣苡 芣苡 ">
+    </div>
+    <div class="form-group" width="20">
+        <label for="inputfull_name">Подцикл  рус.</label>
+        <input type="text" class="form-control" name="subcycle_ru" id="subcycle_ru" placeholder="I. Песни царства Чжоу и стран, лежащих к югу от него">
+    </div>
+    <div class="form-group" width="20">
+        <label for="inputfull_name">Введите id источника из таблицы "Все источники</label>
+        <input type="text" class="form-control" name="biblio_id" id="biblio_id" placeholder="12">
+    </div>
+    <div class="form-group" width="20">
+        <label for="inputfull_name">Код стиха</label>
+        <input type="text" class="form-control" name="poem_code" id="poem_code" placeholder="ШЦ-5">
+    </div>
+    <div class="form-group" width="20">
+        <label for="inputfull_name">Название стиха  кит.</label>
+        <input type="text" class="form-control" name="poem_name_zh" id="poem_name_zh" placeholder="芣苡"  required>
+    </div>
+    <div class="form-group" width="20">
+        <label for="inputfull_name">Название стиха  рус.</label>
+        <input type="text" class="form-control" name="poem_name_ru" id="poem_name_ru" placeholder="Подорожник"  required>
+    </div>
+    <div class="form-group">
+        <label for="inputproper_name">Введите и отредактируйте HTML текста стиха</label>
+        <textarea class="form-control" name="poem_text" id="poem_text" rows="30"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+<script>
+    tinymce.init({
+    content_css : "/css/bootstrap.css,/css/chinesepoetry2.css,/css/chinesepoetry.css",
+    selector: 'textarea#poem_text',
+    height: 500,
+
+    plugins: [
+      'advlist autolink lists link image charmap print preview anchor',
+      'searchreplace visualblocks code fullscreen',
+      'insertdatetime media table code help template'
+    ],
+    toolbar: 'undo redo | formatselect | ' +
+    'bold italic backcolor | alignleft aligncenter ' +
+    'alignright alignjustify | bullist numlist outdent indent | ' +
+    'removeformat | template | help'});
+</script> 
+{% endblock %}

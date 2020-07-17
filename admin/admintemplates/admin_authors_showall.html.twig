@@ -1,0 +1,32 @@
+{% extends 'page.html.twig' %} {% block content %} {% if showDataTable %}
+<link rel="stylesheet" type="text/css" href="/js/DataTables/datatables.min.css"/>
+<script type="text/javascript" src="/js/DataTables/datatables.min.js"></script>
+<script type="text/javascript" class="init">
+    $(document).ready(function() {
+        $('#showAllAuthors').DataTable();
+    });
+</script>
+{% endif %} {% if header %}
+<h2>{{ header }}</h2> {% endif %}
+<table class="table table-sm table-bordered table-hover table-responsive" id="showAllAuthors">
+    <thead thead-light>
+        <tr>
+            <th scope="col">id</th>
+            <th scope="col">Полное имя с датами</th>
+            <th scope="col">Правильное имя</th>
+             <th scope="col">Годы жизни</th>
+            <th scope="col">Эпоха</th>
+            <th scope="col">Наличие в антологии</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in records %}
+        <tr>
+            {% for key, val in record %}
+            <td>{{ val }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

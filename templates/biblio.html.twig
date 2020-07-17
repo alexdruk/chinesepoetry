@@ -1,0 +1,24 @@
+{% extends 'page_root.html.twig' %} {% block content %}
+<div class="jumbotron" id="biblio_jumbotron">
+    <div class="col mx-auto">
+        <h4 class="bibblio header" id="bibblio_header">{{ header }}</h4>
+        {% if records %}
+        <ol>
+            {% for record in records %}
+            <li class="biblio">{{ record }}</li>
+            {% endfor %}
+        </ol>
+        {% if special_message %}
+        <footer class="blockquote-footer">{{ special_message }}</footer>
+        {% endif %} {% else %}
+        <form action="./biblio.php?action=search" method="POST">
+            <div class="form-group">
+                <label for="inputPattern">Введите слово или словосочитание для поиска</label>
+                <input type="text" class="form-control" name="pattern" id="inputPattern" placeholder="Иванов А.М." required>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

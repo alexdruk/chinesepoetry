@@ -1,0 +1,138 @@
+{% extends 'page.html.twig' %} {% block content %} {% if success %}
+<div class="alert alert-success" role="alert">
+    {{ success }}
+</div>
+{% endif %} {% if error %}
+<div class="alert alert-danger" role="alert">
+    {{ error }}
+</div>
+{% endif %} 
+{% if header %}
+<h2>{{ header }}</h2> 
+{% endif %}
+{% if insert %}
+<div class="container">
+<form action="/admin/admin_authors.php?action=insertAtributes" method="POST">
+    <table class="author_atrib_form" id="author_atrib">
+        <tr>
+            <th><label for="author_id">Введите id автора</label>
+                <input type="text" class="form-control" name="author_id" id="author_id"  required>
+            </th>
+            <th>В системе Палладия</th>
+            <th>Кит. традицион.</th>
+            <th>Кит. упрощенн.</th>
+            <th>Пиньинь</th>
+        </tr>
+
+        <tr>
+            <td><b>Имя автора</b></td>
+            <td><input type="text" class="form-control" name="palladian" id="palladian"></td>
+            <td><input type="text" class="form-control" name="zh_trad" id="zh_trad"></td>
+            <td><input type="text" class="form-control" name="zh_simple" id="zh_simple"></td>
+            <td><input type="text" class="form-control" name="pinyin" id="pinyin"></td>
+        </tr>
+        <tr>
+            <td><b>Настоящее имя</b></td>
+            <td><input type="text" class="form-control" name="real_name" id="real_name"></td>
+            <td><input type="text" class="form-control" name="real_name_zh" id="real_name_zh"></td>
+            <td><input type="text" class="form-control" name="real_name_simple" id="real_name_simple"></td>
+            <td><input type="text" class="form-control" name="real_name_pinyin" id="real_name_pinyin"></td>
+       </tr>
+        <tr>
+            <td><b>Второе имя</b></td>
+            <td><input type="text" class="form-control" name="second_name" id="second_name"></td>
+            <td><input type="text" class="form-control" name="second_name_zh" id="second_name_zh"></td>
+            <td><input type="text" class="form-control" name="second_name_simple" id="second_name_simple"></td>
+            <td><input type="text" class="form-control" name="second_name_pinyin" id="second_name_pinyin"></td>
+       </tr>
+        <tr>
+            <td><b>Посмертное имя</b></td>
+            <td><input type="text" class="form-control" name="postmortem_name" id="postmortem_name"></td>
+            <td><input type="text" class="form-control" name="postmortem_name_zh" id="postmortem_name_zh"></td>
+            <td><input type="text" class="form-control" name="postmortem_name_simple" id="postmortem_name_simple"></td>
+            <td><input type="text" class="form-control" name="postmortem_name_pinyin" id="postmortem_name_pinyin"></td>
+       </tr>
+        <tr>
+            <td><b>Псевдоним</b></td>
+            <td><input type="text" class="form-control" name="pseudonim_name" id="pseudonim_name"></td>
+            <td><input type="text" class="form-control" name="pseudonim_name_zh" id="pseudonim_name_zh"></td>
+            <td><input type="text" class="form-control" name="pseudonim_name_simple" id="pseudonim_name_simple"></td>
+            <td><input type="text" class="form-control" name="pseudonim_name_pinyin" id="pseudonim_name_pinyin"></td>
+        </tr>
+        <tr>
+            <td><b>Прозвище</b></td>
+            <td><input type="text" class="form-control" name="nickname" id="nickname"></td>
+            <td><input type="text" class="form-control" name="nickname_zh" id="nickname_zh"></td>
+            <td><input type="text" class="form-control" name="nickname_simple" id="nickname_simple"></td>
+            <td><input type="text" class="form-control" name="nickname_pinyin" id="nickname_pinyin"></td>
+        </tr>
+    </table>
+    <label for="forsearch">Введите через пробел все ранее введенные значения</label>
+    <input type="text" class="form-control" name="forsearch" id="forsearch"  required>
+    <p>&nbsp;</p>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% else %}
+<div class="container">
+    <form action="/admin/admin_authors.php?action=modifyAtributes&record_id={{ atribs[1] }}" method="POST">
+        <table class="author_atrib_form" id="author_atrib">
+            <tr>
+                <th><label for="author_id">Введите id автора</label>
+                    <input type="text" class="form-control" name="author_id" id="author_id" value="{{ atribs[1] }}">
+                </th>
+                <th>В системе Палладия</th>
+                <th>Кит. традицион.</th>
+                <th>Кит. упрощенн.</th>
+                <th>Пиньинь</th>
+            </tr>
+    
+            <tr>
+                <td><b>Имя автора</b></td>
+                <td><input type="text" class="form-control" name="palladian" id="palladian" value="{{ atribs[2] }}"></td>
+                <td><input type="text" class="form-control" name="zh_trad" id="zh_trad" value="{{ atribs[3] }}"></td>
+                <td><input type="text" class="form-control" name="zh_simple" id="zh_simple" value="{{ atribs[4] }}"></td>
+                <td><input type="text" class="form-control" name="pinyin" id="pinyin" value="{{ atribs[5] }}"></td>
+            </tr>
+            <tr>
+                <td><b>Настоящее имя</b></td>
+                <td><input type="text" class="form-control" name="real_name" id="real_name" value="{{ atribs[6] }}"></td>
+                <td><input type="text" class="form-control" name="real_name_zh" id="real_name_zh" value="{{ atribs[7] }}"></td>
+                <td><input type="text" class="form-control" name="real_name_simple" id="real_name_simple" value="{{ atribs[8] }}"></td>
+                <td><input type="text" class="form-control" name="real_name_pinyin" id="real_name_pinyin" value="{{ atribs[9] }}"></td>
+           </tr>
+            <tr>
+                <td><b>Второе имя</b></td>
+                <td><input type="text" class="form-control" name="second_name" id="second_name" value="{{ atribs[10] }}"></td>
+                <td><input type="text" class="form-control" name="second_name_zh" id="second_name_zh" value="{{ atribs[11] }}"></td>
+                <td><input type="text" class="form-control" name="second_name_simple" id="second_name_simple" value="{{ atribs[12] }}"></td>
+                <td><input type="text" class="form-control" name="second_name_pinyin" id="second_name_pinyin" value="{{ atribs[13] }}"></td>
+           </tr>
+            <tr>
+                <td><b>Посмертное имя</b></td>
+                <td><input type="text" class="form-control" name="postmortem_name" id="postmortem_name" value="{{ atribs[14] }}"></td>
+                <td><input type="text" class="form-control" name="postmortem_name_zh" id="postmortem_name_zh" value="{{ atribs[15] }}"></td>
+                <td><input type="text" class="form-control" name="postmortem_name_simple" id="postmortem_name_simple" value="{{ atribs[16] }}"></td>
+                <td><input type="text" class="form-control" name="postmortem_name_pinyin" id="postmortem_name_pinyin" value="{{ atribs[17] }}"></td>
+           </tr>
+            <tr>
+                <td><b>Псевдоним</b></td>
+                <td><input type="text" class="form-control" name="pseudonim_name" id="pseudonim_name" value="{{ atribs[18] }}"></td>
+                <td><input type="text" class="form-control" name="pseudonim_name_zh" id="pseudonim_name_zh" value="{{ atribs[19] }}"></td>
+                <td><input type="text" class="form-control" name="pseudonim_name_simple" id="pseudonim_name_simple" value="{{ atribs[20] }}"></td>
+                <td><input type="text" class="form-control" name="pseudonim_name_pinyin" id="pseudonim_name_pinyin" value="{{ atribs[21] }}"></td>
+            </tr>
+            <tr>
+                <td><b>Прозвище</b></td>
+                <td><input type="text" class="form-control" name="nickname" id="nickname" value="{{ atribs[22] }}"></td>
+                <td><input type="text" class="form-control" name="nickname_zh" id="nickname_zh" value="{{ atribs[23] }}"></td>
+                <td><input type="text" class="form-control" name="nickname_simple" id="nickname_simple" value="{{ atribs[24] }}"></td>
+                <td><input type="text" class="form-control" name="nickname_pinyin" id="nickname_pinyin" value="{{ atribs[25] }}"></td>
+            </tr>
+        </table>
+        <label for="forsearch">Введите через пробел все ранее введенные значения</label>
+        <input type="text" class="form-control" name="forsearch" id="forsearch"  value="{{ atribs[26] }}">
+        <p>&nbsp;</p>
+            <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+{% endif %}
+{% endblock %}
