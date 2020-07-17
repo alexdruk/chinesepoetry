@@ -1,0 +1,26 @@
+{% extends 'page_root.html.twig' %} {% block content %}
+<div class="jumbotron" id="authors_jumbotron">
+    <div class="row">
+        <div class="col-8 mx-auto">
+            <h4 class="authors header" id="authors_header">{{ header }}</h4>
+            {% if showall %}
+            <div id="translators_content_table">
+            <ol>
+                {% for record in records %}
+                <li class="authors list"><a href="./authors.php?action=show&record_id={{ record[0] }}">{{ record[2] }} {{ record[3] }}</a> - {{ record[4] }}</li>
+                {% endfor %}
+            </ol>
+            </div>
+            {% elseif search %}
+            <form action="./authors.php?action=search&posted=1" method="POST">
+                <div class="form-group">
+                    <label for="inputPattern">Введите слово или словосочитание для поиска</label>
+                    <input type="text" class="form-control" name="pattern" id="inputPattern" placeholder="Бао Линхуэй" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

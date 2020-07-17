@@ -1,0 +1,83 @@
+{% extends 'page.html.twig' %} {% block content %} {% if success %}
+<div class="alert alert-success" role="alert">
+    {{ success }}
+</div>
+{% endif %} {% if error %}
+<div class="alert alert-danger" role="alert">
+    {{ error }}
+</div>
+{% endif %}
+
+<form action="./admin_biblio.php?action=modify&record_id={{ record_id }}&posted=1" method="POST">
+    <div class="form-group">
+        <label for="inputAuthor">Автор</label>
+        <input type="text" class="form-control" name="author" id="inputAuthor" value="{{ author }}">
+    </div>
+    <div class="form-group">
+        <label for="inputbook_name">Название книги</label>
+        <input type="text" class="form-control" name="book_name" id="inputbook_name" value="{{ book_name }}">
+    </div>
+    <div class="form-group">
+        <label for="inputtranslator">Составитель / переводчик</label>
+        <input type="text" class="form-control" name="translator" id="inputtranslator" value="{{ translator }}">
+    </div>
+    <div class="form-group">
+        <label for="inputref_name">Название ссылки в антологии</label>
+        <input type="text" class="form-control" name="ref_name" id="inputref_name" value="{{ ref_name }}">
+    </div>
+    <div class="form-group">
+        <label for="inputseria">Серия</label>
+        <input type="text" class="form-control" name="seria" id="inputseria" value="{{ seria }}">
+    </div>
+    <div class="form-group">
+        <label for="inputpublisher">Издательство</label>
+        <input type="text" class="form-control" name="publisher" id="inputpublisher" value="{{ publisher }}">
+    </div>
+    <div class="form-row text-center justify-content-center">
+        <div class="col-auto">
+            <label for="inputCode">Код книги</label>
+            <input type="text" class="form-control" name="code" id="inputCode" value="{{ code }}">
+        </div>
+        <div class="col-auto">
+            <label for="inputYear">Год</label>
+            <input type="text" class="form-control" name="year" id="inputYear" value="{{ year }}">
+        </div>
+        <div class="col-auto">
+            <label for="inputISBN">ISBN</label>
+            <input type="text" class="form-control" name="ISBN" id="inputISBN" value="{{ ISBN }}">
+        </div>
+        <div class="col-auto">
+            <label for="inputInAntology">В антологии</label>
+            <select class="custom-select" name="present" id="inputInAntology">
+                {% if present == 1 %}
+				    <option value="0">Нет</option>
+				    <option value="1" selected>Да</option>
+			        <option value="2">будет</option>
+                    <option value="-1">нет книги</option>
+                {% elseif present == 2 %}
+                    <option value="0">Нет</option>
+                    <option value="1">Да</option>
+                    <option value="2" selected>будет</option>
+                    <option value="-1">нет книги</option>
+                {% elseif present == -1 %}
+                    <option value="0">Нет</option>
+                    <option value="1">Да</option>
+                    <option value="2">будет</option>
+                    <option value="-1" selected>нет книги</option>
+                {% else %}
+                    <option value="0">Нет</option>
+                    <option value="1">Да</option>
+                    <option value="2">будет</option>
+                    <option value="-1">нет книги</option>
+                {% endif %}
+			</select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="inputFull">Полные выходные данные</label>
+        <input type="text" class="form-control" name="biblio_name" id="inputFull" value="{{ biblio_name }}">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+{% endblock %}

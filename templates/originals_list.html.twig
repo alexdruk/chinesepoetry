@@ -1,0 +1,51 @@
+{% extends 'page_root.html.twig' %} {% block content %}
+<div class="jumbotron" id="originals_jumbotron">
+    <div class="row">
+        <div class="col-10 mx-auto">
+            <h2 class="originals header" id="originals_header">{{ header }}</h2>
+            <p>&nbsp;</p>
+            {% if showall %}
+            <div id="originals_content_table">
+            <ol>
+                {% for fin in final %}
+                {% set authorsline = fin.author|split('#') %}
+                <li class="originals autors list"><a href="./authors.php?action=show&record_id={{ authorsline[1] }}">{{ authorsline[0]|raw }}</a> {{ authorsline[2] }}</li>
+                    <ul>
+                        {% for cycle in fin.poems|keys %}
+                            {% if not (cycle starts with  'default') %}                        
+                                <li class="originals cycle">{{ cycle|raw }}<ul>
+                            {% endif %}
+                            {% for subcycle in fin.poems[cycle]|keys %}
+                                {% if not (subcycle starts with  'default') %}                        
+                                    <li  class="originals subcycle">{{ subcycle|raw }}<ul>
+                                {% endif %}
+                                    {% for poem in fin.poems[cycle][subcycle] %}
+                                    <li class="originals poem_name"><a href="./originals.php?action=show&record_id={{ poem[0] }}">
+                                        <span class="poem_name zh">{{ poem[10]|raw }}</span> <span class="poem_name ru">{{ poem[11]|raw }}</span></a></li>
+                                    {% endfor %}
+                                                
+                                {% if not (subcycle starts with  'default') %}                        
+                                    </ul></li>
+                                {% endif %}
+                            {% endfor %}
+                            {% if not (cycle starts with  'default') %}                        
+                                </ul></li>
+                            {% endif %}
+                      {% endfor %}
+                    </ul></li>
+                {% endfor %}
+            </ol>
+            </div>
+            {% elseif search %}
+            <form action="./originals.php?action=search&posted=1" method="POST">
+                <div class="form-group">
+                    <label for="inputPattern">Введите слово или словосочитание для поиска</label>
+                    <input type="text" class="form-control" name="pattern" id="inputPattern" placeholder="插在长颈的虾青瓷的瓶里" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

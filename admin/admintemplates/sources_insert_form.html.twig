@@ -1,0 +1,66 @@
+{% extends 'page.html.twig' %} {% block content %} {% if success %}
+<div class="alert alert-success" role="alert">
+    {{ success }}
+</div>
+{% endif %} {% if error %}
+<div class="alert alert-danger" role="alert">
+    {{ error }}
+</div>
+{% endif %}
+
+<form action="./admin_biblio.php?action=insert" method="POST">
+    <div class="form-group">
+        <label for="inputAuthor">Автор</label>
+        <input type="text" class="form-control" name="author" id="inputAuthor" placeholder="Иванов А.М.">
+    </div>
+    <div class="form-group">
+        <label for="inputbook_name">Название книги</label>
+        <input type="text" class="form-control" name="book_name" id="inputbook_name" placeholder="100 Ancient Chineese poems" required>
+    </div>
+    <div class="form-group">
+        <label for="inputtranslator">Составитель / переводчик</label>
+        <input type="text" class="form-control" name="translator" id="inputtranslator" placeholder="Иванов А.М.">
+    </div>
+    <div class="form-group">
+        <label for="inputref_name">Название ссылки в антологии</label>
+        <input type="text" class="form-control" name="ref_name" id="inputref_name" placeholder="100 Ancient Chineese poems" required>
+    </div>
+    <div class="form-group">
+        <label for="inputseria">Серия</label>
+        <input type="text" class="form-control" name="seria" id="inputseria" placeholder="Избранная зарубежная лирика">
+    </div>
+    <div class="form-group">
+        <label for="inputpublisher">Издательство</label>
+        <input type="text" class="form-control" name="publisher" id="inputpublisher" placeholder="М., Молодая гвардия">
+    </div>
+    <div class="form-row text-center justify-content-center">
+        <div class="col-auto">
+            <label for="inputCode">Код книги</label>
+            <input type="text" class="form-control" name="code" id="inputCode" placeholder="АНОВ-1982">
+        </div>
+        <div class="col-auto">
+            <label for="inputYear">Год</label>
+            <input type="text" class="form-control" name="year" id="inputYear" placeholder="2012" required>
+        </div>
+        <div class="col-auto">
+            <label for="inputISBN">ISBN</label>
+            <input type="text" class="form-control" name="ISBN" id="inputISBN" placeholder="978-3-16-148410-0">
+        </div>
+        <div class="col-auto">
+            <label for="inputInAntology">В антологии</label>
+            <select class="custom-select" name="in_antology" id="inputInAntology">
+				        <option value="0">Нет</option>
+				        <option value="1">Да</option>
+				        <option value="1">будет</option>
+				        <option value="1">нет книги</option>
+				      </select>
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="inputFull">Полные выходные данные</label>
+        <input type="text" class="form-control" name="biblio_name" id="inputFull" placeholder="Китайская классическая проза в пер. ак. В.М. Алексеева. М., АН СССР, 1958" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'page_root.html.twig' %} {% block content %}
+<div class="jumbotron" id="authors_jumbotron">
+    <div class="row">
+        <div class="col-7 mx-auto">
+            <h4 class="authors header" id="authors_header">{{ header }}</h4>
+			{% if byTopic %}
+			<form action="./poems.php?action=byTopic&posted=1" method="POST">
+			{% else %}
+			<form action="./authors.php?action=byTopic&posted=1" method="POST">
+			{% endif %}
+				<div class="col-auto">
+                    <label for="byTopic">Выберете тему</label>
+                    <select class="custom-select" name="topic_id" id="byTopic">
+						<option value="2">Бренность жизни</option>
+						<option value="3">Во храме</option>
+						<option value="4">Дао</option>
+						<option value="5">Друг</option>
+						<option value="6">Жена</option>
+						<option value="7">Жизнеописания</option>
+						<option value="8">Изгнание</option>
+						<option value="9">Ирония и сарказм</option>
+						<option value="10">Любовь</option>
+						<option value="11">Любовь матери</option>
+						<option value="12">На чужбине</option>
+						<option value="13">Нравоучения</option>
+						<option value="14">Одиночество</option>
+						<option value="15">Патриотизм</option>
+						<option value="16">Поминальная песня</option>
+						<option value="17">Поэзия вина</option>
+						<option value="18">Поэзия чая</option>
+						<option value="19">Природа и поэт</option>
+						<option value="20">Прочь от мира!</option>
+						<option value="21">Разлука с любимым</option>
+						<option value="22">Размышления о вечном</option>
+						<option value="23">Скороговорки</option>
+						<option value="24">Старость</option>
+						<option value="25">Стихи к картинам</option>
+						<option value="26">Тоска по древности</option>
+						<option value="27">Тяготы жизни</option>
+						<option value="28">Честь и гордость</option>
+						<option value="29">Эротическая поэзия</option>
+						<option value="30">Юмор и сарказм</option>
+				    </select>
+				</div>
+				<p>&nbsp;</p>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

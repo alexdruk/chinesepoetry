@@ -1,0 +1,110 @@
+<?php
+require_once __DIR__.'/globals.php';
+$template_info["title"] ='Авторы';
+$records = array();
+if ($_GET['action'] == 'showall') {
+    $template_info["header"] ='Все авторы';
+    $template_info["showall"] = true;
+    $template_info["search"] = false;
+    $template_info["byAuthor"] = false;
+    $records = getAllfromAuthors();
+	$template_info["records"] = $records;
+    $template = $twig->load('authors_showall.html.twig');
+}
+elseif ($_GET['action'] == 'byEpoch') {
+    $template_info["header"] ='По эпохам';
+    $template_info["showall"] = true;
+    $template_info["search"] = false;
+    if (array_key_exists('posted', $_GET)) {
+        $epoch = $_POST['epoch']; 
+        $records = getAllfromAuthorsByEpoch($epoch);
+        $template_info["records"] = $records;
+        $template = $twig->load('authors_showall.html.twig');
+    }
+    else {
+        $template_info["byAuthor"] = false;
+        $template = $twig->load('authors_byEpoch.html.twig');
+    }
+}
+elseif ($_GET['action'] == 'search') {
+    $template_info["header"] ='Поиск по именам авторов';
+    if (array_key_exists('posted', $_GET)) {
+        $template_info["showall"] = true;
+        $template_info["search"] = false;
+        $template_info["byAuthor"] = false;
+        $pattern = $_POST['pattern']; 
+        $records = searchAuthors($pattern);
+	    $template_info["records"] = $records;
+        if (count($records) < 1) {
+            $template_info["header"] ='Ничего не найдено';
+        }
+    }
+    else {
+        $template_info["showall"] = false;
+        $template_info["search"] = true;
+        $template_info["byAuthor"] = false;
+    }
+    $template = $twig->load('authors_showall.html.twig');
+}
+elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
+    $record_id = $_GET['record_id'];
+    list($proper_name, $dates, $epoch, $doc_text) = getDocByIDFromAuthors($record_id);
+    $template_info["header"] = '<span class="author name">'.$proper_name.'</span> <span class="author dates">'.$dates.'</span>';
+    $template_info["epoch"] = '<span class="epoch">'.$epoch.'</span>';
+    $template_info["author_id"] = $record_id;
+    $atribs = getAtributesByAuthorID($record_id);
+    $template_info["title"] = $template_info["title"].' | '.$proper_name;
+    if(count(array_filter($atribs)) < 4) { #consider id, author_id and forseach
+        $template_info["atribs"] = false;
+    }
+    else {
+        if (($atribs[2]) || ($atribs[3]) || ($atribs[4]) || ($atribs[5])) {
+            $template_info["name"] = true;
+        }
+        else {
+            $template_info["name"] = false;
+        }
+        if (($atribs[6]) || ($atribs[7]) || ($atribs[8]) || ($atribs[9])) {
+            $template_info["real_name"] = true;
+        }
+        else {
+            $template_info["real_name"] = false;
+        }
+        if (($atribs[10]) || ($atribs[11]) || ($atribs[12]) || ($atribs[13])) {
+            $template_info["s_name"] = true;
+        }
+        else {
+            $template_info["s_name"] = false;
+        }
+        if (($atribs[14]) || ($atribs[15]) || ($atribs[16]) || ($atribs[17])) {
+            $template_info["p_name"] = true;
+        }
+        else {
+            $template_info["p_name"] = false;
+        }
+        if (($atribs[18]) || ($atribs[19]) || ($atribs[20]) || ($atribs[21])) {
+            $template_info["pseudo"] = true;
+        }
+        else {
+            $template_info["pseudo"] = false;
+        }
+        if (($atribs[22]) || ($atribs[23]) || ($atribs[24]) || ($atribs[25])) {
+            $template_info["nick"] = true;
+        }
+        else {
+            $template_info["nick"] = false;
+        }
+        $template_info["atribs"] = $atribs;
+    }
+ 
+    if (strlen($doc_text) < 200) {
+        $doc_text = '<h4>Пожалуйста, помогите собрать информацию для этой страницы!</h4>';
+    }
+    $template_info["doc_text"] = '<span class="description">'.$doc_text.'</span>';
+    $template = $twig->load('description.html.twig');
+}
+else {
+	$template_info["content"] ='Requested page does not exist. Contact site admin. ';
+	$template = $twig->load('page_root.html.twig');
+}
+echo $template->display($template_info);

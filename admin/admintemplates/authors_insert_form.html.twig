@@ -1,0 +1,38 @@
+{% extends 'page.html.twig' %} {% block content %} {% if success %}
+<div class="alert alert-success" role="alert">
+    {{ success }}
+</div>
+{% endif %} {% if error %}
+<div class="alert alert-danger" role="alert">
+    {{ error }}
+</div>
+{% endif %} {% if header %}
+<h2>{{ header }}</h2> {% endif %}
+<form action="./admin_authors.php?action=insert" method="POST">
+    <div class="form-group">
+        <label for="inputfull_name">Полное имя с датами</label>
+        <input type="text" class="form-control" name="full_name" id="inputfull_name" placeholder="БАЙ ПУ (1226?-1306)" required>
+    </div>
+    <div class="form-group">
+        <label for="inputproper_name">Правильное имя</label>
+        <input type="text" class="form-control" name="proper_name" id="inputproper_name" placeholder="Бай Пу" required>
+    </div>
+    <div class="form-group">
+        <label for="inputdates">Годы жизни</label>
+        <input type="text" class="form-control" name="dates" id="inputdates" placeholder="(1226?-1306)" required>
+    </div>
+    <div class="form-group">
+        <label for="inputepoch">Эпоха</label>
+        <input type="text" class="form-control" name="epoch" id="inputepoch" placeholder="Эпоха Шести династий" required>
+    </div>
+    <div class="form-group">
+        <label for="inputpresent">Наличие в антологии</label>
+        <select class="custom-select" name="present" id="inputpresent">
+			<option value="0">Нет</option>
+			<option value="1">Да</option>
+		</select>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+{% endblock %}

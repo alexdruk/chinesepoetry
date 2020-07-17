@@ -1,0 +1,659 @@
+NB!! for using mysql8.0 see:https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password-compatible-connectors
+ALTER USER 'alex'@'localhost' IDENTIFIED WITH mysql_native_password BY 'adrouk1546';
+ALTER USER 'root'@'localhost'
+  IDENTIFIED WITH mysql_native_password
+  BY 'adrouk1546';
+  
+CREATE DATABASE poetry CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+for server:
+CREATE DATABASE poetry CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+
+c
+on server:
+CREATE TABLE IF NOT EXISTS biblio (
+    biblio_id INT AUTO_INCREMENT PRIMARY KEY,
+    author VARCHAR(100) DEFAULT NULL,
+    book_name VARCHAR(255),
+    translator  VARCHAR(100) DEFAULT NULL,
+    ref_name VARCHAR(255),
+    seria VARCHAR(150),
+    publisher VARCHAR(150),
+    year YEAR,
+    code VARCHAR(25) UNIQUE,
+    isbn VARCHAR(20) UNIQUE DEFAULT NULL,
+    present TINYINT NOT NULL,
+    biblio_name TEXT NOT NULL 
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;
+
+CREATE TABLE IF NOT EXISTS biblio (
+    biblio_id INT AUTO_INCREMENT PRIMARY KEY,
+    author VARCHAR(100) DEFAULT NULL,
+    book_name VARCHAR(255),
+    translator  VARCHAR(100) DEFAULT NULL,
+    ref_name VARCHAR(255),
+    seria VARCHAR(150),
+    publisher VARCHAR(150),
+    year YEAR,
+    code VARCHAR(25) UNIQUE,
+    isbn VARCHAR(20) UNIQUE DEFAULT NULL,
+    present TINYINT NOT NULL,
+    biblio_name TEXT NOT NULL 
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+
+#NB! insert using sourcesForDb.sql
+
+CREATE FULLTEXT INDEX index_biblio 
+ON biblio (author,
+    book_name,
+    translator,
+    ref_name,
+    seria,
+    publisher,
+    code,
+    biblio_name
+);
+
+CREATE TABLE IF NOT EXISTS topics (
+    topics_id INT AUTO_INCREMENT PRIMARY KEY,
+    topic_name VARCHAR(150) UNIQUE NOT NULL,
+    topic_synonym  VARCHAR(150)  DEFAULT NULL,
+    present TINYINT NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+
+CREATE TABLE IF NOT EXISTS authors (
+    author_id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(150) UNIQUE NOT NULL,
+    proper_name  VARCHAR(150) NOT NULL,
+    dates  VARCHAR(150)  NOT NULL,
+    epoch  VARCHAR(150)  NOT NULL,
+    present TINYINT NOT NULL,
+    doc_text MEDIUMTEXT
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+
+fort server:
+CREATE TABLE IF NOT EXISTS authors (
+    author_id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(150) UNIQUE NOT NULL,
+    proper_name  VARCHAR(150) NOT NULL,
+    dates  VARCHAR(150)  NOT NULL,
+    epoch  VARCHAR(150)  NOT NULL,
+    present TINYINT NOT NULL,
+    doc_text MEDIUMTEXT
+)) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;
+
+CREATE FULLTEXT INDEX index_authors
+ON authors (
+    full_name,
+    proper_name,
+    dates,
+    epoch
+);
+
+UPDATE `authors` 
+   SET `epoch` = TRIM(BOTH '"' FROM `epoch`);
+
+
+
+drop index index_authors on  authors;
+
+for server
+CREATE TABLE IF NOT EXISTS authors_docs (
+    author_id INT  PRIMARY KEY,
+    doc_text text
+) ENGINE=MyISAM DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+
+LOAD DATA
+    INFILE '/var/www/html/sql/author_docs.sql'
+    INTO TABLE authors_docs
+	FIELDS TERMINATED BY '#!#'
+    ENCLOSED BY '^'
+    LINES TERMINATED BY '##!!##'
+;
+for server
+LOAD DATA   LOCAL  INFILE '~/author_docs.sql'     INTO TABLE authors_docs CHARACTER SET utf8mb4 FIELDS TERMINATED BY '#!#'     ENCLOSED BY '^'     LINES TERMINATED BY '##!!##';
+
+ALTER TABLE authors
+ADD doc_text text;
+
+UPDATE authors a, authors_docs d SET a.doc_text = d.doc_text 
+WHERE a.author_id = d.author_id;
+
+select a.doc_text, d.doc_text
+from authors a
+join  authors_docs d on a.author_id = d.author_id;
+
+truncate table authors_docs;
+
+`full_name`, `lit_name`, `real_name`, `first_name`, `father_name`, `pseudonyms`, `born`, `born_place`, `died`, `died_place`, `present` 
+CREATE TABLE IF NOT EXISTS translators (
+    translator_id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(100) UNIQUE NOT NULL,
+    lit_name VARCHAR(100) DEFAULT NULL,
+    real_name VARCHAR(100)  NOT NULL,
+    first_name  VARCHAR(100) DEFAULT NULL,
+    father_name  VARCHAR(100) DEFAULT NULL,
+    pseudonyms  VARCHAR(200) DEFAULT NULL,
+    born  VARCHAR(20) DEFAULT NULL,
+    born_place  VARCHAR(200) DEFAULT NULL,
+    died  VARCHAR(20) DEFAULT NULL,
+    died_place  VARCHAR(200) DEFAULT NULL,
+    present TINYINT NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+for server:
+CREATE TABLE IF NOT EXISTS translators (
+    translator_id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(100) UNIQUE NOT NULL,
+    lit_name VARCHAR(100) DEFAULT NULL,
+    real_name VARCHAR(100) NOT NULL,
+    first_name  VARCHAR(100) DEFAULT NULL,
+    father_name  VARCHAR(100) DEFAULT NULL,
+    pseudonyms  VARCHAR(200) DEFAULT NULL,
+    born  VARCHAR(20) DEFAULT NULL,
+    born_place  VARCHAR(200) DEFAULT NULL,
+    died  VARCHAR(20) DEFAULT NULL,
+    died_place  VARCHAR(200) DEFAULT NULL,
+    present TINYINT NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;
+
+CREATE TABLE IF NOT EXISTS authors (
+    author_id INT AUTO_INCREMENT PRIMARY KEY,
+    full_name VARCHAR(150) UNIQUE NOT NULL,
+    proper_name  VARCHAR(150) NOT NULL,
+    dates  VARCHAR(150)  NOT NULL,
+    epoch  VARCHAR(150) NOT NULL,
+    present TINYINT NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+
+CREATE TABLE IF NOT EXISTS originals_tmp (
+--    originals_id INT AUTO_INCREMENT PRIMARY KEY,
+    author VARCHAR(150) NOT NULL,
+    poem_name_zh  VARCHAR(255) NOT NULL,
+    poem_name_ru  VARCHAR(255) NOT NULL,
+    poem_code  VARCHAR(50) DEFAULT NULL,
+    biblio_id  INT  DEFAULT NULL,
+    poem_text TEXT NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;
+
+
+LOAD DATA  INFILE '/Users/alex/site/sql/originals1.sql' 
+INTO TABLE originals_tmp CHARACTER SET utf8mb4 
+FIELDS TERMINATED BY '#!#'     
+ENCLOSED BY '^'     
+LINES TERMINATED BY '##!!##';
+
+UPDATE originals_tmp
+SET author = REPLACE(author,'^','');
+UPDATE `originals_tmp` 
+   SET `author` = TRIM(BOTH ' ' FROM `author`);
+
+ALTER TABLE originals_tmp 
+ADD column author_id INT NOT NULL FIRST;
+ALTER TABLE originals_tmp 
+ADD column originals_id INT AUTO_INCREMENT PRIMARY KEY FIRST;
+UPDATE `originals_tmp` 
+SET author = SUBSTR(author,2)  where originals_id !=1;
+delete from originals_tmp where originals_id=126;
+UPDATE originals_tmp t
+INNER JOIN authors a ON  a.full_name = t.author
+SET t.author_id = a.author_id;
+select * from originals_tmp where author_id =0;
+UPDATE originals_tmp t
+SET t.author_id = 15 where author = 'ВАН ВЭЙ (699-759)';
+ALTER TABLE originals_tmp 
+DROP COLUMN author;
+update authors
+set full_name = 'ВАН ВЭЙ (699-759)' where author_id =15;
+update authors
+set dates = '(699-759)' where author_id =15;
+
+ALTER TABLE originals_tmp 
+ADD column cycle_zh VARCHAR(255) DEFAULT NULL AFTER author_id;
+ALTER TABLE originals_tmp 
+ADD column cycle_ru VARCHAR(255) DEFAULT NULL AFTER cycle_zh;
+ALTER TABLE originals_tmp 
+ADD column subcycle_zh VARCHAR(255) DEFAULT NULL AFTER cycle_ru;
+ALTER TABLE originals_tmp 
+ADD column subcycle_ru VARCHAR(255) DEFAULT NULL AFTER subcycle_zh;
+
+rename table originals_tmp to originals;
+
+#poems
+CREATE TABLE IF NOT EXISTS poems_tmp (
+    -- poems_id INT AUTO_INCREMENT PRIMARY KEY,
+    author VARCHAR(200) NOT NULL,
+    translator1_id INT DEFAULT NULL,
+    translator2_id INT DEFAULT NULL,
+    translator3_id INT DEFAULT NULL,
+    topic1_id INT DEFAULT NULL,
+    topic2_id INT DEFAULT NULL,
+    topic3_id INT DEFAULT NULL,
+    topic4_id INT DEFAULT NULL,
+    topic5_id INT DEFAULT NULL,
+    poem_name_zh VARCHAR(100)  DEFAULT NULL,
+    poem_name_ru  TEXT NOT NULL,
+    poem_code VARCHAR(12)  DEFAULT NULL,
+    biblio_id INT  DEFAULT NULL,
+    poem_text MEDIUMTEXT
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+
+
+LOAD DATA
+    INFILE '/Users/alex/site/sql/poems.sql'
+    INTO TABLE poems_tmp
+	FIELDS TERMINATED BY '#!#'
+    OPTIONALLY ENCLOSED BY '^'
+    LINES TERMINATED BY '##!!##';
+    
+ALTER TABLE poems_tmp 
+ADD column author_id INT NOT NULL FIRST;
+ALTER TABLE poems_tmp 
+ADD column poems_id INT AUTO_INCREMENT PRIMARY KEY FIRST;
+
+select concat('A', author,'A') from poems_tmp t  where author_id =0;
+UPDATE poems_tmp SET author = REPLACE(author, '\n', '')
+where author LIKE '\n%';
+UPDATE poems_tmp SET author = REPLACE(author, '\n', '')
+where author LIKE '%\n';
+UPDATE `poems_tmp` 
+   SET `author` = TRIM(BOTH FROM `author`);
+
+UPDATE poems_tmp t
+INNER JOIN authors a ON  a.full_name = t.author
+SET t.author_id = a.author_id;
+select * from poems_tmp where translator1_id is null;
+select poems_id, author from poems_tmp t  where author_id =0; 
+#poemsSQL
+update poems_tmp set author_id = 96 where poems_id in (23, 24); #konfuci
+update poems_tmp set author_id = 419 where poems_id in (35); # ЮЭФУ (эпоха Хань 206 до н. э. - 220 н. э.)
+update poems_tmp set author_id = 405 where poems_id in (87); #ШЭНЬ ЮЭ(441-513)
+update poems_tmp set author_id = 419 where poems_id in (1,2,3,4,5,6,7); # ЮЭФУ (эпоха Хань 206 до н. э. - 220 н. э.)
+update poems_tmp set author_id = 380 where poems_id in (160,161); #ЧУ ГУАНСИ(707-760?)
+update poems_tmp set author_id = 47 where poems_id in (224,225); #'ВЭНЬ ВЭЙ (эпоха Тан)'
+update poems_tmp set author_id = 389 where poems_id in (543); #ЧЭНЬ ШИНЮЙ (эпоха Мин)
+update poems_tmp set author_id = 359 where poems_id in (226); #ЧЖАН ЯНЬ (эпоха Тан)
+update poems_tmp set author_id = 320 where poems_id in (314,315); #ЦЗЯ ДАО(779-843)
+update poems_tmp set author_id = 75 where poems_id in (324,325,326); #ДУ МУ(803-852)
+#poemsSQL2
+update poems_tmp set author_id = 405 where author='ШЭНЬ ЮЭ(441-513)'; #ШЭНЬ ЮЭ(441-513)
+update poems_tmp set author_id = 15 where author='ВАН ВЭЙ (699-759)'; #'ВАН ВЭЙ (699-759)'
+update poems_tmp set author_id = 419 where author='ЮЭФУ (эпоха Хань 206 до н. э. - 220 н. э.)'; # ЮЭФУ (эпоха Хань 206 до н. э. - 220 н. э.)
+update poems_tmp set author_id = 75 where poems_id in (871,872,873); #ДУ МУ(803-852)
+update poems_tmp set author_id = 75 where author='АНОНИМНЫЕ РОМАНСЫ из романа “Цзинь, Пин, Мэй” (XVI в.)'; #АНОНИМНЫЕ РОМАНСЫ из романа “Цзинь, Пин, Мэй” (XVI в.)
+
+select * from authors where full_name like 'ЮЭФУ %';
+select * from authors where full_name like 'ВАН ВЭЙ%';
+select * from authors where full_name like 'ШЭНЬ ЮЭ%';
+select author_id,full_name from authors where full_name like '%ЧЭНЬ ШИНЮЙ%';
+select * from authors where full_name like 'ШЭНЬ ЮЭ%';
+select * from authors where full_name like 'АНОНИМНЫЕ РОМАНСЫ из романа %';
+select poems_id, author from poems_tmp t  where author_id =0; #finalcheck
+
+ALTER TABLE poems_tmp drop column author;
+
+INSERT INTO poems (author_id, translator1_id, translator2_id, translator3_id, topic1_id, topic2_id, topic3_id,
+topic4_id, topic5_id, cycle_zh, cycle_ru, poem_name_zh, poem_name_ru, poem_code, biblio_id, poem_text)
+  SELECT author_id, translator1_id, translator2_id, translator3_id, topic1_id, topic2_id, topic3_id,
+topic4_id, topic5_id, cycle_name_zh, cycle_name_ru, poem_name_zh, poem_name_ru, poem_code, biblio_id, poem_text FROM poems_tmp ;
+
+select count(*) from poems;
+
+insert into translators (full_name, real_name, present) Values ('неизвестен', 'неизвестен',1);
+insert into biblio (author, book_name, present, ref_name, biblio_name) Values ('неизвестен', 'неизвестен',1,'неизвестен','неизвестен');
+
+
+CREATE TABLE IF NOT EXISTS tmp (
+	poem_name_ru  TEXT NOT NULL,
+    poem_code VARCHAR(12)  DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+LOAD DATA
+    INFILE '/Users/alex/site/sql/correction.sql'
+    INTO TABLE tmp
+	FIELDS TERMINATED BY '#!#'
+    LINES TERMINATED BY '\n';
+update poems p
+inner join  tmp t
+on t.poem_name_ru = p.poem_name_ru
+set p.poem_code =t.poem_code;
+
+update poems p
+set p.poem_code = null 
+where p.poem_code ='NULL';
+update poems p
+set p.poem_code = null 
+where p.poem_code ='';
+
+CREATE TABLE IF NOT EXISTS poems_tmp (
+    -- poems_id INT AUTO_INCREMENT PRIMARY KEY,
+    author VARCHAR(100) NOT NULL,
+    translator1_id INT DEFAULT NULL,
+    topic1_id INT DEFAULT NULL,
+    topic2_id INT DEFAULT NULL,
+    topic3_id INT DEFAULT NULL,
+    cycle_name_zh VARCHAR(100)  DEFAULT NULL,
+    cycle_name_ru  TEXT DEFAULT NULL,
+	subcycle_name_zh VARCHAR(100)  DEFAULT NULL,
+    subcycle_name_ru  TEXT DEFAULT NULL,
+    poem_name_zh VARCHAR(100)  DEFAULT NULL,
+    poem_name_ru  TEXT NOT NULL,
+    poem_code VARCHAR(12)  DEFAULT NULL,
+    biblio_id INT  DEFAULT NULL,
+    poem_text MEDIUMTEXT
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+
+
+LOAD DATA
+    INFILE '/Users/alex/site/sql/poems4.sql'
+    INTO TABLE poems_tmp
+	FIELDS TERMINATED BY '#!#'
+    OPTIONALLY ENCLOSED BY '^'
+    LINES TERMINATED BY '##!!##';
+
+select author_id from poems where author_id like '\n%';
+UPDATE poems_tmp SET author = REPLACE(author, '\n', '')
+where author LIKE '\n%';
+UPDATE poems_tmp SET author = REPLACE(author, '\n', '')
+where author LIKE '%\n';
+UPDATE `poems_tmp` 
+   SET `author` = TRIM(BOTH FROM `author`);
+
+INSERT INTO poems (author_id, translator1_id,  topic1_id, topic2_id, topic3_id,
+cycle_zh, cycle_ru, subcycle_zh, subcycle_ru, poem_name_zh, poem_name_ru, poem_code, biblio_id, poem_text)
+  SELECT author, translator1_id, topic1_id, topic2_id, topic3_id,
+cycle_name_zh, cycle_name_ru, subcycle_name_zh, subcycle_name_ru, poem_name_zh, poem_name_ru, poem_code,
+ biblio_id, poem_text FROM poems_tmp ;
+
+#check empty fields
+SELECT * FROM poems WHERE '' IN (translator1_id, translator2_id, translator3_id, topic1_id, topic2_id, topic3_id,
+topic4_id, topic5_id, cycle_zh, cycle_ru, poem_name_zh, poem_name_ru, poem_code, biblio_id, poem_text);
+
+select poems_id, poem_name_ru from poems where author_id =0 order by poems_id asc;
+
+update poems set author_id = 262 where poems_id in (2619,2620,2621,2622,2623,2624,2625,2626);
+update poems set author_id = 124 where poems_id in (2627);
+update poems set author_id = 419 where poems_id in (2631,2632,2633,2634,2635,2636,2637,2638,2639,2640,2641,2642,2643,2644,2645,2646,2647,2648,2649,2650,2651,2652,2653,2654,2655,2656,2657,2658,2659,2660,2661,2662,2663,2664,2665,2666,2667,2668,2669,2670,2671,2672,2673,2674,2675,2676,2677,2678);
+update poems set author_id = 247 where poems_id in (2679,2680,2681,2682,2683,2684,2685,2686,2687,2688,2689,2690,2691,2692,2693,2694);
+update poems set author_id = 312 where poems_id in (2628, 2629, 2630);
+
+SELECT * FROM poems WHERE '0' IN (translator1_id, translator2_id, translator3_id, topic1_id, topic2_id, topic3_id,
+topic4_id, topic5_id, cycle_zh, cycle_ru, poem_name_zh, poem_name_ru, poem_code, biblio_id, poem_text);
+
+SELECT * FROM poems WHERE cycle_zh like ' %' or  cycle_ru  like ' %' or
+ poem_name_zh like ' %' or  poem_name_ru like ' %';
+CREATE TABLE IF NOT EXISTS poems_tmp (
+    -- poems_id INT AUTO_INCREMENT PRIMARY KEY,
+    author VARCHAR(200) NOT NULL,
+    translator1_id INT DEFAULT NULL,
+    translator2_id INT DEFAULT NULL,
+    translator3_id INT DEFAULT NULL,
+    topic1_id INT DEFAULT NULL,
+    topic2_id INT DEFAULT NULL,
+    topic3_id INT DEFAULT NULL,
+    cycle_name_zh VARCHAR(100)  DEFAULT NULL,
+    cycle_name_ru  TEXT DEFAULT NULL,
+    subcycle_name_zh VARCHAR(100)  DEFAULT NULL,
+    subcycle_name_ru  TEXT DEFAULT NULL,
+    poem_name_zh VARCHAR(100)  DEFAULT NULL,
+    poem_name_ru  TEXT NOT NULL,
+    poem_code VARCHAR(12)  DEFAULT NULL,
+    biblio_id INT  DEFAULT NULL,
+    poem_text MEDIUMTEXT
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+
+
+LOAD DATA
+    INFILE '/Users/alex/site/sql/poems6.sql'
+    INTO TABLE poems_tmp
+	FIELDS TERMINATED BY '#!#'
+    OPTIONALLY ENCLOSED BY '^'
+    LINES TERMINATED BY '##!!##';
+
+select * from poems where poem_name_ru like '%Плавно%';
+drop table poems_tmp;
+select * from poems_tmp where translator1_id is null;
+delete from poems_tmp where poems_id = 124;
+update poems_tmp
+set translator1_id=128 where  poems_id=41;
+select * from translators;
+UPDATE poems_tmp t
+INNER JOIN authors a ON  a.full_name = t.author
+SET t.author_id = a.author_id;
+
+
+alter table poems_tmp
+add column poem_hash char(32) unique;
+
+update poems_tmp 
+set poem_hash = MD5(poem_text);
+  SELECT author_id, translator1_id, translator2_id, translator3_id, topic1_id, topic2_id, topic3_id,
+cycle_name_zh, cycle_name_ru, subcycle_name_zh, subcycle_name_ru, poem_name_zh, poem_name_ru, poem_code, biblio_id, poem_text, poem_hash 
+FROM poems_tmp where poem_hash not in (select poem_hash from poems);
+
+select * from poems_tmp where poem_hash= 'e21f0d1caead5e1e254f38c908a9d38a';
+select * from poems where cycle_ru like '%Удивительные истории нашего времени и древности%';
+delete from poems_tmp where poems_id=10;
+select * from poems_tmp where author_id =312;
+INSERT INTO poems (author_id, translator1_id, translator2_id, translator3_id, topic1_id, topic2_id, topic3_id,
+cycle_zh, cycle_ru, subcycle_zh, subcycle_ru, poem_name_zh, poem_name_ru, poem_code, biblio_id, poem_text, poem_hash)
+  SELECT author_id, translator1_id, translator2_id, translator3_id, topic1_id, topic2_id, topic3_id,
+cycle_name_zh, cycle_name_ru, subcycle_name_zh, subcycle_name_ru, poem_name_zh, poem_name_ru, poem_code, biblio_id, poem_text, poem_hash 
+FROM poems_tmp where poem_hash not in (select poem_hash from poems);
+
+delete from poems_tmp where poems_id in (1,2,3,4,5,6,7,8,12);
+
+select max(poems_id) from poems limit 0,3000;
+select count(*) from originals;
+select poem_name_ru from poems limit 0,3000;
+select * from translators;
+select * from authors;
+select poem_name_zh, poem_name_ru from poems where author_id=113;
+
+UPDATE poems SET poem_code = REPLACE(poem_code, '&nbsp;', '')
+where poem_code LIKE '&nbsp;%';
+UPDATE poems SET poem_name_ru = REPLACE(poem_name_ru, '&nbsp;', '')
+where poem_name_ru LIKE '&nbsp;%';
+UPDATE poems SET cycle_ru = REPLACE(cycle_ru, '&nbsp;', '')
+where cycle_ru LIKE '&nbsp;%';
+UPDATE poems SET subcycle_ru = REPLACE(subcycle_ru, '&nbsp;', '')
+where subcycle_ru LIKE '&nbsp;%';
+
+alter table poems add index authors_ind(author_id);
+alter table poems add index translators_ind(translator1_id,translator2_id);
+alter table poems add index topics_ind(topic1_id,topic2_id,topic3_id,topic4_id,topic5_id);
+alter table poems add index cycle_ind(cycle_ru(100));
+alter table poems add index subcycle_ind(subcycle_ru(100));
+alter table poems add index poem_name_ind(poem_name_ru(100));
+alter table poems add index poem_name_both_ind(poem_name_zh(100), poem_name_ru(100));
+CREATE FULLTEXT INDEX poems_ft_ind ON poems (cycle_zh,cycle_ru,subcycle_zh,subcycle_ru,poem_name_zh, poem_name_ru,poem_text);
+alter table authors add  index proper_name_ind (proper_name);
+alter table authors add  index epoch_ind (epoch);
+
+CREATE FULLTEXT INDEX authors_ft_ind ON authors (full_name, proper_name, dates, epoch);
+alter table originals add  index author_ind (author_id);
+alter table originals add  index code_ind (poem_code);
+CREATE FULLTEXT INDEX originals_ft_ind ON originals (poem_text);
+alter table poems add index poem_code_ind(poem_code);
+
+alter table authors
+drop column doc_text;
+
+CREATE TABLE IF NOT EXISTS desc_tmp (
+    -- poems_id INT AUTO_INCREMENT PRIMARY KEY,
+    author VARCHAR(200) NOT NULL,
+    doc_text MEDIUMTEXT
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+
+LOAD DATA
+    INFILE '/Users/alex/site/sql/authors_desc.sql'
+    INTO TABLE desc_tmp
+	FIELDS TERMINATED BY '#!#'
+    OPTIONALLY ENCLOSED BY '^'
+    LINES TERMINATED BY '##!!##';
+
+ALTER TABLE desc_tmp 
+ADD column author_id INT NOT NULL FIRST;
+ALTER TABLE desc_tmp 
+ADD column desc_id INT AUTO_INCREMENT PRIMARY KEY FIRST;
+
+UPDATE desc_tmp SET author = REPLACE(author, '\n', '')
+where author LIKE '\n%';
+UPDATE desc_tmp SET author = REPLACE(author, '\n', '')
+where author LIKE '%\n';
+UPDATE `desc_tmp` 
+   SET `author` = TRIM(BOTH FROM `author`);
+
+UPDATE desc_tmp t
+INNER JOIN authors a ON  a.full_name = t.author
+SET t.author_id = a.author_id;
+
+update desc_tmp set author_id = 419 where desc_id=5; 
+update desc_tmp set author_id = 47 where desc_id=88; #'ВЭНЬ ВЭЙ (эпоха Тан)'
+update desc_tmp set author_id = 389 where desc_id=197; #ЧЭНЬ ШИНЮЙ (эпоха Мин)
+update desc_tmp set author_id = 359 where desc_id=89; #ЧЖАН ЯНЬ (эпоха Тан)
+update desc_tmp set author_id = 15 where desc_id=106; #ВАН ВЭЙ (699–759)
+update desc_tmp set author_id = 2 where desc_id=241; #
+
+select * from desc_tmp where author_id=0;
+
+
+alter table desc_tmp
+drop column author;
+select * from authors where full_name like 'ВАН ВЭЙ%'; #15
+select * from authors where full_name like 'АНОНИМНЫЕ РОМАНСЫ%'; #2
+
+UPDATE desc_tmp SET doc_text = REPLACE(doc_text, '\t', '');
+
+RENAME TABLE desc_tmp TO a_description;
+
+alter table a_description add index authors_ind(author_id);
+CREATE FULLTEXT INDEX desc_text_ind ON a_description (doc_text);
+
+UPDATE poems SET poem_text = REPLACE(poem_text, ' class="NormalWeb"', '');
+select poem_text from poems;
+update poems 
+set poem_hash = MD5(poem_text);
+
+select poem_text from poems where poem_text RLIKE '\n<p class="a22">.+<\/p>'; #2888
+select poem_text from poems where poem_text RLIKE '<p class="a22">.+<\/p>'; #29
+
+UPDATE poems SET poem_text = REGEXP_REPLACE(poem_text, '\n<p class="a22">.+<\/p>', '')  
+where poem_text like '\n<p class="a22"%'; #2859
+
+UPDATE poems SET poem_text = REGEXP_REPLACE(poem_text, '<p class="a22">.+<\/p>', '')  
+where poem_text RLIKE '<p class="a22">.+<\/p>'; #
+
+UPDATE poems SET poem_text = REGEXP_REPLACE(poem_text, '<p class="a22"><\/p>', '')  
+where poem_text RLIKE '<p class="a22">.+<\/p>'; #
+
+select poems_id, author_id, poem_text from poems where poem_text like '%<p class="a22"%';
+
+CREATE TABLE IF NOT EXISTS authors_atrib (
+    -- atrib_id INT AUTO_INCREMENT PRIMARY KEY,
+    author_id INT NOT NULL,
+    palladian  VARCHAR(100) DEFAULT NULL,
+    zh_trad  VARCHAR(100) DEFAULT NULL,
+    zh_simple  VARCHAR(100) DEFAULT NULL,
+    pinyin  VARCHAR(100) DEFAULT NULL,
+    real_name  VARCHAR(100) DEFAULT NULL,
+    real_name_zh  VARCHAR(100) DEFAULT NULL,
+    real_name_simple  VARCHAR(100) DEFAULT NULL,
+    real_name_pinyin  VARCHAR(100) DEFAULT NULL,
+    second_name  VARCHAR(100) DEFAULT NULL,
+    second_name_zh  VARCHAR(100) DEFAULT NULL,
+    second_name_simple  VARCHAR(100) DEFAULT NULL,
+    second_name_pinyin  VARCHAR(100) DEFAULT NULL,
+    postmortem_name  VARCHAR(100) DEFAULT NULL,
+    postmortem_name_zh  VARCHAR(100) DEFAULT NULL,
+    postmortem_name_simple  VARCHAR(100) DEFAULT NULL,
+    postmortem_name_pinyin  VARCHAR(100) DEFAULT NULL,
+    pseudonim_name  VARCHAR(100) DEFAULT NULL,
+    pseudonim_name_zh  VARCHAR(100) DEFAULT NULL,
+    pseudonim_name_simple  VARCHAR(100) DEFAULT NULL,
+    pseudonim_name_pinyin  VARCHAR(100) DEFAULT NULL,
+    nickname  VARCHAR(100) DEFAULT NULL,
+    nickname_zh  VARCHAR(100) DEFAULT NULL,
+    nickname_simple  VARCHAR(100) DEFAULT NULL,
+    nickname_pinyin  VARCHAR(100) DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+
+ 
+LOAD DATA  INFILE '/Users/alex/site/sql/authorsAtrib.sql' 
+INTO TABLE authors_atrib CHARACTER SET utf8mb4 
+FIELDS TERMINATED BY '#!#'     
+LINES TERMINATED BY '\n';
+
+ALTER TABLE authors_atrib 
+ADD column atrib_id INT AUTO_INCREMENT PRIMARY KEY FIRST;
+
+ALTER TABLE authors_atrib 
+ADD column forsearch VARCHAR(1000) DEFAULT NULL;
+
+UPDATE authors_atrib
+set forsearch = concat(`palladian`,' ',`zh_trad`,' ',`zh_simple`,' ',`pinyin`,' ',`real_name`,' ',`real_name_zh`,' ',`real_name_simple`,' ',`real_name_pinyin`,' ',`second_name`,' ',`second_name_zh`,' ',`second_name_simple`,' ',`second_name_pinyin`,' ',`postmortem_name`,' ',`postmortem_name_zh`,' ',`postmortem_name_simple`,' ',`postmortem_name_pinyin`,' ',`pseudonim_name`,' ',`pseudonim_name_zh`,' ',`pseudonim_name_simple`,' ',`pseudonim_name_pinyin`,' ',`nickname`,' ',`nickname_zh`,' ',`nickname_simple`,' ',`nickname_pinyin`);
+select forsearch from authors_atrib;
+alter table authors_atrib add index authors_ind(author_id);
+CREATE FULLTEXT INDEX authors_atrib_ind ON authors_atrib (forsearch);
+
+UPDATE a_description SET doc_text = REPLACE(doc_text, '\n', '')
+where doc_text LIKE '\n%';
+UPDATE a_description SET doc_text = REGEXP_REPLACE(doc_text, 'src="images/', 'src="/images/')  
+where doc_text RLIKE 'src="images/'; #216
+
+UPDATE originals SET poem_text = REGEXP_REPLACE(poem_text, '<p class="a39">', '<p>')  
+where poem_text RLIKE '<p class="a39">'; #
+UPDATE originals SET poem_text = REGEXP_REPLACE(poem_text, '<p class="NormalWeb">', '<p>')  
+where poem_text RLIKE '<p class="NormalWeb">'; #
+
+CREATE TABLE IF NOT EXISTS translators_desc (
+    translator_id  INT NOT NULL,
+    full_name VARCHAR(100) NOT NULL,
+    dates VARCHAR(50) DEFAULT NULL,
+    summary VARCHAR(250) DEFAULT NULL,
+    img VARCHAR(150) DEFAULT NULL,
+    doc_text MEDIUMTEXT DEFAULT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+
+LOAD DATA  INFILE '/Users/alex/site/sql/translators.sql' 
+INTO TABLE translators_desc CHARACTER SET utf8mb4 
+FIELDS TERMINATED BY '#!#'     
+LINES TERMINATED BY '##!!##';
+
+ALTER TABLE translators_desc 
+ADD column record_id INT AUTO_INCREMENT PRIMARY KEY FIRST;
+
+update  translators_desc set full_name = 'Неизвестен', translator_id=128 where record_id=128;
+select * from translators_desc where dates='NULL';
+update  translators_desc set dates = null where   dates='NULL';
+update  translators_desc set summary = null where   summary='NULL';
+update  translators_desc set img = null where   img='NULL';
+update  translators_desc set doc_text = null where   doc_text='NULL';
+UPDATE translators_desc SET doc_text = REPLACE(doc_text, '\n', '')
+where doc_text LIKE '\n%';
+UPDATE translators_desc SET doc_text = REPLACE(doc_text, '\n', '')
+where doc_text LIKE '%\n';
+UPDATE `translators_desc` 
+   SET `doc_text` = TRIM(BOTH FROM `doc_text`);
+update  translators_desc set doc_text = null where   doc_text='<p></p>';
+UPDATE translators_desc SET doc_text = REPLACE(doc_text, '<p>&nbsp;</p>', '')
+where doc_text LIKE '<p>&nbsp;</p>%';
+select * from translators_desc where doc_text not like '<p class="t22">%';
+UPDATE translators_desc SET doc_text = null
+where doc_text = '';
+
+CREATE FULLTEXT INDEX desc_text_ind ON translators_desc (full_name,dates,summary,doc_text);
+
+CREATE TABLE IF NOT EXISTS mistakes (
+	id INT AUTO_INCREMENT PRIMARY KEY,
+    url VARCHAR(200) NOT NULL,
+    mistake VARCHAR(2500) NOT NULL,
+    comments VARCHAR(2500) DEFAULT NULL,
+    ip VARCHAR(15) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;
+
+INSERT INTO mistakes (mistake, ip, url)
+VALUES ('example', '90.125.218.173', 'http://chinese-poetry.ru/poems.php?action=show&record_id=337&poem_id=37');
+
+alter table mistakes add index mistake_ind(mistake(200));
+alter table mistakes add index url_ind(url);
+alter table mistakes add index ip_ind(ip);

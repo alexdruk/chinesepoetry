@@ -1,0 +1,86 @@
+{% extends 'page.html.twig' %} {% block content %} {% if success %}
+<div class="alert alert-success" role="alert">
+    {{ success }}
+</div>
+{% endif %} {% if error %}
+<div class="alert alert-danger" role="alert">
+    {{ error }}
+</div>
+{% endif %} {% if header %}
+<h2>{{ header }}</h2> {% endif %}
+<script src="/js/tinymce/js/tinymce/tinymce.min.js"></script>
+{% if insertfile %}
+<form action="./admin_translators.php?action=insertfile" method="POST">
+    <div class="form-group" width="20">
+        <label for="inputtranslator_id">Введите id переводчика из таблицы "Все переводчики"</label>
+        <input type="text" class="form-control" name="translator_id" id="translator_id" placeholder="47" required>
+    </div>
+    <div class="form-group" width="20">
+        <label for="inputfull_name">Полное имя переводчика</label>
+        <input type="text" class="form-control" name="full_name" id="full_name" placeholder="Итс Рудольф Фердинандович" required>
+    </div>
+    <div class="form-group" width="20">
+        <label for="inputdates">Годы жизни</label>
+        <input type="text" class="form-control" name="dates" id="dates" placeholder="1928-1990">
+    </div>
+    <div class="form-group" width="00%">
+        <label for="inputsummary">Summary</label>
+        <input type="text" class="form-control" name="Summary" id="Summary" placeholder="Советский этнограф, специалист по этнической истории Восточной Азии, Сибири, Дальнего Востока.">
+    </div>
+    <div class="form-group" width="100%">
+        <label for="inputimg">Ссылка на основное фото</label>
+        <input type="text" class="form-control" name="img" id="img" placeholder='<img src="/images/translators.073.jpg" width="79" height="116" alt="Итс Р" class="centralimage">'>
+    </div>
+    <div class="form-group">
+        <label for="description">Введите и отредактируйте HTML биографии</label>
+        <textarea class="form-control" name="description" id="translator_description" rows="30"></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% else %}
+<form action="./admin_translators.php?action=modifyfile&record_id={{ record_id }}" method="POST">
+    <div class="form-group" width="20">
+        <label for="inputtranslator_id">id переводчика</label>
+        <input type="text" class="form-control" name="translator_id" id="translator_id"  value="{{ translator_id }}">
+    </div>
+    <div class="form-group" width="20">
+        <label for="inputfull_name">Полное имя переводчика</label>
+        <input type="text" class="form-control" name="full_name" id="full_name" value="{{ full_name }}">
+    </div>
+    <div class="form-group" width="20">
+        <label for="inputdates">Годы жизни</label>
+        <input type="text" class="form-control" name="dates" id="dates" value="{{ dates }}">
+    </div>
+    <div class="form-group" width="00%">
+        <label for="inputsummary">Summary</label>
+        <input type="text" class="form-control" name="Summary" id="Summary"  value="{{ summary }}">
+    </div>
+     <div class="form-group" width="100%">
+        <label for="inputimg">Ссылка на основное фото</label>
+        <input type="text" class="form-control" name="img" id="img"  value="{{ img }}">
+    </div>
+    <div class="form-group">
+        <label for="description">Oтредактируйте HTML биографии</label>
+        <textarea class="form-control" name="description" id="translator_description" rows="30">{{ doc_text }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endif %}
+
+<script>
+    tinymce.init({
+    content_css : "/css/bootstrap.css,/css/chinesepoetry2.css,/css/chinesepoetry.css",
+    selector: 'textarea#translator_description',
+    height: 500,
+
+    plugins: [
+      'advlist autolink lists link image charmap print preview anchor',
+      'searchreplace visualblocks code fullscreen',
+      'insertdatetime media table code help template'
+    ],
+    toolbar: 'undo redo | formatselect | ' +
+    'bold italic backcolor | alignleft aligncenter ' +
+    'alignright alignjustify | bullist numlist outdent indent | ' +
+    'removeformat | template | help'});
+</script> 
+{% endblock %}

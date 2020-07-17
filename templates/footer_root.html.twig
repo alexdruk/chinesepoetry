@@ -1,0 +1,54 @@
+<footer class="footer">
+    <div class="container text-center">
+        <span class="text-muted tip" id="footer" data-tip="tip-footer">&copy; Copyright</span>
+        <div id="tip-footer" class="tip-content">
+            <p>Все права принадлежат соответсвующим авторам, переводчикам, составителям и издателям.</p>
+        </div>
+        <span class="text-muted contactForm" id="contactForm" name="contactForm">
+<!-- www.123formbuilder.com script begins here --><script type="text/javascript" defer src="//www.123formbuilder.com/embed/5342096.js?type=lightbox" data-role="form" data-default-width="650px" data-embed-type="lightbox-text-link" data-embed-text-link="Пишите нам"></script><!-- www.123formbuilder.com script ends here -->
+      </span>
+      <div style="color:brown" id="typo">
+        На сайте работает система проверки ошибок. Обнаружив неточность в тексте, выделите ее и нажмите Ctrl + Enter.
+      </div>
+    </div>
+</footer>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="./js/jquery-3.2.1.slim.min.js"></script>
+<script src="./js/popper.min.js"></script>
+<script src="./js/bootstrap.min.js"></script>
+<script>
+    $('.tip').each(function () {
+        $(this).tooltip(
+        {
+            html: true,
+            title: $('#' + $(this).data('tip')).html()
+        });
+    });
+</script>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-171572599-1"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-171572599-1');
+</script>
+<!-- Yandex.Metrika counter -->
+<script type="text/javascript" >
+    (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+    m[i].l=1*new Date();k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+    (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+ 
+    ym(65355709, "init", {
+         clickmap:true,
+         trackLinks:true,
+         accurateTrackBounce:true
+    });
+ </script>
+ <noscript><div><img src="https://mc.yandex.ru/watch/65355709" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+ <!-- /Yandex.Metrika counter -->
+ <script type="text/javascript" charset="utf-8" src="/mistakes/mistakes.js"></script>
+</body>
+</html>

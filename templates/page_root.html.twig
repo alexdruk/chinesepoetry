@@ -1,0 +1,12 @@
+{% include('head_root.html.twig') %}
+{% include('nav_root.html.twig') %}
+    <main role="main">
+    <div class="container">
+        {% block content %}
+        <div class="jumbotron">
+                <h1>{{ content }}</h1>
+        </div><!-- jumbotron -->        
+        {% endblock %}
+    </div>
+    </main>
+{% include('footer_root.html.twig') %}

@@ -1,0 +1,18 @@
+{% if ERROR %}
+<div class="alert alert-danger" role="alert">
+  {{ ERROR }}
+</div>
+{% endif %}
+{% include('head.html.twig') %}
+{% include('admin_nav.html.twig') %}
+  <main role="main">
+    <div class="container">
+{% block content %}
+      <div class="jumbotron">
+          	<h1>{{ content }}</h1>
+      </div><!-- jumbotron -->
+{% endblock %}
+    </div>
+  </main>
+{% include('footer.html.twig') %}
+

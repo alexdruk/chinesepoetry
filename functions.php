@@ -1,0 +1,1848 @@
+<?php
+/**
+ * get a list of all records from table topics
+ *
+ * @return array arrayfo records
+ * @throws DBException
+ */
+function getAllFromTopics() {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT t.topics_id,t.topic_name,t.topic_synonym,t.present FROM  topics t ORDER BY t.topic_name ASC;')) {
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($topics_id,$topic_name,$synonym,$present)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($topics_id,$topic_name,$synonym,$present);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * get record by biblio_id from table biblio
+ *
+ * @return array array of values
+ * @throws DBException
+ */
+function getByIDFromSources($biblioID) {
+	$db = UserConfig::getDB();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT b.biblio_id,b.author,b.book_name,b.translator,b.ref_name,b.seria,b.publisher,b.year,b.code,b.biblio_name,b.ISBN,b.present FROM  biblio b  WHERE biblio_id=? ORDER BY b.biblio_id ASC;')) {
+		if (!$stmt->bind_param('i', $biblioID)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($biblio_id,$author,$book_name,$translator,$ref_name,$seria,$publisher,$year,$code,$biblio_name,$ISBN,$present)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($biblio_id,$author,$book_name,$translator,$ref_name,$seria,$publisher,$year,$code,$biblio_name,$ISBN,$present);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $record;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * get a list of all records from table biblio
+ *
+ * @return array array of records
+ * @throws DBException
+ */
+function getAllFromSources() {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT b.biblio_id,b.author,b.book_name,b.translator,b.ref_name,b.seria,b.publisher,b.year,b.code,b.biblio_name,b.ISBN,b.present FROM  biblio b ORDER BY b.biblio_id ASC;')) {
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($biblio_id,$author,$book_name,$translator,$ref_name,$seria,$publisher,$year,$code,$biblio_name,$ISBN,$present)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($biblio_id,$author,$book_name,$translator,$ref_name,$seria,$publisher,$year,$code,$biblio_name,$ISBN,$present);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * insert a new records into table biblio
+ *
+ * @param string  author Автор
+ * @param string  book_name Название книги required
+ * @param string  translator Составитель / переводчик  can be empty
+ * @param string  ref_name Название ссылки в антологии required
+ * @param string  seria Серия  can be empty
+ * @param string  publisher Издательство can be empty
+ * @param string  code Код книги can be empty
+ * @param int year required
+ * @param string  ISBN  can be empty
+ * @param int in_antology if book is present in antology, can be 0, 1, 2, -1 required
+ * @param string  biblio_name Полные выходные данные required
+ * @return inserted record id
+ * @throws DBException
+ */
+function sources_insert_record($author, $book_name, $translator, $ref_name, $seria, $publisher, $code, $year, $ISBN, $in_antology, $biblio_name) {
+	$db = UserConfig::getDB();
+	$author = (!empty($author)) ? $author : NULL;
+	$translator = (!empty($translator)) ? $translator : NULL;
+	$ref_name = (!empty($ref_name)) ? $ref_name : NULL;
+	$seria = (!empty($seria)) ? $seria : NULL;
+	$publisher = (!empty($publisher)) ? $publisher : NULL;
+	$code = (!empty($code)) ? $code : NULL;
+	$ISBN = (!empty($ISBN)) ? $ISBN : NULL;
+	$r_id = NULL;
+	if ($stmt = $db->prepare('INSERT INTO `biblio` (`author`, `book_name`, `translator`, `ref_name`, `seria`, `publisher`, `code`, `year`, `ISBN`, `present`, `biblio_name`) 
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')) {
+		if (!$stmt->bind_param('sssssssisis', $author, $book_name, $translator, $ref_name, $seria, $publisher, $code, $year, $ISBN, $in_antology, $biblio_name)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->insert_id;
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
+/**
+ * update a record into table biblio identifyed by record ID
+ *
+* @param biblio_id  record id
+* @param string  author Автор
+ * @param string  book_name Название книги required
+ * @param string  translator Составитель / переводчик  can be empty
+ * @param string  ref_name Название ссылки в антологии required
+ * @param string  seria Серия  can be empty
+ * @param string  publisher Издательство can be empty
+ * @param string  code Код книги can be empty
+ * @param int year required
+ * @param string  ISBN  can be empty
+ * @param int in_antology if book is present in antology, can be 0, 1, 2, -1 required
+ * @param string  biblio_name Полные выходные данные required
+ * @return inserted record id
+ * @throws DBException
+ */
+function updateSourcesByID($biblio_id,$author,$book_name,$translator,$ref_name,$seria,$publisher,$year,$code,$biblio_name,$ISBN,$present) {
+	$db = UserConfig::getDB();
+	$author = (!empty($author)) ? $author : NULL;
+	$translator = (!empty($translator)) ? $translator : NULL;
+	$ref_name = (!empty($ref_name)) ? $ref_name : NULL;
+	$seria = (!empty($seria)) ? $seria : NULL;
+	$publisher = (!empty($publisher)) ? $publisher : NULL;
+	$code = (!empty($code)) ? $code : NULL;
+	$ISBN = (!empty($ISBN)) ? $ISBN : NULL;
+	$r_id = NULL;
+/*	$sql = <<< SQL
+	'UPDATE `biblio` SET `author`=$author, `book_name`=$book_name, `translator`=$translator,
+	 `ref_name`=$ref_name, `seria`=$seria, `publisher`=$publisher, `code`=$code, `year`=$year, `ISBN`=$ISBN, 
+	 `present`=$present, `biblio_name`=$biblio_name WHERE `biblio_id`= $biblio_id'
+	SQL;
+	echo $sql; 
+*/	if ($stmt = $db->prepare('UPDATE `biblio` SET `author`=?, `book_name`=?, `translator`=?, `ref_name`=?, `seria`=?, `publisher`=?, `code`=?, `year`=?, `ISBN`=?, `present`=?, `biblio_name`=? WHERE `biblio_id`=?')) {
+		if (!$stmt->bind_param('sssssssisisi', $author, $book_name, $translator, $ref_name, $seria, $publisher, $code, $year, $ISBN, $present, $biblio_name, $biblio_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->affected_rows; // this works only if actual changes were made, if nothing changed return 0
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
+/**
+ * insert a new records into table topics
+ *
+ * @param string  topic_name Название темы required
+ * @param string  synonym Синоним названия can be empty
+ * @param int 	  presentAntology 0 or 1 required
+ * @return inserted record id
+ * @throws DBException
+ */
+function topics_insert_record($topic_name, $synonym, $presentAntology) {
+	$db = UserConfig::getDB();
+	$synonym = (!empty($synonym)) ? $synonym : NULL;
+	$r_id = NULL;
+	if ($stmt = $db->prepare('INSERT INTO topics (topic_name, topic_synonym, presentAntology) 
+		VALUES (?, ?, ?)')) {
+		if (!$stmt->bind_param('ssi', $topic_name, $synonym, $presentAntology)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->insert_id;
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
+
+/**
+ * get a list of all full biblio names from table biblio
+ *
+ * @param int  present 0 - нет, 1 - есть, 2 - будет,-1 - нет книги
+ * @return array array of records
+ * @throws DBException
+ */
+function getFullBiblio($present) {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($present == 4) {
+		$sql ='SELECT `biblio_name` FROM biblio ORDER BY `biblio_name` ASC';
+	}
+	elseif ($present == 1) {
+		$sql ='SELECT `biblio_name` FROM biblio WHERE `present`=1  ORDER BY `biblio_name` ASC';
+	}
+	elseif ($present == -1) {
+		$sql ='SELECT `biblio_name` FROM biblio WHERE `present`=-1  ORDER BY `biblio_name` ASC';
+	}
+	if ($stmt = $db->prepare($sql)) {
+/*		if (!$stmt->bind_param('i', $present)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+*/		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($biblio_name)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = $biblio_name;
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * search table biblio for a pattern
+ *
+ * @param string pattern
+ * @return array array of records
+ * @throws DBException
+ */
+function searchBiblio($pattern) {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	$pattern = mysqli_real_escape_string($db,$pattern);
+	$val = str_replace("%", "", $pattern);
+	$val = str_replace("_", "", $val);
+	$like = '%'.$val.'%';
+	$sql = "SELECT biblio_name FROM biblio WHERE MATCH (author,book_name,translator,ref_name,seria,publisher,code,biblio_name) against ('$pattern' IN NATURAL LANGUAGE MODE)
+	UNION DISTINCT 
+	SELECT biblio_name FROM biblio WHERE biblio_name LIKE '$like'";
+	if ($stmt = $db->prepare($sql)) {
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($biblio_name)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = $biblio_name;
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $records;
+}
+/**
+ * get record by biblio_id from table biblio
+ *
+ * @return array array of values
+ * @throws DBException
+ */
+function getBiblioByID($biblioID) {
+	$db = UserConfig::getDB();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT b.ref_name FROM  biblio b  WHERE biblio_id=?')) {
+		if (!$stmt->bind_param('i', $biblioID)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($biblio_name)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($biblio_name);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $record;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * get record by biblio_id from table biblio
+ *
+ * @return array array of values
+ * @throws DBException
+ */
+function getFullBiblioByID($biblioID) {
+	$db = UserConfig::getDB();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT b.biblio_name FROM  biblio b  WHERE biblio_id=?')) {
+		if (!$stmt->bind_param('i', $biblioID)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($biblio_name)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($biblio_name);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $record;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+
+/**
+ * get a list of all records from table authors
+ *
+ * @return array array of records
+ * @throws DBException
+ */
+function getAllfromAuthors() {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT a.author_id, a.full_name, a.proper_name, a.dates,  a.epoch, a.present FROM  authors a ORDER BY a.full_name ASC;')) {
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($author_id, $full_name, $proper_name, $dates,  $epoch, $present)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($author_id, $full_name, $proper_name,  $dates, $epoch, $present);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * insert a new records into table authors
+ *
+ * @param string  full_name Полное имя с датами required
+ * @param string  proper_name Правильное имя required
+ * @param string  dates Годы жизни required
+ * @param string  epoch Эпоха required
+* @param int 	  Наличие в антологии 0 or 1 required
+ * @return inserted record id
+ * @throws DBException
+ */
+function authors_insert_record($full_name, $proper_name, $dates, $epoch, $present) {
+	$db = UserConfig::getDB();
+	$r_id = NULL;
+	if ($stmt = $db->prepare('INSERT INTO authors (full_name, proper_name,  dates,  epoch, present) 
+		VALUES (?, ?, ?, ?, ?, ?, ?)')) {
+		if (!$stmt->bind_param('ssssi', $full_name, $proper_name,  $dates,  $epoch, $present)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->insert_id;
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
+/**
+ * update a record into table biblio identifyed by record ID
+ *
+ * @param author_id  record id
+ * @param string  full_name Полное имя с датами
+ * @param string  proper_name Правильное имя
+ * @param string  dates Годы жизни
+ * @param string  epoch Эпоха
+ * @param int present Наличие в антологии if author is present in antology, can be 0, 1
+ * @return inserted record id
+ * @throws DBException
+ */
+function updateAuthorsByID($author_id, $full_name, $proper_name,  $dates,  $epoch, $present) {
+	$db = UserConfig::getDB();
+	$r_id = NULL;
+	if ($stmt = $db->prepare('UPDATE `authors` SET `full_name`=?, `proper_name`=?, `dates`=?,  `epoch`=?, `present`=?  WHERE `author_id`=?')) {
+		if (!$stmt->bind_param('ssssii', $full_name, $proper_name,  $dates,  $epoch, $present, $author_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->affected_rows; // this works only if actual changes were made, if nothing changed return 0
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
+/**
+ * get record by author_id from table authors
+ *
+ * @return array array of values
+ * @throws DBException
+ */
+function getByIDFromAuthors($author_id) {
+	$db = UserConfig::getDB();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT a.author_id, a.full_name, a.proper_name,  a.dates,  a.epoch, a.present FROM  authors a  WHERE author_id=?;')) {
+		if (!$stmt->bind_param('i', $author_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($author_id, $full_name, $proper_name,  $dates,  $epoch, $present)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($author_id, $full_name, $proper_name, $dates, $epoch, $present);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $record;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * get a list of all records from table authors by epoch name
+ *
+ * @return array array of records
+ * @throws DBException
+ */
+function getAllfromAuthorsByEpoch($epoch) {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT a.author_id, a.full_name, a.proper_name,  a.dates,  a.epoch, a.present FROM  authors a WHERE a.epoch=? ORDER BY a.full_name ASC;')) {
+		if (!$stmt->bind_param('s', $epoch)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($author_id, $full_name, $proper_name,  $dates,  $epoch, $present)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($author_id, $full_name, $proper_name, $dates,  $epoch, $present);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * search table authors for a pattern
+ *
+ * @param string pattern
+ * @return array array of records
+ * @throws DBException
+ */
+function searchAuthors($pattern) {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	$pattern = mysqli_real_escape_string($db,$pattern);
+	$val = str_replace("%", "", $pattern);
+	$val = str_replace("_", "", $val);
+	$like = '%'.$val.'%';
+	$sql = "SELECT a.author_id, a.full_name, a.proper_name, a.dates, a.epoch FROM authors a WHERE MATCH (a.full_name, a.proper_name, a.dates, a.epoch) against ('$pattern' IN NATURAL LANGUAGE MODE)
+	UNION DISTINCT 
+	SELECT a.author_id, a.full_name, a.proper_name, a.dates, a.epoch  FROM authors a WHERE a.full_name LIKE '$like'
+	UNION DISTINCT 
+	SELECT a.author_id, a.full_name, a.proper_name, a.dates, a.epoch  FROM authors a WHERE a.proper_name LIKE '$like'
+	UNION DISTINCT 
+	SELECT a.author_id, a.full_name, a.proper_name, a.dates, a.epoch  FROM authors a WHERE a.dates LIKE '$like'
+	UNION DISTINCT 
+	SELECT a.author_id, a.full_name, a.proper_name, a.dates, a.epoch  FROM authors a WHERE author_id IN
+	(SELECT author_id FROM authors_atrib  WHERE MATCH (forsearch) against ('$pattern'IN NATURAL LANGUAGE MODE));";
+
+//print_r ($sql);
+	if ($stmt = $db->prepare($sql)) {
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($author_id, $full_name, $proper_name, $dates, $epoch)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($author_id, $full_name, $proper_name, $dates, $epoch);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $records;
+}
+/**
+ * get record by author_id from table authors 
+ *
+ * @return array array of values
+ * @throws DBException
+ */
+function getDocByIDFromAuthors($record_id) {
+	$db = UserConfig::getDB();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT a.proper_name, a.dates, a.epoch, d.doc_text FROM authors a 
+	INNER JOIN a_description d ON  d.author_id = a.author_id
+	WHERE a.author_id = ?;')) {
+		if (!$stmt->bind_param('i', $record_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($proper_name, $dates, $epoch, $doc_text)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($proper_name, $dates, $epoch, $doc_text);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $record;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * modify a record in table a_description
+ *
+ * @param string  desc long html code
+ * @param int 	  author id
+ * @return inserted record id
+ * @throws DBException
+ */
+function authors_modify_description($author_id, $desc) {
+	$db = UserConfig::getDB();
+#	$desc = mysqli_real_escape_string($db, $desc);
+	$r_id = NULL;
+	if ($stmt = $db->prepare('UPDATE a_description  SET doc_text=? WHERE author_id=?')) {
+		if (!$stmt->bind_param('si', $desc, $author_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->affected_rows;
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
+
+/**
+ * insert  a new record into table a_description
+ *
+ * @param string  desc long html code
+ * @param int 	  author id
+ * @return inserted record id
+ * @throws DBException
+ */
+function authors_insert_description($author_id, $desc) {
+	$db = UserConfig::getDB();
+#	$desc = mysqli_real_escape_string($db, $desc);
+	$r_id = NULL;
+	if ($stmt = $db->prepare('INSERT INTO a_description (`doc_text`,`author_id`) VALUES (?, ?)')) {
+		if (!$stmt->bind_param('si', $desc, $author_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->affected_rows;
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
+/**
+ * insert  a new record into table a_description
+ *
+ * @param string  desc long html code
+ * @param int 	  translator_id id
+ * @return inserted record id
+ * @throws DBException
+ */
+function translators_insert_description($translator_id, $full_name, $dates, $img, $summary, $doc_text) {
+	$db = UserConfig::getDB();
+#	$desc = mysqli_real_escape_string($db, $desc);
+	$r_id = NULL;
+	if ($stmt = $db->prepare('INSERT INTO translators_desc (`translator_id`, `full_name`, `dates`, `summary`, `img`, `doc_text`)
+	 VALUES (?, ?, ?, ?, ?)')) {
+		if (!$stmt->bind_param('isssss', $translator_id, $full_name, $dates, $summary, $img, $doc_text)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->affected_rows;
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
+/**
+ * modify a record in table translators_desc
+ *
+ * @param string  desc long html code
+ * @param int 	  author id
+ * @return inserted record id
+ * @throws DBException
+ */
+function translators_modify_description($translator_id, $full_name, $dates, $summary, $img, $doc_text) {
+	$db = UserConfig::getDB();
+#	$desc = mysqli_real_escape_string($db, $desc);
+	$r_id = NULL;
+	if ($stmt = $db->prepare('UPDATE translators_desc  SET `full_name`=?,
+	 `dates`=?, `summary`=?, `img`=?, `doc_text`=? WHERE `translator_id`=?')) {
+		if (!$stmt->bind_param('sssssi',$full_name, $dates, $summary, $img, $doc_text,  $translator_id )) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->affected_rows;
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
+
+
+/**
+ * get a list of all records from table translators
+ *
+ * @return array array of records
+ * @throws DBException
+ */
+function getAllfromTranslators() {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT `translator_id`, `full_name`, `lit_name`, `real_name`, `first_name`, `father_name`, `pseudonyms`, `born`, `born_place`, `died`, `died_place`, `present` FROM  translators ORDER BY full_name ASC;')) {
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($translator_id, $full_name, $lit_name, $real_name, $first_name, $father_name, $pseudonyms, $born, $born_place, $died, $died_place, $present)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($translator_id, $full_name, $lit_name, $real_name, $first_name, $father_name, $pseudonyms, $born, $born_place, $died, $died_place, $present);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * insert a new records into table translators
+ *
+ * @param string  full_name Полное имя с датами required
+ * @param string  lit_name Литературная фамилия
+ * @param string  real_name Настоящая (или девичья) фамилия
+ * @param string  first_name Имя
+ * @param string  father_name Отчество
+ * @param string  pseudonyms Псевдонимы
+ * @param string  born Дата рождения
+ * @param string  born_place Место рождения
+ * @param string  died Дата смерти
+ * @param string  died_place Место смерти
+* @param int 	  Наличие в антологии 0 or 1, 2 required
+ * @return inserted record id
+ * @throws DBException
+ */
+function translators_insert_record($full_name, $lit_name, $real_name, $first_name, $father_name, $pseudonyms, $born, $born_place, $died, $died_place, $present) {
+	$db = UserConfig::getDB();
+	$r_id = NULL;
+	if ($stmt = $db->prepare('INSERT INTO translators (`full_name`, `lit_name`, `real_name`, `first_name`, `father_name`, `pseudonyms`, `born`, `born_place`, `died`, `died_place`, `present`) 
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')) {
+		if (!$stmt->bind_param('ssssssssssi', $full_name, $lit_name, $real_name, $first_name, $father_name, $pseudonyms, $born, $born_place, $died, $died_place, $present)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->insert_id;
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
+/**
+ * update a record into table biblio identifyed by record ID
+ *
+ * @param author_id  record id
+ * @param string  full_name Полное имя с датами
+ * @param string  lit_name Литературная фамилия
+ * @param string  real_name Настоящая (или девичья) фамилия
+ * @param string  first_name Имя
+ * @param string  father_name Отчество
+ * @param string  pseudonyms Псевдонимы
+ * @param string  born Дата рождения
+ * @param string  born_place Место рождения
+ * @param string  died Дата смерти
+ * @param string  died_place Место смерти
+ * @param int present Наличие в антологии if author is present in antology, can be 0, 1
+ * @return inserted record id
+ * @throws DBException
+ */
+function updateTranslatorsByID($translator_id, $full_name, $lit_name, $real_name, $first_name, $father_name, $pseudonyms, $born, $born_place, $died, $died_place, $present) {
+	$db = UserConfig::getDB();
+	$lit_name = (!empty($lit_name)) ? $lit_name : NULL;
+	$real_name = (!empty($real_name)) ? $real_name : NULL;
+	$first_name = (!empty($first_name)) ? $first_name : NULL;
+	$father_name = (!empty($father_name)) ? $father_name : NULL;
+	$pseudonyms = (!empty($pseudonyms)) ? $pseudonyms : NULL;
+	$born = (!empty($born)) ? $born : NULL;
+	$born_place = (!empty($born_place)) ? $born_place : NULL;
+	$died = (!empty($died)) ? $died : NULL;
+	$died_place = (!empty($died_place)) ? $died_place : NULL;
+	$r_id = NULL;
+	if ($stmt = $db->prepare('UPDATE `translators` SET `full_name`=?, `lit_name`=?, `real_name`=?, `first_name`=?, `father_name`=?, `pseudonyms`=?, `born`=?, `born_place`=?, `died`=?, `died_place`=?, `present`=?  WHERE `translator_id`=?')) {
+		if (!$stmt->bind_param('ssssssssssii', $full_name, $lit_name, $real_name, $first_name, $father_name, $pseudonyms, $born, $born_place, $died, $died_place, $present, $translator_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->affected_rows; // this works only if actual changes were made, if nothing changed return 0
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
+/**
+ * get record by translator_id from table translators
+ *
+ * @return array array of values
+ * @throws DBException
+ */
+function getByIDFromTranslators($translator_id) {
+	$db = UserConfig::getDB();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT `translator_id`,`full_name`, `lit_name`, `real_name`, `first_name`, `father_name`, `pseudonyms`, `born`, `born_place`, `died`, `died_place`, `present` FROM  translators  WHERE translator_id=?;')) {
+		if (!$stmt->bind_param('i', $translator_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($translator_id, $full_name, $lit_name, $real_name, $first_name, $father_name, $pseudonyms, $born, $born_place, $died, $died_place, $present)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($translator_id, $full_name, $lit_name, $real_name, $first_name, $father_name, $pseudonyms, $born, $born_place, $died, $died_place, $present);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $record;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * search table translators for a pattern
+ *
+ * @param string pattern
+ * @return array array of records
+ * @throws DBException
+ */
+function searchTranslators($pattern) {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	$pattern = mysqli_real_escape_string($db,$pattern);
+	$val = str_replace("%", "", $pattern);
+	$val = str_replace("_", "", $val);
+	$like = '%'.$val.'%';
+	$sql = "SELECT translator_id, full_name FROM translators a WHERE MATCH (`full_name`, `lit_name`, `real_name`, `first_name`, `father_name`, `pseudonyms`, `born`, `born_place`, `died`, `died_place`) against ('$pattern' IN NATURAL LANGUAGE MODE)
+	UNION DISTINCT 
+	SELECT translator_id, full_name FROM translators  WHERE full_name LIKE '$like'
+	UNION DISTINCT 
+	SELECT translator_id, full_name FROM translators  WHERE lit_name LIKE '$like'
+	UNION DISTINCT 
+	SELECT translator_id, full_name FROM translators  WHERE real_name LIKE '$like'
+	UNION DISTINCT 
+	SELECT translator_id, full_name FROM translators  WHERE first_name LIKE '$like'
+	UNION DISTINCT 
+	SELECT translator_id, full_name FROM translators  WHERE father_name LIKE '$like'
+	UNION DISTINCT 
+	SELECT translator_id, full_name FROM translators  WHERE pseudonyms LIKE '$like'
+	UNION DISTINCT 
+	SELECT translator_id, full_name FROM translators  WHERE born LIKE '$like'
+	UNION DISTINCT 
+	SELECT translator_id, full_name FROM translators  WHERE born_place LIKE '$like'
+	UNION DISTINCT 
+	SELECT translator_id, full_name FROM translators  WHERE died LIKE '$like'
+	UNION DISTINCT 
+	SELECT translator_id, full_name FROM translators  WHERE died_place LIKE '$like'
+	UNION DISTINCT 
+	SELECT translator_id, full_name FROM translators_desc a WHERE MATCH (`full_name`,`dates`,`summary`,`doc_text`) against ('$pattern' IN NATURAL LANGUAGE MODE)";
+	if ($stmt = $db->prepare($sql)) {
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($translator_id, $full_name)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($translator_id, $full_name);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $records;
+}
+/**
+ * get a list of all records from table originals
+ *
+ * @return array array of records
+ * @throws DBException
+ * originals_id INT  PRIMARY KEY,
+ */
+function getListfromOriginals() {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT o.originals_id, a.author_id, a.proper_name, a.dates, o.cycle_zh, o.cycle_ru, o.subcycle_zh, o.subcycle_ru, 
+	o.poem_code, o.biblio_id, o.poem_name_zh, o.poem_name_ru, a.epoch FROM originals o
+	INNER JOIN authors a ON a.author_id = o.author_id ORDER BY a.proper_name, o.originals_id ASC;')) {
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($originals_id, $author_id, $proper_name, $dates, $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $poem_code, $biblio_id, $poem_name_zh, $poem_name_ru, $epoch)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($originals_id, $author_id, $proper_name, $dates, $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $poem_code, $biblio_id, $poem_name_zh, $poem_name_ru, $epoch);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * get a list of all records from table originals
+ *
+ * @return array array of records
+ * @throws DBException
+ * originals_id INT  PRIMARY KEY,
+ */
+function getRecordfromOriginals($originals_id) {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT o.originals_id, a.author_id, a.proper_name, a.dates, o.cycle_zh, o.cycle_ru, o.subcycle_zh, o.subcycle_ru, 
+	o.poem_code, o.biblio_id, o.poem_name_zh, o.poem_name_ru, a.epoch FROM originals o
+	INNER JOIN authors a ON a.author_id = o.author_id
+	 WHERE o.originals_id =? 
+	 ORDER BY a.proper_name, o.originals_id ASC;')) {
+		if (!$stmt->bind_param('i', $originals_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($originals_id, $author_id, $proper_name, $dates, $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $poem_code, $biblio_id, $poem_name_zh, $poem_name_ru, $epoch)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($originals_id, $author_id, $proper_name, $dates, $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $poem_code, $biblio_id, $poem_name_zh, $poem_name_ru, $epoch);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * get record by author-id from table originals
+ *
+ * @param author_id  record id
+ * @return array array of values
+ * @throws DBException
+ */
+function getOriginalsByAuthorID($author_id) {
+	$db = UserConfig::getDB();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT o.originals_id, a.author_id, a.proper_name, a.dates, o.cycle_zh, o.cycle_ru, o.subcycle_zh, o.subcycle_ru,
+	o.poem_name_zh, o.poem_name_ru, o.poem_code,o.biblio_id,o.poem_text FROM originals o
+	INNER JOIN authors a ON a.author_id = o.author_id WHERE o.author_id=? ORDER BY o.originals_id ASC;')) {
+		if (!$stmt->bind_param('i', $author_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($originals_id,$author_id,$proper_name, $dates,$cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru,$poem_name_zh, $poem_name_ru,$poem_code,$biblio_id,$poem_text)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($originals_id,$author_id,$proper_name, $dates,$cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru,$poem_name_zh, $poem_name_ru,$poem_code,$biblio_id,$poem_text);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $record;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * get record by originals_id from table originals
+ *
+ * @param originals_id  record id
+ * @return array array of values
+ * @throws DBException
+ */
+function getOriginalsByPoemID($originals_id) {
+	$db = UserConfig::getDB();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT o.originals_id, a.author_id, a.proper_name, a.dates, a.epoch, o.cycle_zh, o.cycle_ru, o.subcycle_zh, o.subcycle_ru,
+	 o.poem_name_zh, o.poem_name_ru, o.poem_code,o.biblio_id,o.poem_text FROM originals o
+	INNER JOIN authors a ON a.author_id = o.author_id WHERE o.originals_id=?;')) {
+		if (!$stmt->bind_param('i', $originals_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($originals_id,$author_id,$proper_name, $dates,$epoch,$cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru,$poem_name_zh, $poem_name_ru,$poem_code,$biblio_id,$poem_text)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($originals_id,$author_id,$proper_name, $dates,$epoch,$cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru,$poem_name_zh, $poem_name_ru,$poem_code,$biblio_id,$poem_text);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $record;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+
+/**
+ * insert a new records into table originals
+ *
+ * @param int 	  author_id * @param string  cycle
+ * @param string  subcycle
+ * @param string  poem_name required
+ * @param string  epoem_text required
+ * @return inserted record id
+ * @throws DBException
+ */
+function originals_insert_record($author_id, $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $poem_name_zh, $poem_name_ru, $poem_code, $biblio_id, $poem_text) {
+	$db = UserConfig::getDB();
+	$r_id = NULL;
+	if ($stmt = $db->prepare('INSERT INTO originals (author_id, cycle_zh, cycle_ru, subcycle_zh, subcycle_ru, poem_name_zh, poem_name_ru, poem_code, biblio_id, poem_text) 
+		VALUES (?, ?, ?, ?, ?, ?, ?)')) {
+		if (!$stmt->bind_param('isssssssis', $author_id, $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $poem_name_zh, $poem_name_ru, $poem_code, $biblio_id, $poem_text)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->insert_id;
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
+
+/**
+ * update a record into table original identifyed by record ID
+ *
+ * @param originals_id  record id
+ * @param string  cycle
+ * @param string  subcycle
+ * @param string  biblio_id
+ * @param string  poem_code
+ * @param string  poem_name
+ * @param string  poem_text
+ * @return inserted record id
+ * @throws DBException
+ */
+function updateOriginalPoemByID($originals_id, $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $biblio_id, $poem_code, $poem_name_zh,  $poem_name_ru, $poem_text) {
+	$db = UserConfig::getDB();
+	$r_id = NULL;
+	if ($stmt = $db->prepare('UPDATE `originals` SET `cycle_zh`=?, `cycle_ru`=?, `subcycle_zh`=?,  `subcycle_ru`=?,
+	`biblio_id`=?, `poem_code`=?, `poem_name_zh`=?, `poem_name_ru`=?, `poem_text`=?  WHERE `originals_id`=?')) {
+		if (!$stmt->bind_param('ssssissssi', $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $biblio_id, $poem_code, $poem_name_zh,  $poem_name_ru, $poem_text, $originals_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->affected_rows; // this works only if actual changes were made, if nothing changed return 0
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
+/**
+ * get a list of all records from table poems without text
+ *
+ * @return array array of records
+ * @throws DBException
+ */
+function getWithoutPoem_textFromPoemsByAuthorID($author_id) {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT `poems_id`,`author_id`,`translator1_id`,`translator2_id`,
+	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,`subcycle_ru`,
+	`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id` FROM  poems WHERE author_id = ? 
+	ORDER BY `author_id`, translator1_id, cast(`poem_name_ru` as unsigned),`poem_name_ru`,`cycle_ru`, `subcycle_ru`, `poems_id` ASC;')) {
+		if (!$stmt->bind_param('i', $author_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($poems_id,$author_id,$translator1_id,$translator2_id,
+		$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+		$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($poems_id,$author_id,$translator1_id,$translator2_id,
+			$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+			$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * get a list of all records from table poems with text
+ *
+ * @return array array of records
+ * @throws DBException
+ */
+function getAllFromPoemsByAuthorID($author_id) {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT * FROM  poems WHERE author_id = ? ORDER BY poems_id ASC;')) {
+		if (!$stmt->bind_param('i', $author_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($poems_id,$author_id,$translator1_id,$translator2_id,
+		$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+		$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($poems_id,$author_id,$translator1_id,$translator2_id,
+			$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+			$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * get a list of all records from table poems without text
+ *
+ * @return array array of records
+ * @throws DBException
+ */
+function getWithoutPoem_textFromPoemsByTranslatorID($translator_id) {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT `poems_id`,`author_id`,`translator1_id`,`translator2_id`,
+	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,`subcycle_ru`,
+	`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id` FROM  poems WHERE 
+	translator1_id = ? OR translator2_id = ? 
+	ORDER BY `author_id`, cast(`poem_name_ru` as unsigned),`poem_name_ru`,`cycle_ru`, `subcycle_ru`, `poems_id` ASC;')) {
+		if (!$stmt->bind_param('ii', $translator_id,$translator_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($poems_id,$author_id,$translator1_id,$translator2_id,
+		$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+		$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+// 			$record = array('AUTHOR' => $author_id, 'POEM_ID' => $poems_id, 
+// 			'TRANSLATORS' => array($translator1_id,$translator2_id,$translator3_id),
+// //			'CYCLE' => array($cycle_zh,$cycle_ru),
+// //			'SUBCYCLE' => array($subcycle_zh,$subcycle_ru),
+// 			'POEMS' => array ($poems_id, $author_id,$translator1_id,$translator2_id,
+// 			$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+// 			$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id));
+			$record = array($poems_id,$author_id,$translator1_id,$translator2_id,
+			$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+			$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * get a record from table poems with poem_id
+ *
+ * @return array array of records
+ * @throws DBException
+ */
+function getPoemsByPoemID($poem_id) {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT * FROM  poems WHERE poems_id = ?;')) {
+		if (!$stmt->bind_param('i', $poem_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($poems_id,$author_id,$translator1_id,$translator2_id,
+		$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+		$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$poem_hash)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($poems_id,$author_id,$translator1_id,$translator2_id,
+			$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+			$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$poem_hash);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * get a list of all records from table authors by topic
+ *
+ * @return array array of records
+ * @throws DBException
+ */
+function getAllfromAuthorsByTopic($topic_id) {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT distinct a.author_id, a.full_name, a.proper_name, a.dates, a.epoch FROM  authors a 
+	INNER JOIN poems p ON  a.author_id = p.author_id
+	WHERE p.topic1_id =? OR p.topic2_id =? OR p.topic3_id =?  OR p.topic4_id =?  OR p.topic5_id =? 
+	ORDER BY a.full_name ASC;')) {
+		if (!$stmt->bind_param('iiiii', $topic_id,$topic_id,$topic_id,$topic_id,$topic_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($author_id, $full_name, $proper_name,  $dates,  $epoch)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($author_id, $full_name, $proper_name, $dates,  $epoch);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * get a list of all records from table poems without text
+ *
+ * @return array array of records
+ * @throws DBException
+ */
+function getWithoutPoem_textFromPoemsByTopicID($topic_id) {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT `poems_id`,`author_id`,`translator1_id`,`translator2_id`,
+	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,`subcycle_ru`,
+	`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id` FROM  poems 
+	 WHERE topic1_id =? OR topic2_id =? OR topic3_id =?  OR topic4_id =?  OR topic5_id =? 
+	 ORDER BY `author_id`, `translator1_id`, cast(`poem_name_ru` as unsigned),`poem_name_ru`,`cycle_ru`, `subcycle_ru`, `poems_id` ASC;')) {
+		if (!$stmt->bind_param('iiiii', $topic_id,$topic_id,$topic_id,$topic_id,$topic_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($poems_id,$author_id,$translator1_id,$translator2_id,
+		$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+		$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($poems_id,$author_id,$translator1_id,$translator2_id,
+			$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+			$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * get record by topic id from table topics
+ *
+ * @return array array of values
+ * @throws DBException
+ */
+function getTopicByID($topics_id) {
+	$db = UserConfig::getDB();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT topics_id,topic_name, topic_synonym, topic_text FROM topics WHERE topics_id =?;')) {
+		if (!$stmt->bind_param('i', $topics_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($topics_id,$topic_name,$topic_synonym, $topic_desc )) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($topics_id,$topic_name,$topic_synonym,$topic_desc);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $record;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * search table topics for a pattern
+ *
+ * @param string pattern
+ * @return array array of records
+ * @throws DBException
+ */
+function searchTopics($pattern) {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	$pattern = mysqli_real_escape_string($db,$pattern);
+	$val = str_replace("%", "", $pattern);
+	$val = str_replace("_", "", $val);
+	$like = '%'.$val.'%';
+	$sql = "SELECT topics_id,topic_name FROM topics WHERE MATCH (topic_name,topic_text) against ('$pattern' IN NATURAL LANGUAGE MODE)
+	UNION DISTINCT 
+	SELECT topics_id,topic_name FROM topics WHERE topic_name LIKE '$like'
+	UNION DISTINCT 
+	SELECT topics_id,topic_name FROM topics WHERE topic_text LIKE '$like'";
+	if ($stmt = $db->prepare($sql)) {
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($topics_id,$topic_name)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($topics_id,$topic_name);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $records;
+}
+/**
+ * update from table topics
+ *	topic_id - record id
+ *  topic_desc - topic text
+ * @return id of modifyed record
+ * @throws DBException
+ */
+function updateTopicDescByID($topic_id, $topic_desc) {
+	$db = UserConfig::getDB();
+	$record = null;
+	if ($stmt = $db->prepare('UPDATE topics SET topic_text=? WHERE topics_id =?;')) {
+		if (!$stmt->bind_param('si', $topic_desc,$topic_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->affected_rows; // this works only if actual changes were made, if nothing changed return 0
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
+
+/**
+ * insert a new records into table poems
+ * @return inserted record id
+ * @throws DBException
+ */
+function poems_insert_record($author_id,$translator1_id,$translator2_id,
+	$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+	$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$poem_hash) {
+	$db = UserConfig::getDB();
+	$r_id = NULL;
+	if ($stmt = $db->prepare('INSERT INTO poems (author_id,translator1_id,translator2_id,
+	topic1_id,topic2_id,topic3_id,topic4_id,topic5_id,cycle_zh,cycle_ru,subcycle_zh,subcycle_ru,
+	poem_name_zh,poem_name_ru,poem_code,biblio_id,poem_text,poem_hash) 
+		VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')) {
+		if (!$stmt->bind_param('iiiiiiiisssssssiss', $author_id,$translator1_id,$translator2_id,
+		$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+		$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$poem_hash)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->insert_id;
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
+/**
+ * get record by poems_id from table poems
+ *
+ * @return array array of values
+ * @throws DBException
+ */
+function getByIDFromPoems($poems_id) {
+	$db = UserConfig::getDB();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT author_id,translator1_id,translator2_id,
+	topic1_id,topic2_id,topic3_id,topic4_id,topic5_id,cycle_zh,cycle_ru,subcycle_zh,subcycle_ru,
+	poem_name_zh,poem_name_ru,poem_code,biblio_id,poem_text FROM  poems WHERE poems_id=?;')) {
+		if (!$stmt->bind_param('i', $poems_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($author_id,$translator1_id,$translator2_id,
+		$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+		$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($author_id,$translator1_id,$translator2_id,
+			$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+			$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $record;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * update a record into table poems identifyed by record ID
+ *
+ * @return inserted record id
+ * @throws DBException
+ */
+function updatePoemsByID($poems_id,$author_id,$translator1_id,$translator2_id,
+$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text) {
+	$db = UserConfig::getDB();
+	$r_id = NULL;
+	if ($stmt = $db->prepare('UPDATE `poems` SET 
+	author_id=?,translator1_id=?,translator2_id=?,
+	topic1_id=?,topic2_id=?,topic3_id=?,topic4_id=?,topic5_id=?,cycle_zh=?,cycle_ru=?,subcycle_zh=?,subcycle_ru=?,
+	poem_name_zh=?,poem_name_ru=?,poem_code=?,biblio_id=?,poem_text=?  WHERE `poems_id`=?')) {
+		if (!$stmt->bind_param('iiiiiiiisssssssisi', $author_id,$translator1_id,$translator2_id,
+		$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+		$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$poems_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->affected_rows; // this works only if actual changes were made, if nothing changed return 0
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
+/**
+ * search table poems for a pattern
+ *
+ * @param string pattern
+ * @return array array of records
+ * @throws DBException
+ */
+function searchPoems($pattern) {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	$pattern = mysqli_real_escape_string($db,$pattern);
+	$val = str_replace("%", "", $pattern);
+	$val = str_replace("_", "", $val);
+	$like = '%'.$val.'%';
+	$sql = "SELECT * FROM poems a WHERE MATCH (cycle_zh,cycle_ru,subcycle_zh,subcycle_ru,poem_name_zh, poem_name_ru,poem_text) against ('$pattern' IN NATURAL LANGUAGE MODE)
+	UNION DISTINCT 
+	SELECT * FROM poems  WHERE cycle_zh LIKE '$like'
+	UNION DISTINCT 
+	SELECT * FROM poems WHERE cycle_ru LIKE '$like'
+	UNION DISTINCT 
+	SELECT * FROM poems WHERE subcycle_zh LIKE '$like'
+	UNION DISTINCT 
+	SELECT * FROM poems WHERE subcycle_ru LIKE '$like'
+	UNION DISTINCT 
+	SELECT * FROM poems WHERE poem_name_zh LIKE '$like'
+	UNION DISTINCT 
+	SELECT * FROM poems WHERE poem_name_ru LIKE '$like'
+	UNION DISTINCT 
+	SELECT * FROM poems WHERE poem_text LIKE '$like'";
+//print_r ($sql);
+	if ($stmt = $db->prepare($sql)) {
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($poems_id,$author_id,$translator1_id,$translator2_id,
+		$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+		$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$poems_hash)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($poems_id,$author_id,$translator1_id,$translator2_id,
+			$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+			$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$poems_hash);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $records;
+}
+/**
+ * search table originals for a pattern
+ *
+ * @param string pattern
+ * @return array array of records
+ * @throws DBException
+ */
+function searchOriginals($pattern) {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	$pattern = mysqli_real_escape_string($db,$pattern);
+	$val = str_replace("%", "", $pattern);
+	$val = str_replace("_", "", $val);
+	$like = '%'.$val.'%';
+	$sql = "SELECT originals_id FROM originals WHERE MATCH (cycle_zh,cycle_ru,subcycle_zh,subcycle_ru,poem_name_zh, poem_name_ru,poem_text) against ('$pattern' IN NATURAL LANGUAGE MODE)
+	UNION DISTINCT 
+	SELECT originals_id FROM originals  WHERE cycle_zh LIKE '$like'
+	UNION DISTINCT 
+	SELECT originals_id FROM originals WHERE cycle_ru LIKE '$like'
+	UNION DISTINCT 
+	SELECT originals_id FROM originals WHERE subcycle_zh LIKE '$like'
+	UNION DISTINCT 
+	SELECT originals_id FROM originals WHERE subcycle_ru LIKE '$like'
+	UNION DISTINCT 
+	SELECT originals_id FROM originals WHERE poem_name_zh LIKE '$like'
+	UNION DISTINCT 
+	SELECT originals_id FROM originals WHERE poem_name_ru LIKE '$like'
+	UNION DISTINCT 
+	SELECT originals_id FROM originals WHERE poem_text LIKE '$like'";
+	if ($stmt = $db->prepare($sql)) {
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($originals_id)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+#			$record = $originals_id;
+			array_push($records, $originals_id);
+		}
+		$stmt->free_result();
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $records;
+}
+
+/**
+ * get $originals_id by poem_code from table originals 
+ *
+ * @return array $originals_id
+ * @throws DBException
+ */
+function getOriginalByPoemCode($poem_code) {
+	$db = UserConfig::getDB();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT originals_id, poem_name_zh, poem_name_ru FROM originals WHERE poem_code = ?;')) {
+		if (!$stmt->bind_param('s', $poem_code)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($originals_id, $poem_name_zh, $poem_name_ru)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($originals_id, $poem_name_zh, $poem_name_ru);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $record;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * get other translation by poem_code from table poems 
+ *
+ * @return array $originals_id
+ * @throws DBException
+ */
+function getOtherTranslationsByPoemCode($poem_code) {
+	$db = UserConfig::getDB();
+	$record = null;
+	$records = array();
+	if ($stmt = $db->prepare('SELECT poems_id, translator1_id, translator2_id, poem_name_zh, poem_name_ru FROM poems 
+	    WHERE poem_code = ? ORDER BY translator1_id;')) {
+		if (!$stmt->bind_param('s', $poem_code)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($poems_id, $translator1_id, $translator2_id, $poem_name_zh, $poem_name_ru)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($poems_id, $translator1_id, $translator2_id, $poem_name_zh, $poem_name_ru);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+function makePoemName ($poem_name_zh, $poem_name_ru) {
+    if ($poem_name_zh) {
+        $poem_name ='<span class="poem_name zh">'.$poem_name_zh.'</span> <span class="poem_name ru">'.$poem_name_ru.'</span>';
+    }
+    else {
+        $poem_name ='<span class="poem_name ru">'.$poem_name_ru.'</span>';
+    }
+    return $poem_name;
+}
+/**
+ * get record by author-id from table authors_atrib
+ *
+ * @param author_id  record id
+ * @return array array of values
+ * @throws DBException
+ */
+function getAtributesByAuthorID($author_id) {
+	$db = UserConfig::getDB();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT * FROM authors_atrib WHERE author_id=? ;')) {
+		if (!$stmt->bind_param('i', $author_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($id,$author_id,$palladian,$zh_trad,$zh_simple,$pinyin,$real_name,$real_name_zh,$real_name_simple,
+		$real_name_pinyin,$second_name,$second_name_zh,$second_name_simple,$second_name_pinyin,$postmortem_name,
+		$postmortem_name_zh,$postmortem_name_simple,$postmortem_name_pinyin,$pseudonim_name,$pseudonim_name_zh,
+		$pseudonim_name_simple,$pseudonim_name_pinyin,$nickname,$nickname_zh,$nickname_simple,$nickname_pinyin,
+		$forsearch)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($id,$author_id,$palladian,$zh_trad,$zh_simple,$pinyin,$real_name,$real_name_zh,$real_name_simple,
+			$real_name_pinyin,$second_name,$second_name_zh,$second_name_simple,$second_name_pinyin,$postmortem_name,
+			$postmortem_name_zh,$postmortem_name_simple,$postmortem_name_pinyin,$pseudonim_name,$pseudonim_name_zh,
+			$pseudonim_name_simple,$pseudonim_name_pinyin,$nickname,$nickname_zh,$nickname_simple,$nickname_pinyin,
+			$forsearch);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $record;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * insert  a new record into table authors_atrib
+ *
+ * @param int 	  author id
+ * @return inserted record id
+ * @throws DBException
+ */
+function authors_insert_atrib($author_id, $palladian,$zh_trad,$zh_simple,$pinyin,$real_name,$real_name_zh,
+$real_name_simple,$real_name_pinyin,$second_name,$second_name_zh,$second_name_simple,$second_name_pinyin,
+$postmortem_name,$postmortem_name_zh,$postmortem_name_simple,$postmortem_name_pinyin,
+$pseudonim_name,$pseudonim_name_zh,$pseudonim_name_simple,$pseudonim_name_pinyin,
+$nickname,$nickname_zh,$nickname_simple,$nickname_pinyin,$forsearch) {
+	$db = UserConfig::getDB();
+#	$desc = mysqli_real_escape_string($db, $desc);
+	$r_id = NULL;
+	if ($stmt = $db->prepare('INSERT INTO authors_atrib (`author_id`,`palladian`,`zh_trad`,`zh_simple`,`pinyin`,
+	`real_name`,`real_name_zh`,`real_name_simple`,`real_name_pinyin`,`second_name`,`second_name_zh`,
+	`second_name_simple`,`second_name_pinyin`,`postmortem_name`,`postmortem_name_zh`,`postmortem_name_simple`,
+	`postmortem_name_pinyin`,`pseudonim_name`,`pseudonim_name_zh`,`pseudonim_name_simple`,`pseudonim_name_pinyin`,
+	`nickname`,`nickname_zh`,`nickname_simple`,`nickname_pinyin`,`forsearch`)
+	 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')) {
+		if (!$stmt->bind_param('issssssssssssssssssssssss', $author_id, $palladian,$zh_trad,$zh_simple,$pinyin,$real_name,$real_name_zh,
+		$real_name_simple,$real_name_pinyin,$second_name,$second_name_zh,$second_name_simple,$second_name_pinyin,
+		$postmortem_name,$postmortem_name_zh,$postmortem_name_simple,$postmortem_name_pinyin,
+		$pseudonim_name,$pseudonim_name_zh,$pseudonim_name_simple,$pseudonim_name_pinyin,
+		$nickname,$nickname_zh,$nickname_simple,$nickname_pinyin,$forsearch)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->affected_rows;
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
+/**
+ * modify  a  record into table authors_atrib
+ *
+ * @param int 	  author id
+ * @return inserted record id
+ * @throws DBException
+ */
+function authors_modify_atrib($author_id, $palladian,$zh_trad,$zh_simple,$pinyin,$real_name,$real_name_zh,
+$real_name_simple,$real_name_pinyin,$second_name,$second_name_zh,$second_name_simple,$second_name_pinyin,
+$postmortem_name,$postmortem_name_zh,$postmortem_name_simple,$postmortem_name_pinyin,
+$pseudonim_name,$pseudonim_name_zh,$pseudonim_name_simple,$pseudonim_name_pinyin,
+$nickname,$nickname_zh,$nickname_simple,$nickname_pinyin,$forsearch) {
+	$db = UserConfig::getDB();
+#	$desc = mysqli_real_escape_string($db, $desc);
+	$r_id = NULL;
+	if ($stmt = $db->prepare('UPDATE authors_atrib SET `palladian`=?, `zh_trad`=?, `zh_simple`=?, 
+	`pinyin`=?, `real_name`=?, `real_name_zh`=?, `real_name_simple`=?, `real_name_pinyin`=?, 
+	`second_name`=?, `second_name_zh`=?, `second_name_simple`=?, `second_name_pinyin`=?, 
+	`postmortem_name`=?, `postmortem_name_zh`=?, `postmortem_name_simple`=?, 
+	`postmortem_name_pinyin`=?, `pseudonim_name`=?, `pseudonim_name_zh`=?, `pseudonim_name_simple`=?, 
+	`pseudonim_name_pinyin`=?, `nickname`=?, `nickname_zh`=?, `nickname_simple`=?, 
+	`nickname_pinyin`=?, `forsearch`=? WHERE `author_id`=?')) {
+		if (!$stmt->bind_param('sssssssssssssssssssssssssi',  $palladian,$zh_trad,$zh_simple,$pinyin,$real_name,$real_name_zh,
+		$real_name_simple,$real_name_pinyin,$second_name,$second_name_zh,$second_name_simple,$second_name_pinyin,
+		$postmortem_name,$postmortem_name_zh,$postmortem_name_simple,$postmortem_name_pinyin,
+		$pseudonim_name,$pseudonim_name_zh,$pseudonim_name_simple,$pseudonim_name_pinyin,
+		$nickname,$nickname_zh,$nickname_simple,$nickname_pinyin, $forsearch, $author_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->affected_rows;
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
+/**
+ * get record by translator_id from table translators_desc
+ *
+ * @return array array of values
+ * @throws DBException
+ */
+function getTranslatorDescByID($translator_id) {
+	$db = UserConfig::getDB();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT * FROM  translators_desc WHERE translator_id=?;')) {
+		if (!$stmt->bind_param('i', $translator_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($id,$translator_id,$full_name,$dates,$summary,$img,$doc_text)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($id,$translator_id,$full_name,$dates,$summary,$img,$doc_text);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $record;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+
+/**
+ * insert a new records into table mistakes
+ *
+ * @param string  mistake
+ * @param string  ip
+ * @return inserted record id
+ * @throws DBException
+ */
+function mistakes_insert_record($mistake, $ip, $url, $comment) {
+	$db = UserConfig::getDB();
+	$r_id = NULL;
+	if ($stmt = $db->prepare('INSERT INTO mistakes (`mistake`, `ip`, `url`, `comments`) 
+		VALUES (?, ?, ?, ?)')) {
+		if (!$stmt->bind_param('ssss', $mistake, $ip, $url, $comment)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->insert_id;
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
+/**
+ * check if record exists in table mistakes
+ *
+ * @param string  mistake
+ * @param string  ip
+ * @param string  url
+ * @param string  url
+ * @return inserted record id
+ * @throws DBException
+ */
+function check_mistakes($mistake, $ip, $url) {
+	$db = UserConfig::getDB();
+	$record = null;
+	$records = array();
+	if ($stmt = $db->prepare('SELECT `mistake`, `ip`, `url` FROM mistakes WHERE 
+		`mistake`=? AND `ip`=? AND `url`=?;')) {
+		if (!$stmt->bind_param('sss', $mistake, $ip, $url)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($mistake, $ip, $url)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($mistake, $ip, $url);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}

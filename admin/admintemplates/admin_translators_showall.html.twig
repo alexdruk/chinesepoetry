@@ -1,0 +1,38 @@
+{% extends 'page.html.twig' %} {% block content %} {% if showDataTable %}
+<link rel="stylesheet" type="text/css" href="/js/DataTables/datatables.min.css"/>
+<script type="text/javascript" src="/js/DataTables/datatables.min.js"></script>
+<script type="text/javascript" class="init">
+    $(document).ready(function() {
+        $('#showAllAuthors').DataTable();
+    });
+</script>
+{% endif %} {% if header %}
+<h2>{{ header }}</h2> {% endif %}
+<table class="table table-sm table-bordered table-hover table-responsive" id="showAllAuthors">
+    <thead thead-light>
+        <tr>
+            <th scope="col">id</th>
+            <th scope="col">Полное имя с инициалами</th>
+            <th scope="col">Литературная фамилия</th>
+            <th scope="col">Настоящая (или девичья) фамилия</th>
+            <th scope="col">Имя</th>
+            <th scope="col">Отчество</th>
+            <th scope="col">Псевдонимы</th>
+            <th scope="col">Дата рождения</th>
+            <th scope="col">Место рождения</th>
+            <th scope="col">Дата смерти</th>
+            <th scope="col">Место смерти</th>
+            <th scope="col">Наличие в антологии</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in records %}
+        <tr>
+            {% for key, val in record %}
+            <td>{{ val }}</td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

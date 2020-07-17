@@ -1,0 +1,63 @@
+{% extends 'page.html.twig' %} {% block content %} {% if success %}
+<div class="alert alert-success" role="alert">
+    {{ success }}
+</div>
+{% endif %} {% if error %}
+<div class="alert alert-danger" role="alert">
+    {{ error }}
+</div>
+{% endif %} {% if header %}
+<h2>{{ header }}</h2> {% endif %}
+<form action="./admin_translators.php?action=insert" method="POST">
+    <div class="form-group">
+        <label for="inputfull_name">Полное имя с инициалами</label>
+        <input type="text" class="form-control" name="full_name" id="inputfull_name" placeholder="Адалис А.Е." required>
+    </div>
+    <div class="form-group">
+        <label for="inputlit_name">Литературная фамилия</label>
+        <input type="text" class="form-control" name="lit_name" id="inputlit_name" placeholder="Ада́лис">
+    </div>
+    <div class="form-group">
+        <label for="inputreal_name">Настоящая (или девичья) фамилия</label>
+        <input type="text" class="form-control" name="real_name" id="inputreal_name" placeholder="Ефрон">
+    </div>
+    <div class="form-group">
+        <label for="inputfirst_name">Имя</label>
+        <input type="text" class="form-control" name="first_name" id="inputfirst_name" placeholder="Аделиина">
+    </div>
+    <div class="form-group">
+        <label for="inputfather_name">Отчество</label>
+        <input type="text" class="form-control" name="father_name" id="inputfather_name" placeholder="Ефимовна">
+    </div>
+    <div class="form-group">
+        <label for="inputpseudonyms">Псевдонимы</label>
+        <input type="text" class="form-control" name="pseudonyms" id="inputpseudonyms" placeholder="">
+    </div>
+    <div class="form-group">
+        <label for="inputborn">Дата рождения</label>
+        <input type="text" class="form-control" name="born" id="inputborn" placeholder="7/13/1900">
+    </div>
+    <div class="form-group">
+        <label for="inputborn_place">Место рождения</label>
+        <input type="text" class="form-control" name="born_place" id="inputborn_place" placeholder="Санкт-Петербург">
+    </div>
+    <div class="form-group">
+        <label for="inputdied">Дата смерти</label>
+        <input type="text" class="form-control" name="died" id="inputdied" placeholder="8/13/1969">
+    </div>
+    <div class="form-group">
+        <label for="inputdied_place">Место смерти</label>
+        <input type="text" class="form-control" name="died_place" id="inputdied_place" placeholder="Москва">
+    </div>
+    <div class="form-group">
+        <label for="inputpresent">Наличие в антологии</label>
+        <select class="custom-select" name="present" id="inputpresent">
+			<option value="0">Нет</option>
+			<option value="1">Да</option>
+			<option value="2">автор источника</option>
+		</select>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+{% endblock %}

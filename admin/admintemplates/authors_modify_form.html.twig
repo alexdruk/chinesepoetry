@@ -1,0 +1,43 @@
+{% extends 'page.html.twig' %} {% block content %} {% if success %}
+<div class="alert alert-success" role="alert">
+    {{ success }}
+</div>
+{% endif %} {% if error %}
+<div class="alert alert-danger" role="alert">
+    {{ error }}
+</div>
+{% endif %}
+
+<form action="./admin_authors.php?action=modify&record_id={{ record_id }}&posted=1" method="POST">
+    <div class="form-group">
+        <label for="inputfull_name">Полное имя с датами</label>
+        <input type="text" class="form-control" name="full_name" id="inputfull_name" value="{{ full_name }}">
+    </div>
+    <div class="form-group">
+        <label for="inputproper_name">Правильное имя</label>
+        <input type="text" class="form-control" name="proper_name" id="inputproper_name" value="{{ proper_name }}">
+    </div>
+    <div class="form-group">
+        <label for="inputdates">Годы жизни</label>
+        <input type="text" class="form-control" name="dates" id="inputdates" value="{{ dates }}">
+    </div>
+    <div class="form-group">
+        <label for="inputepoch">Эпоха</label>
+        <input type="text" class="form-control" name="epoch" id="inputepoch" value="{{ epoch }}">
+    </div>
+    <div class="form-group">
+        <label for="inputpresent">Наличие в антологии</label>
+        <select class="custom-select" name="present" id="inputpresent">
+            {% if present == 1 %}
+				<option value="0">Нет</option>
+				<option value="1" selected>Да</option>
+            {% else %}
+                <option value="0">Нет</option>
+                <option value="1">Да</option>
+            {% endif %}
+		</select>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+{% endblock %}
