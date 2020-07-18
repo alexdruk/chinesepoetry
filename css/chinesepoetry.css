@@ -1,6 +1,7 @@
 
 h4{
     color:black;
+    text-align: center!important;
 }
 .poems.translators{
     font-size:1.1rem;
@@ -15,14 +16,17 @@ a {
 #poems_cycle {
     font-size: 1.2rem !important;
     color:black;
+    text-align: center!important;
 }
 #poems_subcycle {
     font-size:1.2rem !important;
     color:black !important;
     font-weight: bold;
+    text-align: center!important;
 }
 #poems_poem_name {
     font-size: 1.1rem !important;
+    text-align: center!important;
 }
 .a11 {
     color:black !important;
@@ -80,7 +84,7 @@ body {
 /*footers*/
 
 .jumbotron {
-    background-color: #fff;
+    background-color: #fff !important;
     margin-top: 20px;
     border: 1px solid #f2ca06; 
 }
@@ -93,11 +97,21 @@ body {
 #bibblio_header {
     margin-top: -10px;
     margin-bottom: 30px;
+    text-align: center!important;
 }
 
 #authors_header {
     margin-top: -10px;
     margin-bottom: 30px;
+    text-align: center!important;
+}
+.description.header.tip {
+    text-align: center!important;
+}
+.topics.header {
+    font-size: 1.3em;
+    margin-bottom: 30px;
+    text-align: center!important;
 }
 
 li.authors {
@@ -252,10 +266,6 @@ p:empty {
     padding: 1px;
 }
 
-.topics.header {
-    margin-bottom: 10px;
-}
-
 #contactForm {
     margin-left: 50px;
 }
@@ -324,10 +334,6 @@ span.author.name {
 #translators_name {
 font-size: 1.3em;
 }
-#topics_header {
-    font-size: 1.3em;
-    margin-bottom: 30px;
-}
 #poems_poem_name {
     margin-top: 10px;
 }
@@ -336,6 +342,7 @@ font-size: 1.3em;
 }
 .epoch {
     margin-left: 10px;
+    text-align: center!important;
 }
 #inputPoemSearch {
     border: 1px solid black;
