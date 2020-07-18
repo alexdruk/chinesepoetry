@@ -1,10 +1,11 @@
 {% extends 'page_root.html.twig' %} {% block content %}
+<!-- description.html.twig -->
 <div class="jumbotron" id="description_jumbotron">
     <div class="row">
         <div class="secondaryNav text-left col-sm-2 mx-auto">
              <a href="/poems.php?action=show&author_id={{ author_id }}" class="badge secondaryNavButton">< Bсе стихи автора</a>
         </div>
-        <div class="col-sm-8 mx-auto">
+        <div class="col-sm-8 text-center mx-auto">
             {% if atribs %}
             <h4 class="description header tip" id="description_header" data-tip="tip_author">{{ header|raw }}</h4>
             <div  id="tip_author" class="tip-content">
