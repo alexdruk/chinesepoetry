@@ -97,10 +97,7 @@ elseif  ( ($_GET['action'] == 'show') && (array_key_exists('author_id', $_GET)) 
     $author_id = $_GET['author_id'];
     $records = getWithoutPoem_textFromPoemsByAuthorID($author_id);
     $final = makeFinaTranslatorslArray ($records);
-#    print_r($final);
     $template_info["header"] = makeAuthor($author_id);
-#    print_r($records[0][2]);
-#    $template_info["translator"] = makeTranslator($records[2],$records[3]);
     $template_info["byAuthor"] = false;
     $template_info["byTranslator"] = true;
     $template_info["final"] = $final;
@@ -112,7 +109,7 @@ elseif  ( ($_GET['action'] == 'show') && (array_key_exists('translator_id', $_GE
     $records = getWithoutPoem_textFromPoemsByTranslatorID($translator_id);
     list($junk, $tr_full_name, , , , , , , , , , ) = getByIDFromTranslators($translator_id);
     $translator = '<a href="./translators.php?action=show&record_id='.$translator_id.'">'.$tr_full_name.'</a>';
-    $translator = '<span class="translators">'.$translator.'</span>';
+    $translator = '<span class="translators name">'.$translator.'</span>';
 #    print_r($records);
     $final = array();
     $final = makeFinalArray ($records);
