@@ -101,6 +101,15 @@ elseif  ( ($_GET['action'] == 'show') && (array_key_exists('author_id', $_GET)) 
     $template_info["byAuthor"] = false;
     $template_info["byTranslator"] = true;
     $template_info["final"] = $final;
+#now try to get record from originals
+    $orig_records = getOriginalsByAuthorID($author_id);
+    $template_info["has_originals"] = false;
+    if (count($orig_records) > 0 ) {
+        $template_info["has_originals"] = true;
+        $orig_final = makeFinalArray($orig_records);
+        $template_info["orig_final"] = $orig_final;
+        #        print_r($orig_final);
+    }
     $template = $twig->load('at_list.html.twig');
 }
 
@@ -110,13 +119,11 @@ elseif  ( ($_GET['action'] == 'show') && (array_key_exists('translator_id', $_GE
     list($junk, $tr_full_name, , , , , , , , , , ) = getByIDFromTranslators($translator_id);
     $translator = '<a href="./translators.php?action=show&record_id='.$translator_id.'">'.$tr_full_name.'</a>';
     $translator = '<span class="translators name">'.$translator.'</span>';
-#    print_r($records);
     $final = array();
     $final = makeFinalArray ($records);
     $template_info["header"] = $translator;
     $template_info["byAuthor"] = true;
     $template_info["byTranslator"] = false;
-#       print_r($final);
     $template_info["final"] = $final;
     $template = $twig->load('at_list.html.twig');
 
@@ -290,7 +297,12 @@ function makeFinalArray ($records) {
         $topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
         $poem_name_zh,$poem_name_ru,$poem_code,$biblio_id) = $records[$i];
         $author = makeAuthor($author_id);
-        $translator = makeTranslator($translator1_id, $translator2_id);
+        if ($translator1_id) {
+            $translator = makeTranslator($translator1_id, $translator2_id);
+        }
+        else {
+            $translator = '';
+        }
         array_push($arrAuthors, $author);
         if (array_key_exists($author, $new_arr)) {
             array_push($new_arr[$author],  $records[$i]); 
