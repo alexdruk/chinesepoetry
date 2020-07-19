@@ -467,3 +467,8 @@ cite {
     }
     
 }
+.poems.originals.list {
+    margin-block-start: 1em;
+    padding-inline-start: 40px;
+    font-size: 1.1rem;
+}

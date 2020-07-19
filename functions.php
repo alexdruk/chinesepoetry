@@ -939,24 +939,27 @@ function getRecordfromOriginals($originals_id) {
 function getOriginalsByAuthorID($author_id) {
 	$db = UserConfig::getDB();
 	$record = null;
-	if ($stmt = $db->prepare('SELECT o.originals_id, a.author_id, a.proper_name, a.dates, o.cycle_zh, o.cycle_ru, o.subcycle_zh, o.subcycle_ru,
-	o.poem_name_zh, o.poem_name_ru, o.poem_code,o.biblio_id,o.poem_text FROM originals o
-	INNER JOIN authors a ON a.author_id = o.author_id WHERE o.author_id=? ORDER BY o.originals_id ASC;')) {
+	$records = array();
+	if ($stmt = $db->prepare('SELECT o.originals_id, o.author_id, o.cycle_zh, o.cycle_ru, o.subcycle_zh, o.subcycle_ru,
+	o.poem_name_zh, o.poem_name_ru, o.poem_code,o.biblio_id  FROM originals o
+	 WHERE o.author_id=? ORDER BY o.originals_id ASC;')) {
 		if (!$stmt->bind_param('i', $author_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
-		if (!$stmt->bind_result($originals_id,$author_id,$proper_name, $dates,$cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru,$poem_name_zh, $poem_name_ru,$poem_code,$biblio_id,$poem_text)) {
+		if (!$stmt->bind_result($originals_id,$author_id,$cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru,$poem_name_zh, $poem_name_ru,$poem_code,$biblio_id)) {
+
 			throw new DBBindResultException($db, $stmt);
 		}
 		while ($stmt->fetch() === TRUE) {
-			$record = array($originals_id,$author_id,$proper_name, $dates,$cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru,$poem_name_zh, $poem_name_ru,$poem_code,$biblio_id,$poem_text);
+			$record = array($originals_id,$author_id,'','','','','','','',$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id);
+			array_push($records, $record);
 		}
 		$stmt->free_result();
 		$stmt->close();
-		return $record;
+		return $records;
 	} else {
 		throw new DBPrepareStmtException($db);
 	}
@@ -1154,13 +1157,6 @@ function getWithoutPoem_textFromPoemsByTranslatorID($translator_id) {
 			throw new DBBindResultException($db, $stmt);
 		}
 		while ($stmt->fetch() === TRUE) {
-// 			$record = array('AUTHOR' => $author_id, 'POEM_ID' => $poems_id, 
-// 			'TRANSLATORS' => array($translator1_id,$translator2_id,$translator3_id),
-// //			'CYCLE' => array($cycle_zh,$cycle_ru),
-// //			'SUBCYCLE' => array($subcycle_zh,$subcycle_ru),
-// 			'POEMS' => array ($poems_id, $author_id,$translator1_id,$translator2_id,
-// 			$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
-// 			$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id));
 			$record = array($poems_id,$author_id,$translator1_id,$translator2_id,
 			$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
 			$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id);
