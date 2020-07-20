@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__.'/globals.php';
+$template_info["page_description"] = 'Антология современной и старинной китайской поэзии. Свыше 3000 стихов 429 авторов от VI в. до н.э. вплоть до наших дней в лучших переводах.';
 $template_info["title"] ='Оригиналы стихов';
 $records = array();
 if ($_GET['action'] == 'showall') {
@@ -11,6 +12,8 @@ if ($_GET['action'] == 'showall') {
 #    print_r($final);
     $final = makeFinalArray ($records);
     $template_info["final"] = $final;
+    $template_info["title"] ='Все оригиналы стихов';
+    $template_info["page_description"] = 'Антология современной и старинной китайской поэзии. Все оригиналы стихов';
     $template = $twig->load('originals_list.html.twig');
 }
 elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
@@ -18,8 +21,7 @@ elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
     list($originals_id,$author_id,$proper_name, $dates,$epoch,$cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru,$poem_name_zh, $poem_name_ru,$poem_code,$biblio_id,$poem_text) = getOriginalsByPoemID($record_id);
     $header = '<a href="./authors.php?action=show&record_id='.$author_id.'"><span class="author name">'
     .$proper_name.'</span> <span class="author dates">'.$dates.'</span></a>
-    <div class="text-center"><span class="epoch">'.$epoch.'</span></div>';
-    $template_info["title"] = $template_info["title"].' | '.$proper_name;
+    <span class="epoch">'.$epoch.'</span>';
     $template_info["header"] = $header;
     $template_info["author_id"] = $author_id;
     $template_info["poem_name"] = '<span class="poem_name zh">'.$poem_name_zh.'</span> <span class="poem_name ru">'.$poem_name_ru.'</span>';
@@ -56,6 +58,29 @@ elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
     $template_info["translator"] = false;
     $template_info["original"] = false;
     $template_info["topics"] = false;
+    $template_info["title"] = $template_info["title"].' '.$proper_name.' '.$dates;
+    if ($cycle) {
+        if ($poem_name_zh && $cycle_zh) {
+            $template_info["page_description"] = 'Стихотворение "'.$poem_name_zh.' '.$poem_name_ru.'" из цикла "'.$cycle_zh.' '.$cycle_ru.'". Автор: '.$proper_name.' '.$dates.'.';
+        }
+        elseif ($poem_name_zh && !$cycle_zh){
+            $template_info["page_description"] = 'Стихотворение "'.$poem_name_zh.' '.$poem_name_ru.'" из цикла "'.$cycle_ru.'". Автор: '.$proper_name.' '.$dates.'.';
+        }
+        elseif (!$poem_name_zh && $cycle_zh){
+            $template_info["page_description"] = 'Стихотворение "'.$poem_name_ru.'" из цикла "'.$cycle_zh.' '.$cycle_ru.'". Автор: '.$proper_name.' '.$dates.'.';
+        }
+        else {
+            $template_info["page_description"] = 'Стихотворение "'.$poem_name_ru.'" из цикла "'.$cycle_ru.'". Автор: '.$proper_name.' '.$dates.'.';
+        }
+    }
+    else {
+        if ($poem_name_zh) {
+            $template_info["page_description"] = 'Стихотворение "'.$poem_name_zh.' '.$poem_name_ru.'". Автор: '.$proper_name.' '.$dates.'.';
+        }
+        else {
+            $template_info["page_description"] = 'Стихотворение "'.$poem_name_ru.'". Автор: '.$proper_name.' '.$dates.'.';
+        }
+    }
     $template = $twig->load('poem.html.twig');
 }
 elseif ($_GET['action'] == 'search') {
@@ -85,6 +110,7 @@ elseif ($_GET['action'] == 'search') {
         $template_info["search"] = true;
         $template_info["showall"] = false;
     }
+    $template_info["title"] ='Поиск по оригиналам стихов';
     $template = $twig->load('originals_list.html.twig');
 }
 
