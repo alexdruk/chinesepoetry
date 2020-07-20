@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__.'/globals.php';
+$template_info["page_description"] = 'Антология современной и старинной китайской поэзии. Свыше 3000 стихов 429 авторов от VI в. до н.э. вплоть до наших дней в лучших переводах.';
 $template_info["title"] ='Темы';
 $records = array();
 
@@ -17,7 +18,8 @@ if ($_GET['action'] == 'show') {
             $header = $topic_name.' <span class ="topic_synonym">('.$topic_synonym.')</span)';
         }
         $template_info["header"] = $header;
-        $template_info["title"] = $template_info["title"].' | '.$topic_name;
+        $template_info["title"] = $template_info["title"].':  "'.$topic_name.'"';
+        $template_info["page_description"] = 'Описание темы "'.$topic_name.'"';
         $template_info["topic_desc"] = $topic_desc;
     }
     else {
@@ -47,7 +49,7 @@ elseif ($_GET['action'] == 'search') {
         $template_info["search"] = true;
         $template_info["showall"] = false;
     }
-
+    $template_info["title"] = 'Полнотекстовый поиск по темам';
     $template = $twig->load('topics_showall.html.twig');    
 }
 echo $template->display($template_info);

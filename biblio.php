@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__.'/globals.php';
+$template_info["page_description"] = 'Антология современной и старинной китайской поэзии. Свыше 3000 стихов 429 авторов от VI в. до н.э. вплоть до наших дней в лучших переводах.';
 $template_info["title"] ='Источники';
 if (array_key_exists('action', $_GET)) { 
     $records = array();
@@ -9,6 +10,7 @@ if (array_key_exists('action', $_GET)) {
         $records = getFullBiblio(1);       
 		$template_info["records"] = $records;
 		$template_info["special_message"] = false;
+        $template_info["title"] ='Литературные источники';
     }
     elseif ($_GET['action'] == 'needed') {
         $template_info["header"] ='Нам очень нужны';
@@ -21,6 +23,7 @@ if (array_key_exists('action', $_GET)) {
         $records = getFullBiblio(4);       
 		$template_info["records"] = $records;
 		$template_info["special_message"] = false;
+        $template_info["title"] ='Литературные источники';
     }
     elseif ($_GET['action'] == 'search') {
  		if (!$_POST) {
@@ -50,6 +53,8 @@ elseif ($_GET['biblio_id']) {
         $records = getFullBiblioByID($b_id);       
 		$template_info["records"] = $records;
         $template_info["special_message"] = false;
+        $template_info["title"] ='Литературный источник';
+        $template_info["page_description"] = 'Литературный источник: '.implode($records);
     }
     else {
         $template_info["header"] ='Информация по источнику с данным идентификатором отсутствует';

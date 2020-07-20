@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__.'/globals.php';
+$template_info["page_description"] = 'Антология современной и старинной китайской поэзии. Свыше 3000 стихов 429 авторов от VI в. до н.э. вплоть до наших дней в лучших переводах.';
 $template_info["title"] ='Авторы';
 $records = array();
 if ($_GET['action'] == 'showall') {
@@ -9,6 +10,7 @@ if ($_GET['action'] == 'showall') {
     $template_info["byAuthor"] = false;
     $records = getAllfromAuthors();
 	$template_info["records"] = $records;
+    $template_info["title"] ='Все авторы';
     $template = $twig->load('authors_showall.html.twig');
 }
 elseif ($_GET['action'] == 'byEpoch') {
@@ -19,6 +21,8 @@ elseif ($_GET['action'] == 'byEpoch') {
         $epoch = $_POST['epoch']; 
         $records = getAllfromAuthorsByEpoch($epoch);
         $template_info["records"] = $records;
+        $template_info["title"] ='Все авторы по эпохам';
+        $template_info["page_description"] = 'Список всех авторов эпохи "'.$epoch.'".';
         $template = $twig->load('authors_showall.html.twig');
     }
     else {
@@ -44,6 +48,7 @@ elseif ($_GET['action'] == 'search') {
         $template_info["search"] = true;
         $template_info["byAuthor"] = false;
     }
+    $template_info["title"] ='Поиск по именам авторов';
     $template = $twig->load('authors_showall.html.twig');
 }
 elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
@@ -101,6 +106,14 @@ elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
         $doc_text = '<h4>Пожалуйста, помогите собрать информацию для этой страницы!</h4>';
     }
     $template_info["doc_text"] = '<span class="description">'.$doc_text.'</span>';
+    $template_info["title"] = $proper_name.' '.$dates.' - биография';
+    $atribs = array_slice($atribs, 2);
+    array_pop($atribs);
+    $atribs = array_unique($atribs);
+    array_shift($atribs);
+    $atribs = array_map('trim', $atribs);
+    $all_other_names = join(', ', $atribs);
+    $template_info["page_description"] = $proper_name.' '.$dates.', '.$epoch.', также извесный как '.$all_other_names.'. Биографические материалы.';
     $template = $twig->load('description.html.twig');
 }
 else {

@@ -1,6 +1,8 @@
 <?php
 require_once __DIR__.'/globals.php';
 $template_info["title"] ='Стихи';
+$template_info["page_description"] = 'Антология современной и старинной китайской поэзии. Свыше 3000 стихов 429 авторов от VI в. до н.э. вплоть до наших дней в лучших переводах.';
+
 $records = array();
 if ($_GET['action'] == 'byAuthor') {
     $template_info["header"] ='По авторам';
@@ -11,6 +13,7 @@ if ($_GET['action'] == 'byAuthor') {
     $template_info["byTopic"] = false;
     $template_info["byAuthor"] = true;
     $template_info["records"] = $records;
+    $template_info["title"] ='Все авторы';
     $template = $twig->load('poems_showall.html.twig');
 }
 elseif ($_GET['action'] == 'byTranslator') {
@@ -22,6 +25,7 @@ elseif ($_GET['action'] == 'byTranslator') {
     $template_info["byTranslator"] = true;
     $template_info["byTopic"] = false;
     $template_info["records"] = $records;
+    $template_info["title"] ='Все переводчики';
     $template = $twig->load('poems_showall.html.twig');
 }
 elseif ($_GET['action'] == 'byEpoch') {
@@ -34,6 +38,7 @@ elseif ($_GET['action'] == 'byEpoch') {
         $epoch = $_POST['epoch']; 
         $records = getAllfromAuthorsByEpoch($epoch);
         $template_info["records"] = $records;
+        $template_info["title"] ='Все стихи эпохи: "'.$epoch.'"';
         $template = $twig->load('poems_showall.html.twig');
     }
     else {
@@ -58,6 +63,7 @@ elseif ($_GET['action'] == 'byTopic') {
         list($topics_id,$topic_name,$topic_synonym, $topic_desc) = getTopicByID($topic_id);
         $template_info["header"] = 'Тема: '.$topic_name;
         $template_info["records"] = $new_records;
+        $template_info["title"] ='Все стихи по теме: "'.$topic_name.'"';
         $template = $twig->load('poems_showall.html.twig');
     }
     else {
@@ -82,6 +88,7 @@ elseif ($_GET['action'] == 'search') {
         $final = makeFinalArray ($records);
 #print_r($final);
         $template_info["final"] = $final;
+        $template_info["title"] ='Полнотекстный поиск по переводам стихов';
         $template = $twig->load('at_list.html.twig');
     }
     else {
@@ -97,7 +104,8 @@ elseif  ( ($_GET['action'] == 'show') && (array_key_exists('author_id', $_GET)) 
     $author_id = $_GET['author_id'];
     $records = getWithoutPoem_textFromPoemsByAuthorID($author_id);
     $final = makeFinaTranslatorslArray ($records);
-    $template_info["header"] = makeAuthor($author_id);
+    list($author_html, $proper_name,  $dates,  $epoch) = makeAuthor($author_id);
+    $template_info["header"] = $author_html;
     $template_info["byAuthor"] = false;
     $template_info["byTranslator"] = true;
     $template_info["final"] = $final;
@@ -110,6 +118,8 @@ elseif  ( ($_GET['action'] == 'show') && (array_key_exists('author_id', $_GET)) 
         $template_info["orig_final"] = $orig_final;
         #        print_r($orig_final);
     }
+    list($junk, , $proper_name,  $dates,  $epoch, ) = getByIDFromAuthors($author_id);
+    $template_info["title"] ='Все стихи '.$proper_name.' '.$dates;
     $template = $twig->load('at_list.html.twig');
 }
 
@@ -125,6 +135,7 @@ elseif  ( ($_GET['action'] == 'show') && (array_key_exists('translator_id', $_GE
     $template_info["byAuthor"] = true;
     $template_info["byTranslator"] = false;
     $template_info["final"] = $final;
+    $template_info["title"] = $tr_full_name.' - все переводы';
     $template = $twig->load('at_list.html.twig');
 
 }
@@ -147,6 +158,7 @@ elseif  ( ($_GET['action'] == 'show') && (array_key_exists('topic_id', $_GET)) &
     $template_info["byAuthor"] = true;
     $template_info["byTranslator"] = false;
     $template_info["final"] = $final;
+    $template_info["title"] ='Все стихи по теме: "'.$topic_name.'"';
     $template = $twig->load('at_list.html.twig');
 }
 elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0)  && ($_GET['poem_id'] > 0) ){
@@ -157,12 +169,12 @@ elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0)  && ($_GET['poe
     list($poems_id,$author_id,$translator1_id,$translator2_id,
     $topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
     $poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text) = $records[0];
-    $author = makeAuthor($author_id);
+    list($author_html, $proper_name,  $dates,  $epoch) = makeAuthor($author_id);
+    $author = $author_html;
     $translator = makeTranslator($translator1_id, $translator2_id);
     $poem_name = makePoemName($poem_name_zh, $poem_name_ru);
     $template_info["original"] = false;
     $template_info["otherTranslation"] = false;
-    $template_info["title"] = $template_info["title"].' | '.$poem_name_ru;
     if ($poem_code) {
         list($originals_id, $nam_zh, $nam_ru) = getOriginalByPoemCode($poem_code);;
         $originals = array();
@@ -206,7 +218,30 @@ elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0)  && ($_GET['poe
         $biblio = array($biblio_ref_name, $biblio_id);
         $template_info["biblio"] = $biblio;
     }
-#    print_r($biblio);
+    $template_info["title"] = $template_info["title"].' | '.$poem_name_ru;
+    $transl = strip_tags($translator);
+    if ($cycle) {
+        if ($poem_name_zh && $cycle_zh) {
+            $template_info["page_description"] = 'Стихотворение "'.$poem_name_zh.' '.$poem_name_ru.'" из цикла "'.$cycle_zh.' '.$cycle_ru.'". Автор: '.$proper_name.' '.$dates.'. Перевод: '.$transl;
+        }
+        elseif ($poem_name_zh && !$cycle_zh){
+            $template_info["page_description"] = 'Стихотворение "'.$poem_name_zh.' '.$poem_name_ru.'" из цикла "'.$cycle_ru.'". Автор: '.$proper_name.' '.$dates.'. Перевод: '.$transl;
+        }
+        elseif (!$poem_name_zh && $cycle_zh){
+            $template_info["page_description"] = 'Стихотворение "'.$poem_name_ru.'" из цикла "'.$cycle_zh.' '.$cycle_ru.'". Автор: '.$proper_name.' '.$dates.'. Перевод: '.$transl;
+        }
+        else {
+            $template_info["page_description"] = 'Стихотворение "'.$poem_name_ru.'" из цикла "'.$cycle_ru.'". Автор: '.$proper_name.' '.$dates.'. Перевод: '.$transl;
+        }
+    }
+    else {
+        if ($poem_name_zh) {
+            $template_info["page_description"] = 'Стихотворение "'.$poem_name_zh.' '.$poem_name_ru.'". Автор: '.$proper_name.' '.$dates.'. Перевод: '.$transl;
+        }
+        else {
+            $template_info["page_description"] = 'Стихотворение "'.$poem_name_ru.'". Автор: '.$proper_name.' '.$dates.'. Перевод: '.$transl;
+        }
+    }
     $template = $twig->load('poem.html.twig');
 }
 else {
@@ -265,7 +300,7 @@ function makeAuthor($author_id){
     $author = '<a href="./authors.php?action=show&record_id='.$author_id.'"><span class="author name">'
     .$proper_name.'</span> <span class="author dates">'.$dates.'</span></a>
     <span class="epoch">'.$epoch.'</span>';
-    return $author;
+    return array($author, $proper_name,  $dates,  $epoch);
 }
 function makeCycle($cycle_ru,$cycle_zh)  {
     if ($cycle_ru && $cycle_zh) {
@@ -296,7 +331,8 @@ function makeFinalArray ($records) {
         list($poems_id,$author_id,$translator1_id,$translator2_id,
         $topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
         $poem_name_zh,$poem_name_ru,$poem_code,$biblio_id) = $records[$i];
-        $author = makeAuthor($author_id);
+        list($author_html, $proper_name,  $dates,  $epoch) = makeAuthor($author_id);
+        $author = $author_html;
         if ($translator1_id) {
             $translator = makeTranslator($translator1_id, $translator2_id);
         }
@@ -349,7 +385,8 @@ function makeFinaTranslatorslArray ($records) {
         list($poems_id,$author_id,$translator1_id,$translator2_id,
         $topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
         $poem_name_zh,$poem_name_ru,$poem_code,$biblio_id) = $records[$i];
-        $author = makeAuthor($author_id);
+        list($author_html, $proper_name,  $dates,  $epoch) = makeAuthor($author_id);
+        $author = $author_html;
         $translator = makeTranslator($translator1_id, $translator2_id);
         array_push($arrTranslators, $translator);
         if (array_key_exists($translator, $new_arr)) {
