@@ -4,6 +4,13 @@ h4{
 }
 .poems.translators{
     font-size:1.1rem;
+    margin-top: 5px;   
+    text-align: center!important;
+}
+li.poems.translators.list {
+    text-align: left !important;;
+    padding: 2px;
+
 }
 a {
     text-decoration: underline;
@@ -261,10 +268,6 @@ p:empty {
     text-align: left;
     padding: 1px;
 }
-.translators.list {
-    text-align: left;
-    padding: 2px;
-}
 .authors.list {
     text-align: left;
     padding: 1px;
@@ -341,9 +344,6 @@ font-size: 1.3em;
 }
 #poems_poem_name {
     margin-top: 10px;
-}
-#poems_translators {
-    margin-top: 5px;   
 }
 .epoch {
     color:#000;
