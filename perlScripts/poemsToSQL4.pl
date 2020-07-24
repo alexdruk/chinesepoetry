@@ -12,7 +12,7 @@ use Data::Dumper;
 
 my $in_file = './final/anthology2.html';
 my $out_file = './final/tmp.sql';
-my $in_file1 = './final/absent_poems.txt';
+my $in_file1 = 'absent_poems.txt';
 #just in case to avoid repeated text in files
 unlink $out_file;
 my $content ='';
@@ -22,11 +22,12 @@ close(IN);
 my %poem_names = ();
 open(IN, "< $in_file1") || die "Cannot open $in_file1.Code: $!";
 	while (my $line=<IN>) {
-		chomp($line);
 		my ($num, $name) = split("\t", $line);
 		$poem_names{$name} = $num;
+		print "$poem_name\n";
 	}
 close(IN);
+exit;
 #change Non-breaking space to a regular one See extract_biblio.pl
 $content =~ s/ / /gs; #first space is  Non-breaking space
 my @blocks = $content =~ /(<h1>.*?)(?=<h1>|$)/gs;  #s - to get data from multiline text, use Lookahead Assertions https://www.regular-expressions.info/lookaround.html, |$ - to match last occurrence without <h1> tag
@@ -44,33 +45,44 @@ foreach my $block (@blocks) {
 #print $author."\n";
 	}
 #next if ($author !~ /ТАО ЮАНЬМИН/);
-next if ($author =~ /КНИГА ПЕСЕН/);
-next if ($author =~ /ЮЭФУ/);
 		my @originals_block = $block =~ /(<p class="a2">.+?)(?=<p class="a2">|$)/gs; #from translator till translator or end
+		my $cnt = 0;
 		foreach my $originals_block (@originals_block){
-			next if ($originals_block =~ /<p class="a2">.+?ригинал/); #exclude originals
-				my @translators = ();
-				if ($originals_block =~ /<p class="a2">(.+?)<\/p>/) {
-					@translators = $originals_block =~ /record_id=(\d+?)" class="translators/g;
-				}
-				my @h3blocks = $originals_block =~ /(<h3>.*?)(?=<h3>|$)/gs;
-				foreach  my $h3block (@h3blocks) {
-						if ($h3block =~ /<h3>(.+?)<\/h3>/) {
+			next if ($originals_block =~ /ригинал/); #exclude originals
+			if  (($originals_block !~ /<h4>/)) {
+				$poems_total = 0;
+				my $cycle_name_zh = '';
+				my $cycle_name_ru = '';
+				my $poem_name_zh = '';
+				my $poem_name_ru = '';
+				my @lines = split("\n", $originals_block);
+				foreach my $line (@lines) {
+						my $end_of_poem = 0;
+						if ($line =~ /<h2>(.+?)<\/h2>/) { #skip cycles
+							my $cycle_name = $1;
+							($cycle_name_zh, $cycle_name_ru) = split('###', &getPoemNames($cycle_name));
+#							print OUT1 "$cnt\t$author\t", $1, "\n";
+							next; #line
+						}
+						if ($line =~ /<h3>(.+?)<\/h3>/) {
 							my $poem_name = $1;
 							$poem_name =~ s|<a href=.+?>(.+?)</a>|$1|gs;
-							my ($poem_name_zh, $poem_name_ru) = split('###', &getPoemNames($poem_name));
-							if (!exists($poem_names{$poem_name_ru})) {
-								next;
-							}
+							($poem_name_zh, $poem_name_ru) = split('###', &getPoemNames($poem_name));
+#							print $poem_name, "\n";
+#							print $poem_name_zh, "\t", $poem_name_ru, "\t",length($poem_name_ru),  "\n\n" if (length($poem_name_ru) >255);
+							next; #line
 						}
-						&makesql($h3block,$author,@translators);
-
+						if ($poem_name_ru) {
+							$poem_names{$poem_name_ru} = "$cycle_name_zh#$cycle_name_ru";
+							next; #line
+						}
+				}#lines
+				$poems_total += $cnt;
+				&makesql($originals_block, %poem_names);
 			}
-
-#			}
-#			elsif (($originals_block =~ /<h4>/)) { #without subcycle
+			elsif (($originals_block =~ /<h4>/)) { #without subcycle
 #				print "with subcycles: ", $author, "\n";
-#			}
+			}
 		}#foreach original
 
 #		foreach my $key (keys %poem_names) {
@@ -82,6 +94,9 @@ next if ($author =~ /ЮЭФУ/);
 print "total poems:\t", $poems_total, "\n";
 close(OUT);
 #close(OUT1);
+foreach my $key (sort keys %biblioHASH) {
+print $key, "\t", $biblioHASH{$key}, "\n";
+}
 #################################################
 sub makesql
 ###
@@ -90,22 +105,33 @@ sub makesql
 ### Usage: &makesql($originals_block)
 #################################################
 {
-	my ($block, $author, @translators) = @_;
+	my ($block, %namesHash) = @_;
 	open(OUT, ">> $out_file") || die "Can't open $out_file Code: $!";
 	my @poems = ();
+	my @translators = ();
+	my @topics =();
+	my $translator = ''; #needed only for list
+	if ($block =~ /<p class="a2">(.+?)<\/p>/) {
+		my $a = HTML::FormatText->new->format(parse_html(decode_utf8($1)));
+		$translator = encode_utf8($a);
+		$translator =~ s/^\s+|\s+$//; #trim both ends
+		@translators = $block =~ /record_id=(\d+?)" class="translators/g;
+	}
+	else {$translator ='';}
+	@poems = $block =~ /(<h3>.*?)(?=<h3>|$)/gs;
+	$poems_total += scalar @poems;
+	my $biblio_id = 'NULL';
+	my $code = '';
 	my $poem_name_zh = '';
 	my $poem_name_ru = '';
 	my $cnt = 0;
 	my $biblio = '';
 	my $cycle_name_zh = '';
 	my $cycle_name_ru = '';
-	my @topics =();
-	my $biblio_id = 'NULL';
-	my $code = '';
-#	foreach my $poem (@poems) {
+	foreach my $poem (@poems) {
 		$cnt++;
 		my @poem_text = ();
-		my @lines = split("\n", $block);
+		my @lines = split("\n", $poem);
 		foreach my $line (@lines) {
 			if ($line =~ /<p class="a22">/) { #topics
 				@topics = $line =~ /record_id=(\d+?)" class="topics/g;
@@ -122,10 +148,19 @@ sub makesql
 			}
 			elsif ($line =~ /<p class="a24">(.+?)<\/p>/) {
 				$code = $1;
-				$code =~ s|&nbsp;||g
 			}
 			elsif ($line =~ /biblio\.php\?record_id=(\d+?)"/) {
 				$biblio_id = $1;
+			}
+			elsif ($line =~ /<p class="a">/) { #biblio but without biblio_id
+				$biblio = $line;
+				$biblio =~ s/\s*<p class="a">//;
+				$biblio =~ s/<\/p>//;
+				if(exists($biblioHASH{$biblio})) {
+					$biblioHASH{$biblio} += 1;
+				} else {
+					$biblioHASH{$biblio} = 1;
+				}
 			}
 			else {
 				push(@poem_text, $line);
@@ -133,7 +168,7 @@ sub makesql
 		}
 	my ($tr1, $tr2, $tr3) = @translators;
 	if (!$tr1) {
-		print "Without translator: $author\t$poem_name_ru\n";
+		print "Without translator: $author\t$translator\t$poem_name_ru\n";
 	}
 	$tr1 = ($tr1) ? $tr1 : 'NULL';
 	$tr2 = ($tr2) ? $tr2 : 'NULL';
@@ -149,6 +184,9 @@ sub makesql
 	my $var =  join("\n", @poem_text);
 	$var = "\n".$var;
 	$var = $var."\n$biblio\n" if ($biblio); #list biblio for wich there is no id after text
+	if (exists($namesHash{$poem_name_ru})) {
+		($cycle_name_zh, $cycle_name_ru) = split('#', $namesHash{$poem_name_ru});
+	}
 	$cycle_name_zh = ($cycle_name_zh) ? $cycle_name_zh : 'NULL';
 	$cycle_name_ru = ($cycle_name_ru) ? $cycle_name_ru : 'NULL';
 	$poem_name_zh = ($poem_name_zh) ? $poem_name_zh : 'NULL';
@@ -160,7 +198,13 @@ sub makesql
 	$var =~ s|\t||gs;
 	$var =~ s| +| |gs;
 	print OUT $var;
-#	}
+	}
+	open(OUT1, ">> $out_file1") || die "Can't open $out_file1 Code: $!";
+	print OUT1 $author, "\t", $translator, "\tpoems found: \t", scalar @poems, "\n";
+	close(OUT1);
+#		foreach my $key (keys %phash) {
+#print "$key\t$namesHash{$key}\n";
+#		}
 	return;
 }
 
