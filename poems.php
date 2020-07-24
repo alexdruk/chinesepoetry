@@ -254,27 +254,27 @@ function maketopics($topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id) {
     $alltopics = array();
     if ($topic5_id) {
         list($topic_id,$topic_name,$topic_synonym, $topic_desc) = getTopicByID($topic5_id);
-        $topics = '<a href="./topics.php?record_id='.$topic_id.'" class="topics ref">'.$topic_name.'</a>';
+        $topics = '<a href="./topics.php?action=show&record_id='.$topic_id.'" class="topics ref">'.$topic_name.'</a>';
         array_push($alltopics, $topics);
     }
     if ($topic4_id) {
         list($topic_id,$topic_name,$topic_synonym, $topic_desc) = getTopicByID($topic4_id);
-        $topics = '<a href="./topics.php?record_id='.$topic_id.'" class="topics ref">'.$topic_name.'</a>';
+        $topics = '<a href="./topics.php?action=show&record_id='.$topic_id.'" class="topics ref">'.$topic_name.'</a>';
         array_push($alltopics, $topics);
     }
     if ($topic3_id) {
         list($topic_id,$topic_name,$topic_synonym, $topic_desc) = getTopicByID($topic3_id);
-        $topics = '<a href="./topics.php?record_id='.$topic_id.'" class="topics ref">'.$topic_name.'</a>';
+        $topics = '<a href="./topics.php?action=show&record_id='.$topic_id.'" class="topics ref">'.$topic_name.'</a>';
         array_push($alltopics, $topics);
     }
     if ($topic2_id) {
         list($topic_id,$topic_name,$topic_synonym, $topic_desc) = getTopicByID($topic2_id);
-        $topics = '<a href="./topics.php?record_id='.$topic_id.'" class="topics ref">'.$topic_name.'</a>';
+        $topics = '<a href="./topics.php?action=show&record_id='.$topic_id.'" class="topics ref">'.$topic_name.'</a>';
         array_push($alltopics, $topics);
     }
     if ($topic1_id) {
         list($topic_id,$topic_name,$topic_synonym, $topic_desc) = getTopicByID($topic1_id);
-        $topics = '<a href="./topics.php?record_id='.$topic_id.'" class="topics ref">'.$topic_name.'</a>';
+        $topics = '<a href="./topics.php?action=show&record_id='.$topic_id.'" class="topics ref">'.$topic_name.'</a>';
         array_push($alltopics, $topics);
     }
     $joinedTopics = join(" | ",$alltopics);
