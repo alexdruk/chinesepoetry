@@ -51,17 +51,22 @@ $content =~ s|<span (.+?)>(.*?)</span>|$2|gs;# eliminate all spans
 ##$content =~ s|<p class="a"(.*?)>|<p class="a">|gs;#
 $content =~ s|<p>\s+</p>|<p>&nbsp;</p>|gs; # empty paragraphs
 $content =~ s|<p><br /></p>|<p>&nbsp;</p>|gs; # empty paragraphs
-$content =~ s|<p class="NormalWeb"|<p|gs;
-$content =~ s|<p class="-1">|<p class="-2">|gs; #Примечания
+$content =~ s|<p class="NormalWeb"|<p class="t22"|gs;
+$content =~ s|<p class="-1" style="font-size:1.1em">\s*Примечания|<p class="-2">Примечания|gs; #Примечания
 $content =~ s|<p class="-2">|<p class="-7">|gs; #Примечания
-$content =~ s|<p class="12">|<p class="-7">|gs; #Примечания
+$content =~ s|<p class="12">|<p class="t1">|gs; #Примечания
 $content =~ s|<p class="a15"(.+?)</p>|<hr>|gs; #hr
-$content =~ s|<p class="-3"\s*style="font-size:0.9em">|<p class="-10">|gs; #examples
-$content =~ s|<p class="-3">|<p class="-10">|gs; #examples
-$content =~ s|<p class="-4">|<p class="-10">|gs; #examples
-#$content =~ s|<p class="a2"\s*style="font-size:0.9em">(.+?)<\p>|$1|gs; #sources
-#$content =~ s|<p class="a2">\s*(.+?)\s*<\p>|<div class="d-flex align-items-end">$1</div>|gs; #sources
-#
+$content =~ s|<p class="-3"\s*style="font-size:0.9em">|<p class="t1">|gs; #examples
+$content =~ s|<p class="-3">|<p class="t1">|gs; #examples
+$content =~ s|<p class="-4">|<p class="t1">|gs; #examples
+#$content =~ s|<p class="a2"> </p>||gs;
+#$content =~ s|<p class="(.+?)"> </p>|<p>&nbsp;</p>|gs;
+#$content =~ s|<p class="a2">\s*\("Резной дракон(.+?)\s*<\p>|<div class="d-flex align-items-end"><cite><a href="./biblio.php?biblio_id=213" id="biblio_poems">Источник: "Резной дракон. Поэзия эпохи Шести династий (III-VI вв.) в переводах М. Кравцовой", 2004</a></cite></div>|gs; #sources
+$content =~ s|<p class="-1">\s*Примечания\s*</p>|<p class="-2">Примечания</p>|gs; #examples
+$content =~ s|<p>(.+?)</p>|<p class="t22">$1</p>|gs; #
+$content =~ s|\t\t\t<p|<p|gs; #
+
+
 print OUT $content;
 close(OUT);
 
