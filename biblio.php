@@ -9,6 +9,7 @@ if (array_key_exists('action', $_GET)) {
         $template_info["header"] ='Литературные источники упомянутые на данном сайте';
         $records = getFullBiblio(1);       
 		$template_info["records"] = $records;
+        $template_info["show_alphabet"] = false;
 		$template_info["special_message"] = false;
         $template_info["title"] ='Литературные источники';
     }
@@ -16,12 +17,14 @@ if (array_key_exists('action', $_GET)) {
         $template_info["header"] ='Нам очень нужны';
         $records = getFullBiblio(-1);       
 		$template_info["records"] = $records;
+        $template_info["show_alphabet"] = false;
 		$template_info["special_message"] = 'Если вы знаете где можно достать данные издания, пожалуйста сообщите нам используя форму "Пишите нам" в самом низу страницы.';
     }
      elseif ($_GET['action'] == 'showall') {
         $template_info["header"] ='Литературные источники';
         $records = getFullBiblio(4);       
 		$template_info["records"] = $records;
+        $template_info["show_alphabet"] = true;
 		$template_info["special_message"] = false;
         $template_info["title"] ='Литературные источники';
     }
@@ -29,6 +32,7 @@ if (array_key_exists('action', $_GET)) {
  		if (!$_POST) {
             $template_info["header"] ='Полнотекстовый поиск по источникам';
             $template_info["records"] = false;        
+            $template_info["show_alphabet"] = false;
             $template_info["special_message"] = false;
          }
         else {

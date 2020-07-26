@@ -4,21 +4,22 @@
     <div class="row">
         <div class="col-10 mx-auto">
             <h4 class="authors header" id="authors_header">{{ header }}</h4>
-            {% if byAuthor %}
-            <ol>
+           {% if byAuthor %}
+           <ol>
                 {% for record in records %}
                 <li class="authors list"><a href="./poems.php?action=show&author_id={{ record[0] }}">{{ record[2] }} {{ record[3] }}</a> - {{ record[4] }}</li>
                 {% endfor %}
             </ol>
+{# 
             {% elseif byTranslator %}
             <!--h4 class="translators header" id="translators_header">{{ header }}</h4-->
             <ol>
                 {% for record in records %}
-                <li class="authors list"><a href="./poems.php?action=show&translator_id={{ record[0] }}">{{ record[1] }}</a></li>
+                <li class="translators list"><a href="./poems.php?action=show&translator_id={{ record[0] }}">{{ record[1] }}</a></li>
                 {% endfor %}
             </ol>
+#}
             {% elseif byTopic %}
-            <!--h4 class="topic header" id="topic_header">{{ header }}</h4-->
             <ol>
                 {% for record in records %}
                 <li class="authors list"><a href="./poems.php?action=show&topic_id={{ record[5] }}&author_id={{ record[0] }}">{{ record[2] }} {{ record[3] }}</a> - {{ record[4] }}</li>

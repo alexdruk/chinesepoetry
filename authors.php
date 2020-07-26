@@ -6,6 +6,7 @@ $records = array();
 if ($_GET['action'] == 'showall') {
     $template_info["header"] ='Все авторы';
     $template_info["showall"] = true;
+    $template_info["show_alphabet"] = true;
     $template_info["search"] = false;
     $template_info["byAuthor"] = false;
     $records = getAllfromAuthors();
@@ -16,6 +17,7 @@ if ($_GET['action'] == 'showall') {
 elseif ($_GET['action'] == 'byEpoch') {
     $template_info["header"] ='По эпохам';
     $template_info["showall"] = true;
+    $template_info["show_alphabet"] = false;
     $template_info["search"] = false;
     if (array_key_exists('posted', $_GET)) {
         $epoch = $_POST['epoch']; 
@@ -34,6 +36,7 @@ elseif ($_GET['action'] == 'search') {
     $template_info["header"] ='Поиск по именам авторов';
     if (array_key_exists('posted', $_GET)) {
         $template_info["showall"] = true;
+        $template_info["show_alphabet"] = false;
         $template_info["search"] = false;
         $template_info["byAuthor"] = false;
         $pattern = $_POST['pattern']; 

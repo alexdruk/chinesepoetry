@@ -9,24 +9,29 @@ if ($_GET['action'] == 'byAuthor') {
     $records = getAllfromAuthors();
 #    list($author_id, $full_name, $proper_name, $dates,  $epoch, $present) = $records;
     $template_info["search"] = false;
-    $template_info["byTranslator"] = false;
-    $template_info["byTopic"] = false;
+#    $template_info["byTranslator"] = false;
+#    $template_info["byTopic"] = false;
     $template_info["byAuthor"] = true;
     $template_info["records"] = $records;
-    $template_info["title"] ='Все авторы';
-    $template = $twig->load('poems_showall.html.twig');
+    $template_info["showall"] = true;
+    $template_info["show_alphabet"] = true;
+    $template_info["title"] ='Стихи по авторам';
+    $template_info["page_description"] = 'Антология современной и старинной китайской поэзии. Все стихи по авторам.';
+    $template = $twig->load('authors_showall.html.twig');
 }
 elseif ($_GET['action'] == 'byTranslator') {
     $template_info["header"] ='По переводчикам';
     $records = getAllfromTranslators();
 #    list($translator_id, $full_name, $lit_name, $real_name, $first_name, $father_name, $pseudonyms, $born, $born_place, $died, $died_place, $present) = $records;
     $template_info["search"] = false;
-    $template_info["byAuthor"] = false;
+#    $template_info["byAuthor"] = false;
+    $template_info["showall"] = true;
     $template_info["byTranslator"] = true;
     $template_info["byTopic"] = false;
     $template_info["records"] = $records;
-    $template_info["title"] ='Все переводчики';
-    $template = $twig->load('poems_showall.html.twig');
+    $template_info["title"] ='Стихи по переводчикам';
+    $template_info["page_description"] = 'Антология современной и старинной китайской поэзии. Все стихи по переводчикам.';
+    $template = $twig->load('translators_showall.html.twig');
 }
 elseif ($_GET['action'] == 'byEpoch') {
     $template_info["header"] ='По эпохам';
@@ -39,6 +44,7 @@ elseif ($_GET['action'] == 'byEpoch') {
         $records = getAllfromAuthorsByEpoch($epoch);
         $template_info["records"] = $records;
         $template_info["title"] ='Все стихи эпохи: "'.$epoch.'"';
+        $template_info["page_description"] = 'Антология современной и старинной китайской поэзии. Все стихи эпохи: "'.$epoch.'"';
         $template = $twig->load('poems_showall.html.twig');
     }
     else {
@@ -64,6 +70,7 @@ elseif ($_GET['action'] == 'byTopic') {
         $template_info["header"] = 'Тема: '.$topic_name;
         $template_info["records"] = $new_records;
         $template_info["title"] ='Все стихи по теме: "'.$topic_name.'"';
+        $template_info["page_description"] = 'Антология современной и старинной китайской поэзии. Все стихи по теме: "'.$topic_name.'"';
         $template = $twig->load('poems_showall.html.twig');
     }
     else {
