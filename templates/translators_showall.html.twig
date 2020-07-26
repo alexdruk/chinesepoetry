@@ -5,12 +5,73 @@
         <div class="col-8 mx-auto">
             <h4 class="authors header" id="authors_header">{{ header }}</h4>
             {% if showall %}
+            <div class="alphabet text-center"><a href="#А">А</a> | <a href="#Б">Б</a> | <a href="#В">В</a> | <a href="#Г">Г</a> | <a href="#Д">Д</a> | <a href="#Е">Е</a> | <a href="#Ж">Ж</a> | <a href="#З">З</a> | <a href="#И">И</a> | <a href="#К">К</a> | <a href="#Л">Л</a> | <a href="#М">М</a> | <a href="#Н">Н</a> | <a href="#П">П</a> | <a href="#Р">Р</a> | <a href="#С">С</a> | <a href="#Т">Т</a> | <a href="#У">У</a> | <a href="#Ф">Ф</a> | <a href="#Ц">Ц</a> | <a href="#Ч">Ч</a> | <a href="#Ш">Ш</a> | <a href="#Э">Э</a> | <a href="#Я">Я</a></div>
             <div id="translators_content_table">
             <ol>
+                {% apply spaceless %}
+                {% set curr, prev = 'А','1' %}
                 {% for record in records %}
-                <li class="translators list"><a href="./translators.php?action=show&record_id={{ record[0] }}">{{ record[1] }}</a></li>
+            {% if (record[1] starts with 'А') and  (curr != prev) %}<a name="А"></a>{% set curr,prev = 'А','А' %}{% endif %}
+                {% if record[1]  starts with  'Б' %}{% set curr = 'Б' %}{% endif %}
+            {% if record[1] starts with 'Б' and curr != prev %}<a name="Б"></a>{% set prev = 'Б' %}{% endif %}
+                {% if record[1]  starts with  'В' %}{% set curr = 'В' %}{% endif %}
+            {% if record[1] starts with 'В' and curr != prev %}<a name="В"></a>{% set prev = 'В' %}{% endif %}
+                {% if record[1]  starts with  'Г' %}{% set curr = 'Г' %}{% endif %}
+            {% if (record[1] starts with 'Г') and  (curr != prev) %}<a name="Г"></a>{% set prev = 'Г' %}{% endif %}
+                {% if record[1]  starts with  'Д' %}{% set curr = 'Д' %}{% endif %}
+            {% if record[1] starts with 'Д' and curr != prev %}<a name="Д"></a>{% set prev = 'Д' %}{% endif %}
+                {% if record[1]  starts with  'Е' %}{% set curr = 'Е' %}{% endif %}
+            {% if record[1] starts with 'Е' and curr != prev %}<a name="Е"></a>{% set prev = 'Е' %}{% endif %}
+                {% if record[1]  starts with  'Ж' %}{% set curr = 'Ж' %}{% endif %}
+            {% if record[1] starts with 'Ж' and curr != prev %}<a name="Ж"></a>{% set prev = 'Ж' %}{% endif %}
+                {% if record[1]  starts with  'З' %}{% set curr = 'З' %}{% endif %}
+            {% if record[1] starts with 'З' and curr != prev %}<a name="З"></a>{% set prev = 'З' %}{% endif %}
+                {% if record[1]  starts with  'И' %}{% set curr = 'И' %}{% endif %}
+            {% if record[1] starts with 'И' and curr != prev %}<a name="И"></a>{% set prev = 'И' %}{% endif %}
+                {% if record[1]  starts with  'К' %}{% set curr = 'К' %}{% endif %}
+            {% if record[1] starts with 'К' and curr != prev %}<a name="К"></a>{% set prev = 'К' %}{% endif %}
+                {% if record[1]  starts with  'Л' %}{% set curr = 'Л' %}{% endif %}
+            {% if record[1] starts with 'Л' and curr != prev %}<a name="Л"></a>{% set prev = 'Л' %}{% endif %}
+                {% if record[1]  starts with  'М' %}{% set curr = 'М' %}{% endif %}
+            {% if record[1] starts with 'М' and curr != prev %}<a name="М"></a>{% set prev = 'М' %}{% endif %}
+                {% if record[1]  starts with  'Н' %}{% set curr = 'Н' %}{% endif %}
+            {% if record[1] starts with 'Н' and curr != prev %}<a name="Н"></a>{% set prev = 'Н' %}{% endif %}
+                {% if record[1]  starts with  'О' %}{% set curr = 'О' %}{% endif %}
+            {% if record[1] starts with 'О' and curr != prev %}<a name="О"></a>{% set prev = 'О' %}{% endif %}
+                {% if record[1]  starts with  'П' %}{% set curr = 'П' %}{% endif %}
+            {% if record[1] starts with 'П' and curr != prev %}<a name="П"></a>{% set prev = 'П' %}{% endif %}
+                {% if record[1]  starts with  'Р' %}{% set curr = 'Р' %}{% endif %}
+            {% if record[1] starts with 'Р' and curr != prev %}<a name="Р"></a>{% set prev = 'Р' %}{% endif %}
+                {% if record[1]  starts with  'С' %}{% set curr = 'С' %}{% endif %}
+            {% if record[1] starts with 'С' and curr != prev %}<a name="С"></a>{% set prev = 'С' %}{% endif %}
+                {% if record[1]  starts with  'Т' %}{% set curr = 'Т' %}{% endif %}
+            {% if record[1] starts with 'Т' and curr != prev %}<a name="Т"></a>{% set prev = 'Т' %}{% endif %}
+                {% if record[1]  starts with  'У' %}{% set curr = 'У' %}{% endif %}
+            {% if record[1] starts with 'У' and curr != prev %}<a name="У"></a>{% set prev = 'У' %}{% endif %}
+                {% if record[1]  starts with  'Ф' %}{% set curr = 'Ф' %}{% endif %}
+            {% if record[1] starts with 'Ф' and curr != prev %}<a name="Ф"></a>{% set prev = 'Ф' %}{% endif %}
+                {% if record[1]  starts with  'Х' %}{% set curr = 'Х' %}{% endif %}
+            {% if record[1] starts with 'Х' and curr != prev %}<a name="Х"></a>{% set prev = 'Х' %}{% endif %}
+                {% if record[1]  starts with  'Ц' %}{% set curr = 'Ц' %}{% endif %}
+            {% if record[1] starts with 'Ц' and curr != prev %}<a name="Ц"></a>{% set prev = 'Ц' %}{% endif %}
+                {% if record[1]  starts with  'Ч' %}{% set curr = 'Ч' %}{% endif %}
+            {% if record[1] starts with 'Ч' and curr != prev %}<a name="Ч"></a>{% set prev = 'Ч' %}{% endif %}
+                {% if record[1]  starts with  'Ш' %}{% set curr = 'Ш' %}{% endif %}
+            {% if record[1] starts with 'Ш' and curr != prev %}<a name="Ш"></a>{% set prev = 'Ш' %}{% endif %}
+                {% if record[1]  starts with  'Э' %}{% set curr = 'Э' %}{% endif %}
+            {% if record[1] starts with 'Э' and curr != prev %}<a name="Э"></a>{% set prev = 'Э' %}{% endif %}
+                {% if record[1]  starts with  'Ю' %}{% set curr = 'Ю' %}{% endif %}
+            {% if record[1] starts with 'Ю' and curr != prev %}<a name="Ю"></a>{% set prev = 'Ю' %}{% endif %}
+                {% if record[1]  starts with  'Я' %}{% set curr = 'Я' %}{% endif %}
+            {% if record[1] starts with 'Я' and curr != prev %}<a name="Я"></a>{% set prev = 'Я' %}{% endif %}
+            {% if byTranslator %}
+            <li class="translators list"><a href="./poems.php?action=show&translator_id={{ record[0] }}">{{ record[1] }}</a></li>
+            {% else %}
+            <li class="translators list"><a href="./translators.php?action=show&record_id={{ record[0] }}">{{ record[1] }}</a></li>
+            {% endif %}
                 {% endfor %}
-            </ol>
+                </ol>
+                {% endapply %}
             </div>
             {% elseif search %}
             <form action="./translators.php?action=search&posted=1" method="POST">

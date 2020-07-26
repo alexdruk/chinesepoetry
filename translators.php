@@ -6,6 +6,7 @@ $records = array();
 if ($_GET['action'] == 'showall') {
     $template_info["header"] ='Все переводчики';
     $template_info["showall"] = true;
+    $template_info["byTranslator"] = false;
     $template_info["search"] = false;
     $records = getAllfromTranslators();
 	$template_info["records"] = $records;
