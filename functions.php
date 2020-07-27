@@ -700,6 +700,34 @@ function getAllfromTranslators() {
 	}
 }
 /**
+ * get a list of all records from table translators who is present in antology
+ *
+ * @return array array of records
+ * @throws DBException
+ */
+function getAllfromPresentTranslators() {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT `translator_id`, `full_name`, `lit_name`, `real_name`, `first_name`, `father_name`, `pseudonyms`, `born`, `born_place`, `died`, `died_place`, `present` FROM  translators WHERE `present`=1 ORDER BY full_name ASC;')) {
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($translator_id, $full_name, $lit_name, $real_name, $first_name, $father_name, $pseudonyms, $born, $born_place, $died, $died_place, $present)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($translator_id, $full_name, $lit_name, $real_name, $first_name, $father_name, $pseudonyms, $born, $born_place, $died, $died_place, $present);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
  * insert a new records into table translators
  *
  * @param string  full_name Полное имя с датами required

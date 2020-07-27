@@ -33,8 +33,13 @@ elseif ($_GET['action'] == 'search') {
     $template = $twig->load('translators_showall.html.twig');
 }
 elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
-    $record_id = $_GET['record_id'];
-    list($id,$translator_id,$full_name,$dates,$summary,$img,$doc_text) = getTranslatorDescByID($record_id);
+    $translator_id = $_GET['record_id'];
+    list($id,$translator_id,$full_name,$dates,$summary,$img,$doc_text) = getTranslatorDescByID($translator_id);
+    list($translator_id, $full_name, $lit_name, $real_name, $first_name, $father_name, $pseudonyms, $born, $born_place, $died, $died_place, $present) = getByIDFromTranslators($translator_id);
+    $template_info["present"] = false;
+    if ($present) {
+        $template_info["present"] = true;
+    }
     $template_info["header"] = $full_name;
     $template_info["dates"] = $dates;
     $template_info["summary"] = $summary;
