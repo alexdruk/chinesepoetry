@@ -21,7 +21,7 @@ if ($_GET['action'] == 'byAuthor') {
 }
 elseif ($_GET['action'] == 'byTranslator') {
     $template_info["header"] ='По переводчикам';
-    $records = getAllfromTranslators();
+    $records = getAllfromPresentTranslators();
 #    list($translator_id, $full_name, $lit_name, $real_name, $first_name, $father_name, $pseudonyms, $born, $born_place, $died, $died_place, $present) = $records;
     $template_info["search"] = false;
 #    $template_info["byAuthor"] = false;
