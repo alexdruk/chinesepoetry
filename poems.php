@@ -168,7 +168,8 @@ elseif  ( ($_GET['action'] == 'show') && (array_key_exists('topic_id', $_GET)) &
     $template_info["title"] ='Все стихи по теме: "'.$topic_name.'"';
     $template = $twig->load('at_list.html.twig');
 }
-elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0)  && ($_GET['poem_id'] > 0) ){
+
+elseif ( ($_GET['action'] == 'show')  && ($_GET['poem_id'] > 0) ){
     #MAIN CODE TO SHOW POEMS
     $poem_id = $_GET['poem_id'];
     $records = getPoemsByPoemID($poem_id);
