@@ -61,7 +61,8 @@
             <h4 class="poems poem_name">{{ otherTranslation['header'] }}</h4>
             <ul>
                 {% for record in otherTranslation.translations %}
-                <li class="otherTranslations list"><a href="./poems.php?action=show&record_id={{ record['tr_id'] }}&poem_id={{ record['id'] }}">{{ record['translator']|raw }} {{ record['poem_name']|raw }}</a></li>
+
+                <li class="otherTranslations list"><a href="./poems.php?action=show&poem_id={{ record['id'] }}">{{ record['translator']|raw }} {{ record['poem_name']|raw }}</a></li>
                 {% endfor %}
             </ul>
         </div>
