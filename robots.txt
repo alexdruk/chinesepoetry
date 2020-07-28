@@ -6,4 +6,4 @@ Disallow: /admin/
 User-agent: *
 Allow: /
 
-Sitemap: http://www.chinese-poetry.ru/sitemap.xml
+Sitemap: http://www.chinese-poetry.ru/Sitemap.xml
