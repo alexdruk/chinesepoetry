@@ -41,6 +41,7 @@ if (array_key_exists('action', $_GET)) {
             }
             $records = searchBiblio($pattern);       
             $template_info["records"] = $records;
+            $template_info["show_alphabet"] = false;
             $template_info["header"] ='Результаты поиска';
             $template_info["special_message"] = false;
             if (count($records) < 1) {
@@ -56,6 +57,7 @@ elseif ($_GET['biblio_id']) {
         $template_info["header"] ='Литературный источник';
         $records = getFullBiblioByID($b_id);       
 		$template_info["records"] = $records;
+        $template_info["show_alphabet"] = false;
         $template_info["special_message"] = false;
         $template_info["title"] ='Литературный источник';
         $template_info["page_description"] = 'Литературный источник: '.implode($records);
@@ -63,6 +65,7 @@ elseif ($_GET['biblio_id']) {
     else {
         $template_info["header"] ='Информация по источнику с данным идентификатором отсутствует';
         $template_info["records"] = false;
+        $template_info["show_alphabet"] = false;
         $template_info["special_message"] = false;
     }
     $template = $twig->load('biblio.html.twig');
