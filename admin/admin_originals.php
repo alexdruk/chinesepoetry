@@ -20,7 +20,7 @@ if (array_key_exists('action', $_GET)) {
 		}
 		else {
 			$_POST = array_map("trim",$_POST);
-			$_POST = array_map("addslashes",$_POST); 			
+#			$_POST = array_map("addslashes",$_POST); 			
 			$error = false;
 			$success = false;
             $author_id = $_POST['author_id'];
@@ -34,7 +34,7 @@ if (array_key_exists('action', $_GET)) {
             $poem_code = $_POST['poem_code'];
             $poem_text = $_POST['poem_text']; 
 			$r_id = originals_insert_record($author_id, $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $poem_name_zh, $poem_name_ru, $poem_code, $biblio_id, $poem_text);
-			if ($r_id > 0) {
+            if ($r_id > 0) {
 				$success = 'Success! A new record was created id='.$r_id;
 			}
 			else {

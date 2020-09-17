@@ -657,3 +657,333 @@ VALUES ('example', '90.125.218.173', 'http://chinese-poetry.ru/poems.php?action=
 alter table mistakes add index mistake_ind(mistake(200));
 alter table mistakes add index url_ind(url);
 alter table mistakes add index ip_ind(ip);
+
+select * from authors where full_name like 'ЦЗЕ СИСЫ%';
+update authors SET dates = REGEXP_REPLACE(dates, '–', '-'), full_name = REGEXP_REPLACE(full_name, '–', '-') 
+where dates  RLIKE '(.*–.*)';
+update authors SET dates = REGEXP_REPLACE(dates, ' -', '-'), full_name = REGEXP_REPLACE(full_name, ' -', '-') 
+where dates  RLIKE '(.* +-.*)';
+update authors SET dates = REGEXP_REPLACE(dates, '- ', '-'), full_name = REGEXP_REPLACE(full_name, '- ', '-') 
+where dates  RLIKE '(.*- +.*)';
+update authors SET dates = REGEXP_REPLACE(dates, 'н\.э\.', 'н\. э\.'), full_name = REGEXP_REPLACE(full_name, 'н\.э\.', 'н\. э\.') 
+where dates  RLIKE '(.*н\.э\..*)';
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'ЛАО-ЦЗЫ%';
+update desc_tmp set author_id=101 where desc_id =1;
+update authors set full_name = 'ЛАО-ЦЗЫ (VI-V вв. до н. э.)', dates='(VI-V вв. до н. э.)' where author_id=101; 
+
+select author_id, full_name from authors where full_name like 'КНИГА%';
+update desc_tmp set author_id=95 where desc_id =3;
+
+select author_id, full_name from authors where full_name like 'ДЕВЯТНАДЦАТЬ%';
+update desc_tmp set author_id=73 where desc_id =4;
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'ЮЭФУ %';
+update desc_tmp set author_id=419 where desc_id =5;
+update authors set full_name = 'ЮЭФУ (206 до н. э. - 220 н. э.)', dates='(206 до н. э. - 220 н. э.)' where author_id=419; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'ЦЮЙ ЮАНЬ%';
+update desc_tmp set author_id=337 where desc_id =6;
+update authors set full_name = 'ЦЮЙ ЮАНЬ (340?-278 до н. э.)', dates='(340?-278 до н. э.)' where author_id=337; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'СУН ЮЙ%';
+update desc_tmp set author_id=206 where desc_id =7;
+update authors set full_name = 'СУН ЮЙ (III в. до н. э.)', dates='(III в. до н. э.)' where author_id=206; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'ЦЗЯ И%';
+update desc_tmp set author_id=321 where desc_id =8;
+update authors set full_name = 'ЦЗЯ И (201-169 до н. э.)', dates='(201-169 до н. э.)' where author_id=321; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'ХУАЙНАНЬ СЯОШАНЬ%';
+update desc_tmp set author_id=287 where desc_id =9;
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'ЛЮ ЧЖЭНЬ%';
+update desc_tmp set author_id=152 where desc_id =13;
+update authors set full_name = 'ЛЮ ЧЖЭНЬ (170?-217)', dates='(170?-217)' where author_id=152; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'ГУ КАЙЧЖИ%';
+update desc_tmp set author_id=57 where desc_id =31;
+update authors set full_name = 'ГУ КАЙЧЖИ (344?-406)', dates='(344?-406)' where author_id=57; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'БАО ЧЖАО%';
+update desc_tmp set author_id=5 where desc_id =34;
+update authors set full_name = 'БАО ЧЖАО (414?-466)', dates='(414?-466)' where author_id=5; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'ЖЭНЬ ФАН %';
+update desc_tmp set author_id=85 where desc_id =39;
+update authors set full_name = 'ЖЭНЬ ФАН (460-508)', dates='(460-508)' where author_id=85; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'ВЭЙ ЧЭНЦИН %';
+update desc_tmp set author_id=45 where desc_id =60;
+update authors set full_name = 'ВЭЙ ЧЭНЦИН (640?-707?)', dates='(640?-707?)' where author_id=45; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'ЛУ ЦЗУНЬ %';
+update desc_tmp set author_id=131 where desc_id =62;
+update authors set full_name = 'ЛУ ЦЗУНЬ (708?)', dates='(708?)' where author_id=131; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'ХАНЬШАНЬ-ЦЗЫ %';
+update desc_tmp set author_id=283 where desc_id =65;
+update authors set full_name = 'ХАНЬШАНЬ-ЦЗЫ (конец VII - начало VIII вв.)', dates='(конец VII - начало VIII вв.)' where author_id=283; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'БО СИНЦЗЯНЬ %';
+update desc_tmp set author_id=6 where desc_id =83;
+update authors set full_name = 'БО СИНЦЗЯНЬ (770?-816?)', dates='(770?-816?)' where author_id=6; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'ЛЮ ЦЗУНЪЮАНЬ%';
+update desc_tmp set author_id=147 where desc_id =85;
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'ВЭНЬ ВЭЙ%';
+update desc_tmp set author_id=47 where desc_id =88;
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'ЧЖАН ЯНЬ%';
+update desc_tmp set author_id=359 where desc_id =89;
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'ЛЮ ЮЙСИ %';
+update desc_tmp set author_id=155 where desc_id =90;
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'ВЭЙ ИНЪУ%';
+update desc_tmp set author_id=43 where desc_id =91;
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'ВАН ЧЖИХУАНЬ %';
+update desc_tmp set author_id=35 where desc_id =104;
+update authors set full_name = 'ВАН ЧЖИХУАНЬ (688-742)', dates='(688-742)' where author_id=35; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'ЛУ ЧЖУАНЬ%';
+update desc_tmp set author_id=135 where desc_id =107;
+update authors set full_name = 'ЛУ ЧЖУАНЬ (конец VII - начало VIII в.)', dates='(конец VII - начало VIII в.)' where author_id=135; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'ЛЮ ЧАНЦИН%';
+update desc_tmp set author_id=151 where desc_id =110;
+update authors set full_name = 'ЛЮ ЧАНЦИН (709?-780?)', dates='(709?-780?)' where author_id=151; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'СЫКУН ТУ%';
+update desc_tmp set author_id=210 where desc_id =141;
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'ЯНЬ ШУ%';
+update desc_tmp set author_id=428 where desc_id =144;
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'ЧЖАН ЛЭЙ%';
+update desc_tmp set author_id=345 where desc_id =154;
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name from authors where full_name like 'СУ ШИ%';
+update desc_tmp set author_id=201 where desc_id =158;
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name from authors where full_name like 'ЧЭНЬ ШИДАО%';
+update desc_tmp set author_id=382 where desc_id =159;
+update authors set full_name = 'ЧЭНЬ ШИДАО (1053-1102)', proper_name='Чэнь Шидао' where author_id=382; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ЛИ ЦИНЧЖАО%';
+update desc_tmp set author_id=113 where desc_id =165;
+update authors set full_name = 'ЛИ ЦИНЧЖАО (1084-1151?)', dates='(1084-1151?)' where author_id=113; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ЧЖАО ШИСЮ%';
+update desc_tmp set author_id=363 where desc_id =177;
+update authors set full_name = 'ЧЖАО ШИСЮ (1170?-1225?)', dates='(1170?-1225?)' where author_id=363; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ЦЮЙ ЮЙЧЖИ%';
+update desc_tmp set author_id=338 where desc_id =178;
+update authors set full_name = 'ЦЮЙ ЮЙЧЖИ (1200?)', dates='(1200?)' where author_id=338; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ДАЙ ФУГУ%';
+update desc_tmp set author_id=70 where desc_id =179;
+update authors set full_name = 'ДАЙ ФУГУ (1167-1248)', dates='(1167-1248)' where author_id=70; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ЧЭНЬ ЮАНЬПИН%';
+update desc_tmp set author_id=390 where desc_id =184;
+update authors set full_name = 'ЧЭНЬ ЮАНЬПИН (1240?)', dates='(1240?)' where author_id=390; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'БО ПУ%';
+update desc_tmp set author_id=3 where desc_id =193;
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ЧЭНЬ ШИНЮЙ%';
+update desc_tmp set author_id=389 where desc_id =197;
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ДЭН ГУАНЦЗЯНЬ%';
+update desc_tmp set author_id=81 where desc_id =198;
+update authors set full_name = 'ДЭН ГУАНЦЗЯНЬ (1270?)', dates='(1270?)' where author_id=81; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ЛО ГУАНЬЧЖУН%';
+update desc_tmp set author_id=124 where desc_id =212;
+update authors set full_name = 'ЛО ГУАНЬЧЖУН (1330—1400)', dates='(1330—1400)' where author_id=124; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ВАН ГУН%';
+update desc_tmp set author_id=18 where desc_id =225;
+update authors set full_name = 'ВАН ГУН (1398?-?)', dates='(1398?-?)' where author_id=18; 
+
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ВАН ВЭЙ%';
+update desc_tmp set author_id=16 where desc_id =227;
+update authors set full_name = 'ВАН ВЭЙ (конец XIV - начало XV вв.)', dates='(конец XIV - начало XV вв.)' where author_id=16; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'У ЧЭНЪЭНЬ%';
+update desc_tmp set author_id=256 where desc_id =242;
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ВАН ВЭЙ%';
+update desc_tmp set author_id=16 where desc_id =227;
+update authors set full_name = 'ВАН ВЭЙ (конец XIV - начало XV вв.)', dates='(конец XIV - начало XV вв.)' where author_id=16; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ЛИ ПАНЬЛУН%';
+update desc_tmp set author_id=107 where desc_id =243;
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ВАН ШИЧЖЭНЬ %';
+update desc_tmp set author_id=38 where desc_id =244;
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ЧЭН ЦЗЯСУЙ%';
+update desc_tmp set author_id=381 where desc_id =247;
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ФЫН МЭН-ЛУН (1576-1646)%';
+update desc_tmp set author_id=267 where desc_id =250;
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ФАН ВЭЙИ (1585-1668)%';
+update desc_tmp set author_id=258 where desc_id =251;
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ЦЗИНЬ ГУ ЦИГУАНЬ (первая половина XVII в.)%';
+update desc_tmp set author_id=312 where desc_id =252;
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ЦЗИНЬ ЧЖУН (XVII в.)%';
+update desc_tmp set author_id=314 where desc_id =253;
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ФУ ВАНЬЧУНЬ (1631-1647)%';
+select * from desc_tmp where author like 'ФУ ВАН%';
+update desc_tmp set author_id=264 where desc_id =269;
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'СУН ДЭНЧУНЬ%';
+update desc_tmp set author_id=202 where desc_id =272;
+select * from authors  where author_id=16;
+select * from authors  where full_name like 'СУН ДЭНЧУНЬ%';
+update authors set full_name = 'СУН ДЭНЧУНЬ (1633-?)', dates='(1633-?)' where author_id=202; 
+
+update authors set full_name = 'ВАН ВЭЙ (конец XIV - начало XV вв.)', dates='(конец XIV - начало XV вв.)' where author_id=16; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ХАНЬ СЯ%';
+update desc_tmp set author_id=275 where desc_id =274;
+update authors set full_name = 'ХАНЬ СЯ (1644-?)', dates='(1644-?)' where author_id=275; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ВАН ХУН%';
+update desc_tmp set author_id=27 where desc_id =275;
+update authors set full_name = 'ВАН ХУН (1644?)', dates='(1644?)' where author_id=27; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ЮЙ ХУАНХАО%';
+update desc_tmp set author_id=416 where desc_id =278;
+update authors set full_name = 'ЮЙ ХУАНХАО (1700?)', dates='(1700?)' where author_id=416; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'СУН ЛИНЪЮНЬ%';
+update desc_tmp set author_id=203 where desc_id =279;
+update authors set full_name = 'СУН ЛИНЪЮНЬ (1700?)', dates='(1700?)' where author_id=203; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ЖЧУ ЦЗИН%';
+update desc_tmp set author_id=84 where desc_id =280;
+update authors set full_name = 'ЖЧУ ЦЗИН (1700?)', dates='(1700?)' where author_id=84; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ЦАО СЮЭЦИНЬ%';
+update desc_tmp set author_id=306 where desc_id =282;
+update authors set full_name = 'ЦАО СЮЭЦИНЬ (1724?-1764?)', dates='(1724?-1764?)' where author_id=306; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ЦЗУН БАЙХУА%';
+update desc_tmp set author_id=318 where desc_id =304;
+update authors set full_name = 'ЦЗУН БАЙХУА (1897-1986)', dates='(1897-1986)' where author_id=318; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ШИ%';
+update desc_tmp set author_id=399 where desc_id =363;
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'ХАНЬ%';
+update desc_tmp set author_id=282 where desc_id =381;
+update authors set full_name = 'ХАНЬ ДУН (1961-ныне)', dates='(1961-ныне)' where author_id=282; 
+
+select * from desc_tmp where author_id=0;
+select author_id, full_name, proper_name, dates from authors where full_name like 'НЕИЗВЕСТНЫЕ %';
+update desc_tmp set author_id=172 where desc_id =429;
+
+select * from authors where full_name ='ВЭЙ ИНЪУ (737-791?)';
+select * from authors where full_name like 'ВЭЙ ИНЪУ%';
+update authors set full_name = 'ВЭЙ ИНЪУ (737-791?)', dates='(737-791?)' where author_id=43; 
+
+select * from authors where full_name ='ВЭЙ ЧЭНЦИН (640-706)';
+select * from authors where full_name like'ВЭЙ Ч%';
+update authors set full_name = 'ВЭЙ ЧЭНЦИН (640-706)', dates='(640-706)' where author_id=45; 
+
+select * from authors where full_name ='ЛО ГУАНЬЧЖУН (1330—1400)';
+select * from authors where full_name ='СУН ЮЙ (III в. до н. э.)';
+select * from authors where full_name ='ФЫН МЭН-ЛУН (1576-1646)';
+select * from authors where full_name ='ЧЖАН ЛЭЙ (1054-1114)';
+select * from authors where full_name ='ШИ ЧЖИ (1948-?)';
+
+alter table authors  drop column doc_text;
+CREATE TABLE IF NOT EXISTS desc_tmp2 (
+    -- poems_id INT AUTO_INCREMENT PRIMARY KEY,
+    author_id INT NOT NULL,
+    doc_text MEDIUMTEXT
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_0900_ai_ci;
+select max(length(author)) from desc_tmp;
+insert into desc_tmp2 (select author_id, doc_text from desc_tmp  order by author_id);
+select * from desc_tmp2;
+
+ALTER TABLE desc_tmp2 
+ADD column desc_id INT AUTO_INCREMENT PRIMARY KEY FIRST;
+
+
+RENAME TABLE desc_tmp2 TO a_description;
+
+drop table desc_tmp;
+select * from a_description;
+
+alter table a_description add index authors_ind(author_id);
+CREATE FULLTEXT INDEX desc_text_ind ON a_description (doc_text);

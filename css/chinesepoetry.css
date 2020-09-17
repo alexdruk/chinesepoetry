@@ -285,11 +285,6 @@ p:empty {
     color: red;
 }
 
-.centerimage {
-    display: inline-block;
-    padding: 1px;
-}
-
 .images {
     text-align: center;
 }
@@ -370,11 +365,12 @@ cite a,
     font-style: italic;
     color: #6c757d;
 }
-.centralimage {
+.centerimage {
     padding: 1px;
     margin-bottom: 15px;   
+    display: inline-block;
 }
-.centralimage,
+.centerimage,
 .imageright,
 .imageleft {
     border: 0.75pt solid #0c0c0c;

@@ -24,7 +24,7 @@ if (array_key_exists('action', $_GET)) {
 		}
 		else {
 			$_POST = array_map("trim",$_POST);
-			$_POST = array_map("addslashes",$_POST); 
+#			$_POST = array_map("addslashes",$_POST); 
 /*			foreach ($_POST  as $key => $value) {
 				if (empty($value)) {
 					echo "<h1>emty val</h1>";

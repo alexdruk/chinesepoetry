@@ -1040,7 +1040,7 @@ function originals_insert_record($author_id, $cycle_zh, $cycle_ru, $subcycle_zh,
 	$db = UserConfig::getDB();
 	$r_id = NULL;
 	if ($stmt = $db->prepare('INSERT INTO originals (author_id, cycle_zh, cycle_ru, subcycle_zh, subcycle_ru, poem_name_zh, poem_name_ru, poem_code, biblio_id, poem_text) 
-		VALUES (?, ?, ?, ?, ?, ?, ?)')) {
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')) {
 		if (!$stmt->bind_param('isssssssis', $author_id, $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $poem_name_zh, $poem_name_ru, $poem_code, $biblio_id, $poem_text)) {
 			throw new DBBindParamException($db, $stmt);
 		}
