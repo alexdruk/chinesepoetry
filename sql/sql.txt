@@ -987,3 +987,10 @@ select * from a_description;
 
 alter table a_description add index authors_ind(author_id);
 CREATE FULLTEXT INDEX desc_text_ind ON a_description (doc_text);
+
+
+update authors set full_name = 'ЛО ГУАНЬЧЖУН (1330-1400)' where author_id = 124;
+update authors SET dates = REGEXP_REPLACE(dates, '—', '-'), full_name = REGEXP_REPLACE(full_name, '–', '-') 
+where dates  RLIKE '(.*—.*)';
+update authors set proper_name = 'Хань Дун' where author_id = 282;
+update authors set full_name = 'СУН ЮЙ (298? до н. э - 222? до н. э)', dates = '(298? до н. э - 222? до н. э)';
