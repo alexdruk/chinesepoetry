@@ -1,9 +1,6 @@
 # Group 1
 User-agent: *
+Allow: /
 Disallow: /admin/
 
-# Group 2
-User-agent: *
-Allow: /
-
-Sitemap: http://www.chinese-poetry.ru/Sitemap.xml
+Sitemap: http://www.chinese-poetry.ru/sitemap.xml
