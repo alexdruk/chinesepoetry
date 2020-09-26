@@ -994,3 +994,112 @@ update authors SET dates = REGEXP_REPLACE(dates, '—', '-'), full_name = REGEXP
 where dates  RLIKE '(.*—.*)';
 update authors set proper_name = 'Хань Дун' where author_id = 282;
 update authors set full_name = 'СУН ЮЙ (298? до н. э - 222? до н. э)', dates = '(298? до н. э - 222? до н. э)';
+
+UPDATE poems SET poem_text = REPLACE(poem_text, 'class="-"', 'class="t22"')
+-- select  poems_id, poem_text from poems 
+where poem_text RLIKE '<p class="-">' 
+and poem_text NOT RLIKE '<p class="-" style';
+
+UPDATE poems SET poem_text = REGEXP_REPLACE(poem_text, '<p  style', '<p style')
+-- select  poems_id, poem_text from poems 
+where poem_text RLIKE '<p  style';
+
+UPDATE poems SET poem_text = REPLACE(poem_text, '<p class="-">', '<p class="t22">')
+where poem_text RLIKE '<p class="-">' 
+and poem_text  RLIKE '<p class="-" style'
+and poems_id in (40,41,43,609,621,697,726,739,786,817,852,904,908,978,991,1201,2087,2131,2337,2373,2377,2544,2559,2868);
+
+UPDATE poems SET poem_text = REPLACE(poem_text, 'class="-"', '') 
+-- where poem_text RLIKE '<p class="-">' 
+-- and poem_text  RLIKE '<p class="-" style'
+where poems_id in (40,41,43,609,621,697,726,739,786,817,852,904,908,978,991,1201,2087,2131,2337,2373,2377,2544,2559,2868);
+
+UPDATE poems SET poem_text =  REGEXP_REPLACE(poem_text, '<p>&nbsp;</p>$', '') 
+-- select poems_id, poem_text from poems
+where poem_text RLIKE '<p>&nbsp;</p>$';
+
+UPDATE poems SET poem_text =  REGEXP_REPLACE(poem_text, '<p>&nbsp;</p>\n$', '') 
+-- select poems_id, poem_text from poems
+where poem_text RLIKE '<p>&nbsp;</p>\n$';
+
+UPDATE poems SET poem_text =  REGEXP_REPLACE(poem_text, '<p class="a5">&nbsp;</p>$', '') 
+-- select poems_id, poem_text from poems
+where poem_text RLIKE '<p class="a5">&nbsp;</p>$';
+
+UPDATE poems SET poem_text =  REGEXP_REPLACE(poem_text, '<p class="a5">&nbsp;</p>$', '') 
+-- select poems_id, poem_text from poems
+where poem_text RLIKE '<p class="a5">&nbsp;</p>$';
+
+update poems 
+set poem_hash = MD5(poem_text);
+
+select poems_id, poem_text from poems where poem_text RLIKE 'class="-"';
+UPDATE poems SET poem_text = REPLACE(poem_text, 'class="-"', '')
+-- select poems_id, poem_text from poems 
+where poem_text RLIKE 'class="-" style';
+
+#all lines
+SELECT 
+--    poems_id, poem_text,    
+    CHAR_LENGTH(poem_text) - CHAR_LENGTH(REPLACE(poem_text, '</p>', SPACE(LENGTH('</p>')-1))) 
+        AS `count`    
+FROM poems where poems_id=2778; #35
+
+#regular lines
+SELECT 
+--    poems_id, poem_text,    
+    CHAR_LENGTH(poem_text) - CHAR_LENGTH(REPLACE(poem_text, '<p>', SPACE(LENGTH('<p>')-1))) 
+        AS `count`    
+FROM poems where poems_id=2778; #19
+
+#empty lines
+SELECT 
+--    poems_id, poem_text,    
+    CHAR_LENGTH(poem_text) - CHAR_LENGTH(REGEXP_REPLACE(poem_text, '<p>&nbsp;</p>', SPACE(LENGTH('<p>&nbsp;</p>')-1))) 
+        AS `count`    
+FROM poems where poems_id=2778; #3
+
+#line with indent
+SELECT 
+    poems_id, poem_text,    
+    CHAR_LENGTH(poem_text) - CHAR_LENGTH(REGEXP_REPLACE(poem_text, '<p style', SPACE(LENGTH('<p style')-1))) 
+        AS `count`    
+FROM poems where poems_id=786; #3
+
+#line with indent
+SELECT 
+    poems_id, poem_text,    
+    CHAR_LENGTH(poem_text) - CHAR_LENGTH(REGEXP_REPLACE(poem_text, '"t22"', SPACE(LENGTH('"t22"')-1))) 
+        AS `count`    
+FROM poems where poems_id=786; #16
+
+#line with indent
+SELECT 
+--    poems_id, poem_text,    
+    CHAR_LENGTH(poem_text) - CHAR_LENGTH(REPLACE(poem_text, '<p class="t22"', SPACE(LENGTH('<p class="t22"')-1))) 
+        AS `count`    
+FROM poems where poems_id=549; #3
+
+alter table poems drop column totallines;
+alter table poems drop column fulllines;
+
+alter table poems add column totallines INT default 0;
+
+UPDATE poems SET totallines = (
+	(CHAR_LENGTH(poem_text) - CHAR_LENGTH(REPLACE(poem_text, '<p>', SPACE(LENGTH('<p>')-1)))) #lines without indent
++   (CHAR_LENGTH(poem_text) - CHAR_LENGTH(REGEXP_REPLACE(poem_text, '"t22"', SPACE(LENGTH('"t22"')-1)))) #lines wit indent
++   (CHAR_LENGTH(poem_text) - CHAR_LENGTH(REGEXP_REPLACE(poem_text, '<p style', SPACE(LENGTH('<p style')-1)))) #lines with indent
+-   (CHAR_LENGTH(poem_text) - CHAR_LENGTH(REPLACE(poem_text, '<p>&nbsp;</p>', SPACE(LENGTH('<p>&nbsp;</p>')-1)))) #spaces
+);
+
+alter table poems add column fulllines INT default 0;
+
+UPDATE poems SET fulllines = (
+	(CHAR_LENGTH(poem_text) - CHAR_LENGTH(REPLACE(poem_text, '<p>', SPACE(LENGTH('<p>')-1)))) #lines without indent
+-- +   (CHAR_LENGTH(poem_text) - CHAR_LENGTH(REGEXP_REPLACE(poem_text, '"t22"', SPACE(LENGTH('"t22"')-1)))) #lines wit indent
+-- +   (CHAR_LENGTH(poem_text) - CHAR_LENGTH(REGEXP_REPLACE(poem_text, '<p style', SPACE(LENGTH('<p style')-1)))) #lines with indent
+-   (CHAR_LENGTH(poem_text) - CHAR_LENGTH(REPLACE(poem_text, '<p>&nbsp;</p>', SPACE(LENGTH('<p>&nbsp;</p>')-1)))) #spaces
+);
+
+select * from poems;
+alter table poems add column genres varchar(250) default null;
