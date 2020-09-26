@@ -1103,3 +1103,6 @@ UPDATE poems SET fulllines = (
 
 select * from poems;
 alter table poems add column genres varchar(250) default null;
+
+alter table originals add column genres varchar(250) default null;
+alter table originals add column size varchar(250) default null;
