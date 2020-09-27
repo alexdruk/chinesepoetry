@@ -1134,7 +1134,10 @@ function getAllFromPoemsByAuthorID($author_id) {
 	$db = UserConfig::getDB();
 	$records = array();
 	$record = null;
-	if ($stmt = $db->prepare('SELECT * FROM  poems WHERE author_id = ? ORDER BY poems_id ASC;')) {
+	if ($stmt = $db->prepare('SELECT `poems_id`,`author_id`,`translator1_id`,`translator2_id`,
+	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,
+	`subcycle_ru`,`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id`,`poem_text`,`poem_hash`
+	FROM  poems WHERE author_id = ? ORDER BY poems_id ASC;')) {
 		if (!$stmt->bind_param('i', $author_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
@@ -1208,7 +1211,10 @@ function getPoemsByPoemID($poem_id) {
 	$db = UserConfig::getDB();
 	$records = array();
 	$record = null;
-	if ($stmt = $db->prepare('SELECT * FROM  poems WHERE poems_id = ?;')) {
+	if ($stmt = $db->prepare('SELECT `poems_id`,`author_id`,`translator1_id`,`translator2_id`,
+	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,
+	`subcycle_ru`,`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id`,`poem_text`,`poem_hash`
+	 FROM  poems WHERE poems_id = ?;')) {
 		if (!$stmt->bind_param('i', $poem_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
@@ -1507,21 +1513,45 @@ function searchPoems($pattern) {
 	$val = str_replace("%", "", $pattern);
 	$val = str_replace("_", "", $val);
 	$like = '%'.$val.'%';
-	$sql = "SELECT * FROM poems a WHERE MATCH (cycle_zh,cycle_ru,subcycle_zh,subcycle_ru,poem_name_zh, poem_name_ru,poem_text) against ('$pattern' IN NATURAL LANGUAGE MODE)
+	$sql = "SELECT `poems_id`,`author_id`,`translator1_id`,`translator2_id`,
+	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,
+	`subcycle_ru`,`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id`,`poem_text`,`poem_hash`
+	 FROM poems a WHERE MATCH (cycle_zh,cycle_ru,subcycle_zh,subcycle_ru,poem_name_zh, poem_name_ru,poem_text) against ('$pattern' IN NATURAL LANGUAGE MODE)
 	UNION DISTINCT 
-	SELECT * FROM poems  WHERE cycle_zh LIKE '$like'
+	SELECT `poems_id`,`author_id`,`translator1_id`,`translator2_id`,
+	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,
+	`subcycle_ru`,`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id`,`poem_text`,`poem_hash` 
+	FROM poems  WHERE cycle_zh LIKE '$like'
 	UNION DISTINCT 
-	SELECT * FROM poems WHERE cycle_ru LIKE '$like'
+	SELECT `poems_id`,`author_id`,`translator1_id`,`translator2_id`,
+	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,
+	`subcycle_ru`,`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id`,`poem_text`,`poem_hash` 
+	FROM poems WHERE cycle_ru LIKE '$like'
 	UNION DISTINCT 
-	SELECT * FROM poems WHERE subcycle_zh LIKE '$like'
+	SELECT `poems_id`,`author_id`,`translator1_id`,`translator2_id`,
+	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,
+	`subcycle_ru`,`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id`,`poem_text`,`poem_hash` 
+	FROM poems WHERE subcycle_zh LIKE '$like'
 	UNION DISTINCT 
-	SELECT * FROM poems WHERE subcycle_ru LIKE '$like'
+	SELECT `poems_id`,`author_id`,`translator1_id`,`translator2_id`,
+	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,
+	`subcycle_ru`,`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id`,`poem_text`,`poem_hash` 
+	FROM poems WHERE subcycle_ru LIKE '$like'
 	UNION DISTINCT 
-	SELECT * FROM poems WHERE poem_name_zh LIKE '$like'
+	SELECT `poems_id`,`author_id`,`translator1_id`,`translator2_id`,
+	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,
+	`subcycle_ru`,`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id`,`poem_text`,`poem_hash` 
+	FROM poems WHERE poem_name_zh LIKE '$like'
 	UNION DISTINCT 
-	SELECT * FROM poems WHERE poem_name_ru LIKE '$like'
+	SELECT `poems_id`,`author_id`,`translator1_id`,`translator2_id`,
+	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,
+	`subcycle_ru`,`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id`,`poem_text`,`poem_hash`
+	FROM poems WHERE poem_name_ru LIKE '$like'
 	UNION DISTINCT 
-	SELECT * FROM poems WHERE poem_text LIKE '$like'";
+	SELECT `poems_id`,`author_id`,`translator1_id`,`translator2_id`,
+	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,
+	`subcycle_ru`,`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id`,`poem_text`,`poem_hash` 
+	FROM poems WHERE poem_text LIKE '$like'";
 //print_r ($sql);
 	if ($stmt = $db->prepare($sql)) {
 		if (!$stmt->execute()) {
@@ -1674,7 +1704,11 @@ function makePoemName ($poem_name_zh, $poem_name_ru) {
 function getAtributesByAuthorID($author_id) {
 	$db = UserConfig::getDB();
 	$record = null;
-	if ($stmt = $db->prepare('SELECT * FROM authors_atrib WHERE author_id=? ;')) {
+	if ($stmt = $db->prepare('SELECT `atrib_id`,`author_id`,`palladian`,`zh_trad`,`zh_simple`,`pinyin`,`real_name`,`real_name_zh`,`real_name_simple`,
+	`real_name_pinyin`,`second_name`,`second_name_zh`,`second_name_simple`,`second_name_pinyin`,`postmortem_name`,
+	`postmortem_name_zh`,`postmortem_name_simple`,`postmortem_name_pinyin`,`pseudonim_name`,`pseudonim_name_zh`,
+	`pseudonim_name_simple`,`pseudonim_name_pinyin`,`nickname`,`nickname_zh`,`nickname_simple`,`nickname_pinyin`,`forsearch`
+	 FROM authors_atrib WHERE author_id=? ;')) {
 		if (!$stmt->bind_param('i', $author_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
@@ -1788,18 +1822,19 @@ $nickname,$nickname_zh,$nickname_simple,$nickname_pinyin,$forsearch) {
 function getTranslatorDescByID($translator_id) {
 	$db = UserConfig::getDB();
 	$record = null;
-	if ($stmt = $db->prepare('SELECT * FROM  translators_desc WHERE translator_id=?;')) {
+	if ($stmt = $db->prepare('SELECT  `translator_id`,`full_name`,`dates`,`summary`,`img`,`doc_text`
+	FROM  translators_desc WHERE translator_id=?;')) {
 		if (!$stmt->bind_param('i', $translator_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
-		if (!$stmt->bind_result($id,$translator_id,$full_name,$dates,$summary,$img,$doc_text)) {
+		if (!$stmt->bind_result($translator_id,$full_name,$dates,$summary,$img,$doc_text)) {
 			throw new DBBindResultException($db, $stmt);
 		}
 		while ($stmt->fetch() === TRUE) {
-			$record = array($id,$translator_id,$full_name,$dates,$summary,$img,$doc_text);
+			$record = array($translator_id,$full_name,$dates,$summary,$img,$doc_text);
 		}
 		$stmt->free_result();
 		$stmt->close();
