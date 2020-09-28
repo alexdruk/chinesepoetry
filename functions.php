@@ -153,7 +153,7 @@ function updateSourcesByID($biblio_id,$author,$book_name,$translator,$ref_name,$
 	$publisher = (!empty($publisher)) ? $publisher : NULL;
 	$code = (!empty($code)) ? $code : NULL;
 	$ISBN = (!empty($ISBN)) ? $ISBN : NULL;
-	$present = (!empty($present)) ? 0 : 1;
+#	$present = (!empty($present)) ? 0 : 1;
 	$r_id = NULL;
 /*	$sql = <<< SQL
 	'UPDATE `biblio` SET `author`=$author, `book_name`=$book_name, `translator`=$translator,
