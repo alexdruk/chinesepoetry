@@ -74,7 +74,7 @@ if (array_key_exists('action', $_GET)) {
 		if (preg_match("/^\d+$/", $_GET['record_id'])) {			
 			// if POST present 
 			if ((array_key_exists('posted', $_GET))  && (!empty($_POST))){
-//print_r ($_POST);
+#print_r ($_POST);
 				$biblio_id = $_GET['record_id'];
 				if (array_key_exists('author', $_POST)) {
 					$author = (!empty($_POST['author'])) ? $_POST['author'] : NULL;
@@ -106,9 +106,10 @@ if (array_key_exists('action', $_GET)) {
 				if (array_key_exists('ISBN', $_POST)) {
 					$ISBN = (!empty($_POST['ISBN'])) ? $_POST['ISBN'] : NULL;
 				}
-				if (array_key_exists('present', $_POST)) {
-					$present = (!empty($_POST['present'])) ? $_POST['present'] : NULL;
-				}
+				$present = $_POST['present'];
+#				if (array_key_exists('present', $_POST)) {
+#					$present = (!empty($_POST['present'])) ? $_POST['present'] : 0;
+#				}
 				$template_info["record_id"] = $biblio_id;
 				$template_info["author"] = $author;
 				$template_info["book_name"] = $book_name;
@@ -139,6 +140,7 @@ if (array_key_exists('action', $_GET)) {
 				$record = array();
 				$record = getByIDFromSources($_GET['record_id']);
 				list($biblio_id,$author,$book_name,$translator,$ref_name,$seria,$publisher,$year,$code,$biblio_name,$ISBN,$present) = $record;
+#print_r($record);
 				$template_info["record_id"] = $biblio_id;
 				$template_info["author"] = $author;
 				$template_info["book_name"] = $book_name;
