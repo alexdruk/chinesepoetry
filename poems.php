@@ -111,6 +111,7 @@ elseif  ( ($_GET['action'] == 'show') && (array_key_exists('author_id', $_GET)) 
     $author_id = $_GET['author_id'];
     $records = getWithoutPoem_textFromPoemsByAuthorID($author_id);
     $final = makeFinaTranslatorslArray ($records);
+//    print_r($final);
     list($author_html, $proper_name,  $dates,  $epoch) = makeAuthor($author_id);
     $template_info["header"] = $author_html;
     $template_info["byAuthor"] = false;
@@ -197,8 +198,7 @@ elseif ( ($_GET['action'] == 'show')  && ($_GET['poem_id'] > 0) ){
             $otherTranslations = array();
             foreach ($entries as $entry) {
                if ($entry[0] == $poems_id) { continue;}; #skip if the same id as current poem
-                list($id, $tr1, $tr2, $name_zh, $name_ru) = $entry;
-                list($junk, $tr_full_name, , , , , , , , , , ) = getByIDFromTranslators($tr1);
+                list($id, $tr1, $tr2, $tr_full_name, $name_zh, $name_ru) = $entry;
                 $trans = '<span class="translators">'.$tr_full_name.'</span>';
                 $name = makePoemName($name_zh, $name_ru);
                 array_push($otherTranslations, array('translator' => $trans, 'tr_id' =>$tr1, 'poem_name' => $name, 'id' => $id));
@@ -211,6 +211,12 @@ elseif ( ($_GET['action'] == 'show')  && ($_GET['poem_id'] > 0) ){
     }
     $topics = maketopics($topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id);
     $template_info["topics"] = $topics;
+    if (stripos($cycle_ru, 'Из') !== false) {
+        $fromcycle = true;
+    }
+    else {
+        $fromcycle = false;
+    }
     $cycle = makeCycle($cycle_ru, $cycle_zh);
     $subcycle = makeSubCycle($subcycle_ru, $subcycle_zh);
     $template_info["header"] = $author;
@@ -219,6 +225,7 @@ elseif ( ($_GET['action'] == 'show')  && ($_GET['poem_id'] > 0) ){
     $template_info["poem_name"] = $poem_name;
     $template_info["poem_text"] = $poem_text;
     $template_info["cycle"] = $cycle;
+    $template_info["fromcycle"] = $fromcycle;
     $template_info["subcycle"] = $subcycle;
     $template_info["biblio"] = false;
     if ($biblio_id) {
@@ -304,10 +311,16 @@ function makeTranslator($translator1_id, $translator2_id) {
     return $translator;    
 }
 function makeAuthor($author_id){
-    list($junk, , $proper_name,  $dates,  $epoch, ) = getByIDFromAuthors($author_id);
-    $author = '<a href="./authors.php?action=show&record_id='.$author_id.'"><span class="author name">'
-    .$proper_name.'</span> <span class="author dates">'.$dates.'</span></a>
-    <span class="epoch">'.$epoch.'</span>';
+    list($author_id, $full_name, $proper_name,  $dates,  $epoch, $present, $zh_trad, $zh_simple) = getByIDFromAuthors($author_id);
+    $author = '<a href="./authors.php?action=show&record_id='.$author_id.'"><span class="author name">'.$proper_name.'</span>
+    &nbsp;<span class="author dates">'.$dates.'</span></a>';
+    if ($zh_trad) {
+        $author .= '&nbsp;<span class="name zh">'.$zh_trad.'</span>';
+    }
+    else if ($zh_simple) {
+        $author .= '&nbsp;<span class="name zh">'.$zh_simple.'</span>';
+    }
+    $author .= '&nbsp;<span class="epoch">'.$epoch.'</span>';
     return array($author, $proper_name,  $dates,  $epoch);
 }
 function makeCycle($cycle_ru,$cycle_zh)  {
@@ -406,6 +419,16 @@ function makeFinaTranslatorslArray ($records) {
     }
     $arrTranslators = array_unique($arrTranslators);
     foreach ($arrTranslators as  $translator) {
+        preg_match('/id=\d+">(.+?)<\/a>/',$translator,$match);
+        $unsorted[$match[1]] = $translator;
+    }
+    ksort($unsorted);
+    $sorted = [];
+    foreach ($unsorted as  $translator) {
+        array_push($sorted, $translator);
+    }
+//print_r($sorted);
+    foreach ($sorted as  $translator) {
         $cycles = array();
         $poems = array();
         for ($i=0; $i < count($new_arr[$translator]) ; $i++) {

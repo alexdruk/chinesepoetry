@@ -350,7 +350,8 @@ function getAllfromAuthors() {
 	$db = UserConfig::getDB();
 	$records = array();
 	$record = null;
-	if ($stmt = $db->prepare('SELECT a.author_id, a.full_name, a.proper_name, a.dates,  a.epoch, a.present FROM  authors a ORDER BY a.full_name ASC;')) {
+	if ($stmt = $db->prepare('SELECT a.author_id, a.full_name, a.proper_name, a.dates,  a.epoch, a.present 
+	FROM  authors a ORDER BY a.full_name ASC;')) {
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
@@ -435,18 +436,21 @@ function updateAuthorsByID($author_id, $full_name, $proper_name,  $dates,  $epoc
 function getByIDFromAuthors($author_id) {
 	$db = UserConfig::getDB();
 	$record = null;
-	if ($stmt = $db->prepare('SELECT a.author_id, a.full_name, a.proper_name,  a.dates,  a.epoch, a.present FROM  authors a  WHERE author_id=?;')) {
+	if ($stmt = $db->prepare('SELECT a.author_id, a.full_name, a.proper_name,  a.dates,  a.epoch, a.present, b.zh_trad, b.zh_simple
+		FROM  authors a
+		INNER JOIN  authors_atrib b ON b.author_id = a.author_id 
+		WHERE a.author_id=?;')) {
 		if (!$stmt->bind_param('i', $author_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
-		if (!$stmt->bind_result($author_id, $full_name, $proper_name,  $dates,  $epoch, $present)) {
+		if (!$stmt->bind_result($author_id, $full_name, $proper_name,  $dates,  $epoch, $present, $zh_trad, $zh_simple)) {
 			throw new DBBindResultException($db, $stmt);
 		}
 		while ($stmt->fetch() === TRUE) {
-			$record = array($author_id, $full_name, $proper_name, $dates, $epoch, $present);
+			$record = array($author_id, $full_name, $proper_name, $dates, $epoch, $present, $zh_trad, $zh_simple);
 		}
 		$stmt->free_result();
 		$stmt->close();
@@ -627,9 +631,9 @@ function translators_insert_description($translator_id, $full_name, $dates, $img
 	$db = UserConfig::getDB();
 #	$desc = mysqli_real_escape_string($db, $desc);
 	$r_id = NULL;
-	if ($stmt = $db->prepare('INSERT INTO translators_desc (`translator_id`, `full_name`, `dates`, `summary`, `img`, `doc_text`)
-	 VALUES (?, ?, ?, ?, ?)')) {
-		if (!$stmt->bind_param('isssss', $translator_id, $full_name, $dates, $summary, $img, $doc_text)) {
+	if ($stmt = $db->prepare('INSERT INTO translators_desc (`translator_id`, `full_name`, `dates`, `img`, `summary`, `doc_text`)
+	 VALUES (?, ?, ?, ?, ?, ?)')) {
+		if (!$stmt->bind_param('isssss', $translator_id, $full_name, $dates, $img, $summary, $doc_text)) {
 			throw new DBBindParamException($db, $stmt);
 		}
 		if (!$stmt->execute()) {
@@ -1663,19 +1667,21 @@ function getOtherTranslationsByPoemCode($poem_code) {
 	$db = UserConfig::getDB();
 	$record = null;
 	$records = array();
-	if ($stmt = $db->prepare('SELECT poems_id, translator1_id, translator2_id, poem_name_zh, poem_name_ru FROM poems 
-	    WHERE poem_code = ? ORDER BY translator1_id;')) {
+	if ($stmt = $db->prepare('SELECT p.poems_id, p.translator1_id, p.translator2_id, t.full_name, p.poem_name_zh, p.poem_name_ru 
+		FROM poems p
+		INNER JOIN  translators t ON t.translator_id = p.translator1_id
+	    WHERE p.poem_code = ? ORDER BY t.full_name;')) {
 		if (!$stmt->bind_param('s', $poem_code)) {
 			throw new DBBindParamException($db, $stmt);
 		}
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
-		if (!$stmt->bind_result($poems_id, $translator1_id, $translator2_id, $poem_name_zh, $poem_name_ru)) {
+		if (!$stmt->bind_result($poems_id, $translator1_id, $translator2_id, $full_name, $poem_name_zh, $poem_name_ru)) {
 			throw new DBBindResultException($db, $stmt);
 		}
 		while ($stmt->fetch() === TRUE) {
-			$record = array($poems_id, $translator1_id, $translator2_id, $poem_name_zh, $poem_name_ru);
+			$record = array($poems_id, $translator1_id, $translator2_id, $full_name, $poem_name_zh, $poem_name_ru);
 			array_push($records, $record);
 		}
 		$stmt->free_result();
@@ -1822,7 +1828,7 @@ $nickname,$nickname_zh,$nickname_simple,$nickname_pinyin,$forsearch) {
 function getTranslatorDescByID($translator_id) {
 	$db = UserConfig::getDB();
 	$record = null;
-	if ($stmt = $db->prepare('SELECT  `translator_id`,`full_name`,`dates`,`summary`,`img`,`doc_text`
+	if ($stmt = $db->prepare('SELECT  `record_id`,`translator_id`,`full_name`,`dates`,`summary`,`img`,`doc_text`
 	FROM  translators_desc WHERE translator_id=?;')) {
 		if (!$stmt->bind_param('i', $translator_id)) {
 			throw new DBBindParamException($db, $stmt);
@@ -1830,11 +1836,11 @@ function getTranslatorDescByID($translator_id) {
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
-		if (!$stmt->bind_result($translator_id,$full_name,$dates,$summary,$img,$doc_text)) {
+		if (!$stmt->bind_result($id, $translator_id,$full_name,$dates,$summary,$img,$doc_text)) {
 			throw new DBBindResultException($db, $stmt);
 		}
 		while ($stmt->fetch() === TRUE) {
-			$record = array($translator_id,$full_name,$dates,$summary,$img,$doc_text);
+			$record = array($id, $translator_id,$full_name,$dates,$summary,$img,$doc_text);
 		}
 		$stmt->free_result();
 		$stmt->close();

@@ -38,12 +38,11 @@ elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
     if (!empty($entries)) {
         $otherTranslations = array();
         foreach ($entries as $entry) {
-            list($id, $tr1, $tr2, $name_zh, $name_ru) = $entry;
-            list($junk, $tr_full_name, , , , , , , , , , ) = getByIDFromTranslators($tr1);
+            list($id, $tr1, $tr2, $tr_full_name, $name_zh, $name_ru) = $entry;
             $trans = '<span class="translators">'.$tr_full_name.'</span>';
             $name = makePoemName($name_zh, $name_ru);
             array_push($otherTranslations, array('translator' => $trans, 'tr_id' =>$tr1, 'poem_name' => $name, 'id' => $id));
-        }
+        }       
         $otherTranslations = array('header' => 'Переводы', 'translations' => $otherTranslations);
         $template_info["otherTranslation"] = $otherTranslations;
     }
