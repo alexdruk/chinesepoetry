@@ -56,7 +56,7 @@ if (array_key_exists('action', $_GET)) {
 		}
 		else {
             if (preg_match("/^\d+$/", $_POST['translator_id'])) {
-                $author_id = $_POST['translator_id'];
+                $translator_id = $_POST['translator_id'];
                 $doc_text = $_POST['description'];
                 if (array_key_exists('full_name', $_POST)) {
                     $full_name = (!empty($_POST['full_name'])) ? $_POST['full_name'] : NULL;

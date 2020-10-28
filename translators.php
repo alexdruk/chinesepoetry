@@ -34,7 +34,7 @@ elseif ($_GET['action'] == 'search') {
 }
 elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
     $translator_id = $_GET['record_id'];
-    list($translator_id,$full_name,$dates,$summary,$img,$doc_text) = getTranslatorDescByID($translator_id);
+    list($id, $translator_id,$full_name,$dates,$summary,$img,$doc_text) = getTranslatorDescByID($translator_id);
     list($translator_id, $full_name, $lit_name, $real_name, $first_name, $father_name, $pseudonyms, $born, $born_place, $died, $died_place, $present) = getByIDFromTranslators($translator_id);
     $template_info["present"] = false;
     if ($present) {

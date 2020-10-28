@@ -12,7 +12,7 @@
 {% endif %}
 {% if insert %}
 <div class="container">
-<form action="/admin/admin_authors.php?action=insertAtributes" method="POST">
+<form action="./admin_authors.php?action=insertAtributes" method="POST">
     <table class="author_atrib_form" id="author_atrib">
         <tr>
             <th><label for="author_id">Введите id автора</label>
@@ -74,7 +74,7 @@
 </form>
 {% else %}
 <div class="container">
-    <form action="/admin/admin_authors.php?action=modifyAtributes&record_id={{ atribs[1] }}" method="POST">
+    <form action="./admin_authors.php?action=modifyAtributes&record_id={{ atribs[1] }}" method="POST">
         <table class="author_atrib_form" id="author_atrib">
             <tr>
                 <th><label for="author_id">Введите id автора</label>
