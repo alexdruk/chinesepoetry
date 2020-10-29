@@ -21,6 +21,7 @@ if ($_GET['action'] == 'show') {
         $template_info["title"] = $template_info["title"].':  "'.$topic_name.'"';
         $template_info["page_description"] = 'Описание темы "'.$topic_name.'"';
         $template_info["topic_desc"] = $topic_desc;
+        $template_info["topic_id"] = $topics_id;
     }
     else {
         $template_info["showall"] = true;
