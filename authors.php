@@ -57,7 +57,6 @@ elseif ($_GET['action'] == 'search') {
 elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
     $record_id = $_GET['record_id'];
     list($proper_name, $dates, $epoch, $doc_text) = getDocByIDFromAuthors($record_id);
-    $template_info["header"] = '<span class="author name">'.$proper_name.'</span> <span class="author dates">'.$dates.'</span>';
     $template_info["epoch"] = '<span class="epoch">'.$epoch.'</span>';
     $template_info["author_id"] = $record_id;
     $atribs = getAtributesByAuthorID($record_id);
@@ -104,6 +103,14 @@ elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
         }
         $template_info["atribs"] = $atribs;
     }
+    $zname = '';
+    if ($atribs[3]) {
+        $zname = '&nbsp;<span class="name zh">'.$atribs[3].'</span>';
+    }
+    else if ($atribs[4]) {
+        $zname = '&nbsp;<span class="name zh">'.$atribs[4].'</span>';
+    }
+    $template_info["header"] = '<span class="author name">'.$proper_name.'</span> <span class="author dates">'.$dates.'</span>'.$zname;
  
     if (strlen($doc_text) < 200) {
         $doc_text = '<h4>Пожалуйста, помогите собрать информацию для этой страницы!</h4>';

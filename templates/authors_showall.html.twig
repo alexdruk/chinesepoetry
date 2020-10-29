@@ -2,7 +2,7 @@
 <!-- authors_showall.html.twig -->
 <div class="jumbotron" id="authors_jumbotron">
     <div class="row">
-        <div class="col-8 mx-auto">
+        <div class="col-10 mx-auto">
             <h4 class="authors header" id="authors_header">{{ header }}</h4>
            {% if showall and show_alphabet %}
             <div class="alphabet text-center"><a href="#А">А</a> | <a href="#Б">Б</a> | <a href="#В">В</a> | <a href="#Г">Г</a> | <a href="#Д">Д</a> | <a href="#Е">Е</a> | <a href="#Ж">Ж</a> | <a href="#И">И</a> | <a href="#К">К</a> | <a href="#Л">Л</a> | <a href="#М">М</a> | <a href="#Н">Н</a> | <a href="#О">О</a> | <a href="#П">П</a> | <a href="#С">С</a> | <a href="#Т">Т</a> | <a href="#У">У</a> | <a href="#Ф">Ф</a> | <a href="#Х">Х</a> | <a href="#Ц">Ц</a> | <a href="#Ч">Ч</a> | <a href="#Ш">Ш</a> | <a href="#Э">Э</a> | <a href="#Ю">Ю</a> | <a href="#Я">Я</a></div>
@@ -61,11 +61,19 @@
                     {% if record[2]  starts with  'Я' %}{% set curr = 'Я' %}{% endif %}
                 {% if record[2] starts with 'Я' and curr != prev %}<a name="Я"></a>{% set prev = 'Я' %}{% endif %}
                 {% if byAuthor %}
-                <li class="authors list"><a href="./poems.php?action=show&author_id={{ record[0] }}">{{ record[2] }} {{ record[3] }}</a> - {{ record[4] }}</li>
-                 {% else %}
-                <li class="authors list"><a href="./authors.php?action=show&record_id={{ record[0] }}">{{ record[2] }} {{ record[3] }}</a> - {{ record[4] }}</li>
+                    {% if record[6] %}
+                        <li class="authors list"><a href="./poems.php?action=show&author_id={{ record[0] }}">{{ record[2] }} {{ record[3] }}</a>&nbsp;<span class="name zh">{{ record[6] }}</span> - {{ record[4] }}</li>
+                    {% else %}                    
+                        <li class="authors list"><a href="./poems.php?action=show&author_id={{ record[0] }}">{{ record[2] }} {{ record[3] }}</a>&nbsp;<span class="name zh">{{ record[7] }}</span> - {{ record[4] }}</li>
+                    {% endif %}
+                {% else %}
+                    {% if record[6] %}
+                <li class="authors list"><a href="./authors.php?action=show&record_id={{ record[0] }}">{{ record[2] }} {{ record[3] }}</a>&nbsp;<span class="name zh">{{ record[6] }}</span> - {{ record[4] }}</li>
+                    {% else %}                    
+                <li class="authors list"><a href="./authors.php?action=show&record_id={{ record[0] }}">{{ record[2] }} {{ record[3] }}</a>&nbsp;<span class="name zh">{{ record[7] }}</span> - {{ record[4] }}</li>
+                    {% endif %}
                 {% endif %}
-                {% endfor %}
+            {% endfor %}
             </ol>
             {% endapply %}
             </div>
@@ -73,7 +81,11 @@
             <div id="translators_content_table">
                 <ol>
                     {% for record in records %}
-                    <li class="authors list"><a href="./authors.php?action=show&record_id={{ record[0] }}">{{ record[2] }} {{ record[3] }}</a> - {{ record[4] }}</li>
+                        {% if record[6] %}
+                            <li class="authors list"><a href="./authors.php?action=show&record_id={{ record[0] }}">{{ record[2] }} {{ record[3] }}</a>&nbsp;<span class="name zh">{{ record[6] }}</span> - {{ record[4] }}</li>
+                        {% else %}                    
+                            <li class="authors list"><a href="./authors.php?action=show&record_id={{ record[0] }}">{{ record[2] }} {{ record[3] }}</a>&nbsp;<span class="name zh">{{ record[7] }}</span> - {{ record[4] }}</li>
+                        {% endif %}
                     {% endfor %}
                 </ol>
             </div>

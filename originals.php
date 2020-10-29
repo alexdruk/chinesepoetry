@@ -9,8 +9,8 @@ if ($_GET['action'] == 'showall') {
     $template_info["search"] = false;
     $records = getListfromOriginals();
 #    print_r($records);
-#    print_r($final);
     $final = makeFinalArray ($records);
+#    print_r($final);
     $template_info["final"] = $final;
     $template_info["title"] ='Все оригиналы стихов';
     $template_info["page_description"] = 'Антология современной и старинной китайской поэзии. Все оригиналы стихов';
@@ -128,7 +128,14 @@ function makeFinalArray ($records) {
         $proper_name = $records[$i][2];
         $dates = $records[$i][3];
         $epoch = $records[$i][12];
-        $author = '<span class="author name">'.$proper_name.'</span> <span class="author dates">'.$dates.'</span>#'.$author_id.'#'.$epoch;
+        $zname = '';
+        if ($records[$i][13]) {
+            $zname = '&nbsp;<span class="name zh">'.$records[$i][13].'</span>';
+        }
+        else if ($records[$i][14]) {
+            $zname = '&nbsp;<span class="name zh">'.$records[$i][14].'</span>';
+        }
+        $author = '<span class="author name">'.$proper_name.'</span> <span class="author dates">'.$dates.'</span>#'.$author_id.'#'.$epoch.'#'.$zname;
 #        $cycle = '<span class="cycle zh">'.$records[$i][4].'</span> <span class="cycle ru">'.$records[$i][5].'</span>';
         array_push($arrAuthors, $author);
         if (array_key_exists($author, $new_arr)) {
