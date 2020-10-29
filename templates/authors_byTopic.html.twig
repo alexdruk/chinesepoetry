@@ -5,13 +5,15 @@
         <div class="col-7 mx-auto">
             <h4 class="authors header" id="authors_header">{{ header }}</h4>
 			{% if byTopic %}
-			<form action="./poems.php?action=byTopic&posted=1" method="GET">
+			<form action="./poems.php" method="GET">
 			{% else %}
-			<form action="./authors.php?action=byTopic&posted=1" method="GET">
+			<form action="./authors.php" method="GET">
 			{% endif %}
 				<div class="col-auto">
-                    <label for="byTopic">Выберите тему</label>
-                    <select class="custom-select" name="topic_id" id="byTopic">
+					<input type="hidden" name="action" value="byTopic" /> 
+					<input type="hidden" name="posted" value="1" /> 
+					<label for="topic_id">Выберите тему</label>
+                    <select class="custom-select" name="topic_id" id="topic_id">
 						<option value="2">Бренность жизни</option>
 						<option value="3">Во храме</option>
 						<option value="4">Дао</option>

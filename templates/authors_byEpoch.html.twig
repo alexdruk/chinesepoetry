@@ -5,11 +5,13 @@
         <div class="col-7 mx-auto">
             <h4 class="authors header" id="authors_header">{{ header }}</h4>
 			{% if byAuthor %}
-			<form action="./poems.php?action=byEpoch&posted=1" method="POST">
+			<form action="./poems.php" method="GET">
 			{% else %}
-			<form action="./authors.php?action=byEpoch&posted=1" method="POST">
+			<form action="./authors.php" method="GET">
 			{% endif %}
 				<div class="col-auto">
+					<input type="hidden" name="action" value="byEpoch" /> 
+					<input type="hidden" name="posted" value="1" /> 
                     <label for="byEpoch">Выберите эпоху</label>
                     <select class="custom-select" name="epoch" id="byEpoch">
 						<option value="КНР">КНР</option>

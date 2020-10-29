@@ -57,6 +57,7 @@ elseif ($_GET['biblio_id']) {
         $template_info["header"] ='Литературный источник';
         $records = getFullBiblioByID($b_id);       
 		$template_info["records"] = $records;
+		$template_info["biblio_id"] = $b_id;
         $template_info["show_alphabet"] = false;
         $template_info["special_message"] = false;
         $template_info["title"] ='Литературный источник';

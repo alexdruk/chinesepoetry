@@ -1922,3 +1922,43 @@ function check_mistakes($mistake, $ip, $url) {
 		throw new DBPrepareStmtException($db);
 	}
 }
+/**
+ * get a list of all records from table poems without text
+ * @param int biblio_id
+ * @return array array of records
+ * @throws DBException
+ */
+function getWithoutPoem_textFromPoemsByBiblioID($biblio_id) {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT `poems_id`,`author_id`,`translator1_id`,`translator2_id`,
+	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,`subcycle_ru`,
+	`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id` FROM  poems 
+	 WHERE biblio_id =?
+	 ORDER BY `author_id`, `translator1_id`, cast(`poem_name_ru` as unsigned),`poem_name_ru`,`cycle_ru`, `subcycle_ru`, `poems_id` ASC;')) {
+		if (!$stmt->bind_param('i', $biblio_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($poems_id,$author_id,$translator1_id,$translator2_id,
+		$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+		$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($poems_id,$author_id,$translator1_id,$translator2_id,
+			$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+			$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+

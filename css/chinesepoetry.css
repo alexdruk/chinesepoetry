@@ -356,6 +356,12 @@ font-size: 1.3em;
 .card{
     background-color: white;
     margin-top: 1rem;
+    overflow: hidden;
+}
+/* for chrono */ 
+.card .btn-link {
+    word-wrap: break-word !important; 
+    white-space: normal !important;   
 }
 cite,
 cite a,
