@@ -41,7 +41,7 @@ elseif ($_GET['action'] == 'byEpoch') {
     $template_info["byTopic"] = false;
     $template_info["byAuthor"] = true;
     if (array_key_exists('posted', $_GET)) {
-        $epoch = $_POST['epoch']; 
+        $epoch = $_GET['epoch']; 
         $records = getAllfromAuthorsByEpoch($epoch);
         $template_info["records"] = $records;
         $template_info["title"] ='Все стихи эпохи: "'.$epoch.'"';
@@ -79,6 +79,25 @@ elseif ($_GET['action'] == 'byTopic') {
         $template_info["byTopic"] = true;
         $template = $twig->load('authors_byTopic.html.twig');
     }
+}
+elseif  ( ($_GET['action'] == 'bySource') && (array_key_exists('biblio_id', $_GET))  ){
+    $biblio_id = $_GET['biblio_id'];
+    $records = getWithoutPoem_textFromPoemsByBiblioID($biblio_id);
+    $recordsForAuthor = array();
+    foreach ($records as $record) {
+//        if ($record[1] == $author_id) {
+            array_push($recordsForAuthor, $record);
+//        }
+    }
+#print_r($recordsForAuthor);
+    $final = makeFinalArray ($recordsForAuthor);
+#    print_r($final);
+    $template_info["header"] = 'Из источника';
+    $template_info["byAuthor"] = true;
+    $template_info["byTranslator"] = false;
+    $template_info["final"] = $final;
+    $template_info["title"] ='Все стихи из источника';
+    $template = $twig->load('at_list.html.twig');
 }
 elseif ($_GET['action'] == 'search') {
     $template_info["header"] ='Полнотекстный поиск по переводам стихов';

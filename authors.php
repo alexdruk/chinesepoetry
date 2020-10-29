@@ -20,7 +20,7 @@ elseif ($_GET['action'] == 'byEpoch') {
     $template_info["show_alphabet"] = false;
     $template_info["search"] = false;
     if (array_key_exists('posted', $_GET)) {
-        $epoch = $_POST['epoch']; 
+        $epoch = $_GET['epoch']; 
         $records = getAllfromAuthorsByEpoch($epoch);
         $template_info["records"] = $records;
         $template_info["title"] ='Все авторы по эпохам';
