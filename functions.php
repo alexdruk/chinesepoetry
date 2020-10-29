@@ -350,16 +350,18 @@ function getAllfromAuthors() {
 	$db = UserConfig::getDB();
 	$records = array();
 	$record = null;
-	if ($stmt = $db->prepare('SELECT a.author_id, a.full_name, a.proper_name, a.dates,  a.epoch, a.present 
-	FROM  authors a ORDER BY a.full_name ASC;')) {
+	if ($stmt = $db->prepare('SELECT a.author_id, a.full_name, a.proper_name, a.dates,  a.epoch, a.present, b.zh_trad, b.zh_simple 
+	FROM  authors a
+	INNER JOIN  authors_atrib b ON b.author_id = a.author_id 
+	ORDER BY a.full_name ASC;')) {
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
-		if (!$stmt->bind_result($author_id, $full_name, $proper_name, $dates,  $epoch, $present)) {
+		if (!$stmt->bind_result($author_id, $full_name, $proper_name, $dates,  $epoch, $present, $zh_trad, $zh_simple)) {
 			throw new DBBindResultException($db, $stmt);
 		}
 		while ($stmt->fetch() === TRUE) {
-			$record = array($author_id, $full_name, $proper_name,  $dates, $epoch, $present);
+			$record = array($author_id, $full_name, $proper_name,  $dates, $epoch, $present, $zh_trad, $zh_simple);
 			array_push($records, $record);
 		}
 		$stmt->free_result();
@@ -469,18 +471,21 @@ function getAllfromAuthorsByEpoch($epoch) {
 	$db = UserConfig::getDB();
 	$records = array();
 	$record = null;
-	if ($stmt = $db->prepare('SELECT a.author_id, a.full_name, a.proper_name,  a.dates,  a.epoch, a.present FROM  authors a WHERE a.epoch=? ORDER BY a.full_name ASC;')) {
+	if ($stmt = $db->prepare('SELECT a.author_id, a.full_name, a.proper_name,  a.dates,  a.epoch, a.present, b.zh_trad, b.zh_simple 
+	FROM  authors a 
+	INNER JOIN  authors_atrib b ON b.author_id = a.author_id 
+	WHERE a.epoch=? ORDER BY a.full_name ASC;')) {
 		if (!$stmt->bind_param('s', $epoch)) {
 			throw new DBBindParamException($db, $stmt);
 		}
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
-		if (!$stmt->bind_result($author_id, $full_name, $proper_name,  $dates,  $epoch, $present)) {
+		if (!$stmt->bind_result($author_id, $full_name, $proper_name,  $dates,  $epoch, $present, $zh_trad, $zh_simple)) {
 			throw new DBBindResultException($db, $stmt);
 		}
 		while ($stmt->fetch() === TRUE) {
-			$record = array($author_id, $full_name, $proper_name, $dates,  $epoch, $present);
+			$record = array($author_id, $full_name, $proper_name, $dates,  $epoch, $present, $zh_trad, $zh_simple);
 			array_push($records, $record);
 		}
 		$stmt->free_result();
@@ -907,16 +912,19 @@ function getListfromOriginals() {
 	$records = array();
 	$record = null;
 	if ($stmt = $db->prepare('SELECT o.originals_id, a.author_id, a.proper_name, a.dates, o.cycle_zh, o.cycle_ru, o.subcycle_zh, o.subcycle_ru, 
-	o.poem_code, o.biblio_id, o.poem_name_zh, o.poem_name_ru, a.epoch FROM originals o
-	INNER JOIN authors a ON a.author_id = o.author_id ORDER BY a.proper_name, o.originals_id ASC;')) {
+	o.poem_code, o.biblio_id, o.poem_name_zh, o.poem_name_ru, a.epoch, b.zh_trad, b.zh_simple
+	FROM originals o
+	INNER JOIN authors a ON a.author_id = o.author_id 
+	INNER JOIN  authors_atrib b ON b.author_id = a.author_id 
+	ORDER BY a.proper_name, o.originals_id ASC;')) {
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
-		if (!$stmt->bind_result($originals_id, $author_id, $proper_name, $dates, $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $poem_code, $biblio_id, $poem_name_zh, $poem_name_ru, $epoch)) {
+		if (!$stmt->bind_result($originals_id, $author_id, $proper_name, $dates, $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $poem_code, $biblio_id, $poem_name_zh, $poem_name_ru, $epoch, $zh_trad, $zh_simple)) {
 			throw new DBBindResultException($db, $stmt);
 		}
 		while ($stmt->fetch() === TRUE) {
-			$record = array($originals_id, $author_id, $proper_name, $dates, $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $poem_code, $biblio_id, $poem_name_zh, $poem_name_ru, $epoch);
+			$record = array($originals_id, $author_id, $proper_name, $dates, $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $poem_code, $biblio_id, $poem_name_zh, $poem_name_ru, $epoch, $zh_trad, $zh_simple);
 			array_push($records, $record);
 		}
 		$stmt->free_result();
@@ -1253,8 +1261,10 @@ function getAllfromAuthorsByTopic($topic_id) {
 	$db = UserConfig::getDB();
 	$records = array();
 	$record = null;
-	if ($stmt = $db->prepare('SELECT distinct a.author_id, a.full_name, a.proper_name, a.dates, a.epoch FROM  authors a 
+	if ($stmt = $db->prepare('SELECT distinct a.author_id, a.full_name, a.proper_name, a.dates, a.epoch, b.zh_trad, b.zh_simple 
+	FROM  authors a 
 	INNER JOIN poems p ON  a.author_id = p.author_id
+	INNER JOIN  authors_atrib b ON b.author_id = a.author_id 
 	WHERE p.topic1_id =? OR p.topic2_id =? OR p.topic3_id =?  OR p.topic4_id =?  OR p.topic5_id =? 
 	ORDER BY a.full_name ASC;')) {
 		if (!$stmt->bind_param('iiiii', $topic_id,$topic_id,$topic_id,$topic_id,$topic_id)) {
@@ -1263,11 +1273,11 @@ function getAllfromAuthorsByTopic($topic_id) {
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
-		if (!$stmt->bind_result($author_id, $full_name, $proper_name,  $dates,  $epoch)) {
+		if (!$stmt->bind_result($author_id, $full_name, $proper_name, $dates, $epoch, $zh_trad, $zh_simple)) {
 			throw new DBBindResultException($db, $stmt);
 		}
 		while ($stmt->fetch() === TRUE) {
-			$record = array($author_id, $full_name, $proper_name, $dates,  $epoch);
+			$record = array($author_id, $full_name, $proper_name, $dates, $epoch, $zh_trad, $zh_simple);
 			array_push($records, $record);
 		}
 		$stmt->free_result();

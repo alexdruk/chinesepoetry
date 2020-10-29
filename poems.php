@@ -7,12 +7,13 @@ $records = array();
 if ($_GET['action'] == 'byAuthor') {
     $template_info["header"] ='По авторам';
     $records = getAllfromAuthors();
-#    list($author_id, $full_name, $proper_name, $dates,  $epoch, $present) = $records;
+//    list($author_id, $full_name, $proper_name, $dates,  $epoch, $present, $zh_trad, $zh_simple) = $records;
     $template_info["search"] = false;
 #    $template_info["byTranslator"] = false;
 #    $template_info["byTopic"] = false;
     $template_info["byAuthor"] = true;
     $template_info["records"] = $records;
+//    print_r($records);
     $template_info["showall"] = true;
     $template_info["show_alphabet"] = true;
     $template_info["title"] ='Стихи по авторам';
@@ -60,7 +61,7 @@ elseif ($_GET['action'] == 'byTopic') {
         $topic_id = $_POST['topic_id']; 
         $records = getAllfromAuthorsByTopic($topic_id);
         $new_records = array();
-#        print_r($records);
+//        print_r($records);
         foreach ($records as $record) {
             array_push($record,  $topic_id);
             array_push($new_records, $record);

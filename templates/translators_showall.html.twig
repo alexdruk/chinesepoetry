@@ -65,9 +65,9 @@
                 {% if record[1]  starts with  'Я' %}{% set curr = 'Я' %}{% endif %}
             {% if record[1] starts with 'Я' and curr != prev %}<a name="Я"></a>{% set prev = 'Я' %}{% endif %}
             {% if byTranslator %}
-            <li class="translators list"><a href="./poems.php?action=show&translator_id={{ record[0] }}">{{ record[1] }}</a></li>
+                <li class="translators list"><a href="./poems.php?action=show&translator_id={{ record[0] }}">{{ record[1] }}</a></li>
             {% else %}
-            <li class="translators list"><a href="./translators.php?action=show&record_id={{ record[0] }}">{{ record[1] }}</a></li>
+                <li class="translators list"><a href="./translators.php?action=show&record_id={{ record[0] }}">{{ record[1] }}</a></li>
             {% endif %}
                 {% endfor %}
                 </ol>

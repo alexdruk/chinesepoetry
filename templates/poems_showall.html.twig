@@ -7,7 +7,11 @@
            {% if byAuthor %}
            <ol>
                 {% for record in records %}
-                <li class="authors list"><a href="./poems.php?action=show&author_id={{ record[0] }}">{{ record[2] }} {{ record[3] }}</a> - {{ record[4] }}</li>
+                    {% if record[6] %}
+                        <li class="authors list"><a href="./poems.php?action=show&author_id={{ record[0] }}">{{ record[2] }} {{ record[3] }}</a>&nbsp;<span class="name zh">{{ record[6] }}</span> - {{ record[4] }}</li>
+                    {% else %}                    
+                        <li class="authors list"><a href="./poems.php?action=show&author_id={{ record[0] }}">{{ record[2] }} {{ record[3] }}</a>&nbsp;<span class="name zh">{{ record[7] }}</span> - {{ record[4] }}</li>
+                    {% endif %}
                 {% endfor %}
             </ol>
 {# 
@@ -22,7 +26,11 @@
             {% elseif byTopic %}
             <ol>
                 {% for record in records %}
-                <li class="authors list"><a href="./poems.php?action=show&topic_id={{ record[5] }}&author_id={{ record[0] }}">{{ record[2] }} {{ record[3] }}</a> - {{ record[4] }}</li>
+                    {% if record[5] %}
+                        <li class="authors list"><a href="./poems.php?action=show&topic_id={{ record[5] }}&author_id={{ record[0] }}">{{ record[2] }} {{ record[3] }}</a>&nbsp;<span class="name zh">{{ record[5] }}</span> - {{ record[4] }}</li>
+                    {% else %}                    
+                        <li class="authors list"><a href="./poems.php?action=show&topic_id={{ record[5] }}&author_id={{ record[0] }}">{{ record[2] }} {{ record[3] }}</a>&nbsp;<span class="name zh">{{ record[6] }}</span> - {{ record[4] }}</li>
+                    {% endif %}
                 {% endfor %}
             </ol>
             {% elseif search %}

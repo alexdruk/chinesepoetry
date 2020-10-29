@@ -13,9 +13,11 @@ if ($_GET['action'] == 'showall') {
     $template_info["title"] ='Все переводчики';
     $template = $twig->load('translators_showall.html.twig');
 }
+
 elseif ($_GET['action'] == 'search') {
     $template_info["header"] ='Поиск по именам и биографиям переводчиков';
     if (array_key_exists('posted', $_GET)) {
+        $template_info["byTranslator"] = false;
         $template_info["showall"] = true;
         $template_info["search"] = false;
         $pattern = $_POST['pattern']; 
