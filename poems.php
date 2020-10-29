@@ -58,7 +58,7 @@ elseif ($_GET['action'] == 'byTopic') {
     $template_info["byAuthor"] = false;
     $template_info["byTopic"] = true;
     if (array_key_exists('posted', $_GET)) {
-        $topic_id = $_POST['topic_id']; 
+        $topic_id = $_GET['topic_id']; 
         $records = getAllfromAuthorsByTopic($topic_id);
         $new_records = array();
 //        print_r($records);
@@ -66,7 +66,7 @@ elseif ($_GET['action'] == 'byTopic') {
             array_push($record,  $topic_id);
             array_push($new_records, $record);
         }
-#        print_r($new_records);
+//        print_r($new_records);
         list($topics_id,$topic_name,$topic_synonym, $topic_desc) = getTopicByID($topic_id);
         $template_info["header"] = 'Тема: '.$topic_name;
         $template_info["records"] = $new_records;
@@ -178,7 +178,7 @@ elseif ( ($_GET['action'] == 'show')  && ($_GET['poem_id'] > 0) ){
 
     list($poems_id,$author_id,$translator1_id,$translator2_id,
     $topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
-    $poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text) = $records[0];
+    $poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$poem_hash) = $records[0];
     list($author_html, $proper_name,  $dates,  $epoch) = makeAuthor($author_id);
     $author = $author_html;
     $translator = makeTranslator($translator1_id, $translator2_id);

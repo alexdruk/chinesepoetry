@@ -5,9 +5,9 @@
         <div class="col-7 mx-auto">
             <h4 class="authors header" id="authors_header">{{ header }}</h4>
 			{% if byTopic %}
-			<form action="./poems.php?action=byTopic&posted=1" method="POST">
+			<form action="./poems.php?action=byTopic&posted=1" method="GET">
 			{% else %}
-			<form action="./authors.php?action=byTopic&posted=1" method="POST">
+			<form action="./authors.php?action=byTopic&posted=1" method="GET">
 			{% endif %}
 				<div class="col-auto">
                     <label for="byTopic">Выберите тему</label>

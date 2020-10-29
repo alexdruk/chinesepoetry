@@ -16,7 +16,10 @@
     </div>
     {% elseif desc %}
     <div class="row">
-        <div class="col-sm-8 mx-auto">
+        <div class="secondaryNav text-left col-sm-2 mx-auto">
+            <a href="./poems.php?action=byTopic&posted=1&topic_id={{ topic_id  }}" class="badge secondaryNavButton">< Bсе стихи по теме</a>
+       </div>
+       <div class="col-sm-8 mx-auto">
             <h4 class="topics header" id="topics_header">{{ header|raw }}</h4>
         </div>
     </div>
