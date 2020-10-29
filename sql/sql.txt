@@ -1106,3 +1106,83 @@ alter table poems add column genres varchar(250) default null;
 
 alter table originals add column genres varchar(250) default null;
 alter table originals add column size varchar(250) default null;
+SELECT p.poems_id, p.translator1_id, t.full_name, p.translator2_id, p.poem_name_zh, p.poem_name_ru 
+FROM poems p
+inner join translators t on p.translator1_id = t.translator_id
+	    WHERE poem_code = 'ВВ-36' order by t.full_name;
+SELECT a.author_id, a.full_name, a.proper_name,  a.dates,  a.epoch, a.present,t.zh_trad,t.zh_simple 
+		FROM  authors a  
+inner join authors_atrib t on a.author_id = t.author_id
+		WHERE a.author_id='3';
+
+UPDATE originals
+SET cycle_ru = CONCAT(UCASE(LEFT(cycle_ru, 1)), SUBSTRING(cycle_ru, 2))
+ where cycle_ru RLIKE '^[:lower:]' and originals_id !=126;
+
+update originals         
+SET cycle_ru = REGEXP_REPLACE(cycle_ru, '$', '"')
+-- select * from originals where cycle_ru is not null
+ where cycle_ru RLIKE '^[:alpha:]' and originals_id !=126;
+
+update originals         
+SET cycle_ru = REGEXP_REPLACE(cycle_ru, '^', '"')
+-- select cycle_ru from originals
+ where cycle_ru RLIKE '^[:alpha:]' and originals_id !=126;
+--- 1. delete all Из цикла 
+select distinct cycle_ru from poems
+--  where cycle_ru is not null
+ where cycle_ru  RLIKE '^Из цикла ';
+ 
+ update poems
+ set cycle_ru = REGEXP_REPLACE(cycle_ru, '^Из цикла ', '')
+  where cycle_ru  RLIKE '^Из цикла ';
+ --- 2. change to upper
+ select distinct cycle_ru from poems;
+ UPDATE poems
+SET cycle_ru = CONCAT(UCASE(LEFT(cycle_ru, 1)), SUBSTRING(cycle_ru, 2));
+ --- 3. make in quotes
+update poems         
+SET cycle_ru = REGEXP_REPLACE(cycle_ru, '$', '"')
+-- select distinct cycle_ru from poems
+ where cycle_ru RLIKE '^[:alpha:]' and cycle_ru NOT RLIKE '"';
+
+
+select distinct cycle_ru from poems
+ where  cycle_ru RLIKE '^[:alpha:]' and cycle_ru   NOT RLIKE '"[:alpha:]';
+
+update poems         
+SET cycle_ru = REGEXP_REPLACE(cycle_ru, '^', '"')
+ where  cycle_ru RLIKE '^[:alpha:]' and cycle_ru   NOT RLIKE '"[:alpha:]';
+
+select distinct cycle_ru from poems where cycle_ru RLIKE '\\)';
+select poems_id, cycle_ru from poems where cycle_ru like '%сани%';
+ SELECT a.author_id, a.full_name, a.proper_name,  a.dates,  a.epoch, a.present, b.zh_trad, b.zh_simple
+		FROM  authors a
+		INNER JOIN  authors_atrib b ON b.author_id = a.author_id 
+		WHERE a.author_id=1;
+
+alter table authors add column zname VARCHAR(100) default null;
+UPDATE authors a set zname = null;
+UPDATE authors a
+INNER JOIN authors_atrib b ON b.author_id = a.author_id 
+SET a.zname = b.zh_trad;
+
+UPDATE authors a
+INNER JOIN authors_atrib b ON b.author_id = a.author_id 
+SET a.zname = b.zh_simple
+where zname = '' ;
+
+select full_name, zname from authors where zname <> '';
+
+select full_name, zname from authors;
+use poetry;
+SELECT `poems_id`,`author_id`,`translator1_id`,`translator2_id`,
+	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,
+	`subcycle_ru`,`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id`,`poem_text`,`poem_hash`
+	 FROM  poems WHERE poems_id =434;
+     
+SELECT `poems_id`,`author_id`,`translator1_id`,`translator2_id`,
+	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,`subcycle_ru`,
+	`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id` FROM  poems 
+	 WHERE biblio_id =320
+	 ORDER BY `author_id`, `translator1_id`, cast(`poem_name_ru` as unsigned),`poem_name_ru`,`cycle_ru`, `subcycle_ru`, `poems_id` ASC;
