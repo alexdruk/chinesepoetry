@@ -24,15 +24,6 @@ if (array_key_exists('action', $_GET)) {
 		}
 		else {
 			$_POST = array_map("trim",$_POST);
-#			$_POST = array_map("addslashes",$_POST); 
-/*			foreach ($_POST  as $key => $value) {
-				if (empty($value)) {
-					echo "<h1>emty val</h1>";
-					$_POST[$key] = NULL;
-				}
-			}
-			print_r($_POST);
-*/			
 			$error = false;
 			$success = false;
             if (array_key_exists('author', $_POST)) {
