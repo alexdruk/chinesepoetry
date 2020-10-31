@@ -1,0 +1,38 @@
+{% extends 'page.html.twig' %} {% block content %} 
+{% if success %}
+<div class="alert alert-success" role="alert">
+    {{ success }}
+</div>
+{% endif %} 
+{% if error %}
+<div class="alert alert-danger" role="alert">
+    {{ error }}
+</div>
+{% endif %}
+{% if modify %}
+<form action="./admin_news.php?action=modify&record_id={{ record_id }}&posted=1" method="POST">
+    <div class="form-group">
+        <label for="header">Заголовок</label>
+        <input type="text" class="form-control" name="header" id="header" value="{{ header }}">
+    </div>
+    <div class="form-group">
+        <label for="text">Текст</label>
+        <input type="text" class="form-control" name="text" id="text" value="{{ text }}">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% elseif insert %}
+<form action="./admin_news.php?action=insert&posted=1" method="POST">
+    <div class="form-group">
+        <label for="header">Заголовок</label>
+        <input type="text" class="form-control" name="header" id="header">
+    </div>
+    <div class="form-group">
+        <label for="text">Текст</label>
+        <input type="text" class="form-control" name="text" id="text">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+{% endif %}
+
+{% endblock %}

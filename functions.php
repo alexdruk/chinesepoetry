@@ -1961,4 +1961,114 @@ function getWithoutPoem_textFromPoemsByBiblioID($biblio_id) {
 		throw new DBPrepareStmtException($db);
 	}
 }
-
+/**
+ * get a list of all news from table news
+ *
+ * @return array array of records
+ * @throws DBException
+ */
+function getAllNews() {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT `news_id`,`header`,`ntext`,`ndate` FROM  news ORDER BY ndate DESC, news_id  DESC;')) {
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($news_id, $header,$ntext,$ndate)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($news_id, $header,$ntext,$ndate);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * get record by news_id from table news
+ *
+ * @return array array of values
+ * @throws DBException
+ */
+function getByIDFromNews($news_id) {
+	$db = UserConfig::getDB();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT `news_id`,`header`,`ntext`,`ndate` FROM  news WHERE news_id = ?;')) {
+		if (!$stmt->bind_param('i', $news_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($id, $header, $ntext, $dt)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($id, $header, $ntext, $dt);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $record;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * update a record into table biblio identifyed by record ID
+ *
+ * @param news_id  record id
+ * @param string  header Header of news
+ * @param string  text News text
+* @return inserted record id
+ * @throws DBException
+ */
+function updateNewsByID($news_id, $header, $text) {
+	$db = UserConfig::getDB();
+	$r_id = NULL;
+	if ($stmt = $db->prepare('UPDATE `news` SET `header`=?, `ntext`=?, `ndate`= CURDATE()  WHERE `news_id`=?;')) {
+		if (!$stmt->bind_param('ssi', $header, $text, $news_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->affected_rows; // this works only if actual changes were made, if nothing changed return 0
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
+/**
+ * insert a new records into table biblio
+ *
+ * @param string  header Header of news
+ * @param string  text News text
+ * @return inserted record id
+ * @throws DBException
+ */
+function news_insert_record($header, $text) {
+	$db = UserConfig::getDB();
+	$header = (!empty($header)) ? $header : NULL;
+	$text = (!empty($text)) ? $text : NULL;
+	$r_id = NULL;
+	if ($stmt = $db->prepare('INSERT INTO `news` (`header`, `ntext`, `ndate`) 
+		VALUES (?, ?, CURDATE())')) {
+		if (!$stmt->bind_param('ss', $header, $text)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->insert_id;
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
