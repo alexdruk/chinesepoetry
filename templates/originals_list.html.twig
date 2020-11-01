@@ -10,7 +10,7 @@
             <ol>
                 {% for fin in final %}
                 {% set authorsline = fin.author|split('#') %}
-                <li class="originals autors list"><a href="./authors.php?action=show&record_id={{ authorsline[1] }}">{{ authorsline[0]|raw }}</a>{{ authorsline[3]|raw }} - {{ authorsline[2] }}</li>
+                <h4><li class="originals autors list"><a href="./authors.php?action=show&record_id={{ authorsline[1] }}">{{ authorsline[0]|raw }}</a>{{ authorsline[3]|raw }} - {{ authorsline[2] }}</li></h4>
                     <ul>
                         {% for cycle in fin.poems|keys %}
                             {% if not (cycle starts with  'default') %}                        
