@@ -946,8 +946,9 @@ function getRecordfromOriginals($originals_id) {
 	$records = array();
 	$record = null;
 	if ($stmt = $db->prepare('SELECT o.originals_id, a.author_id, a.proper_name, a.dates, o.cycle_zh, o.cycle_ru, o.subcycle_zh, o.subcycle_ru, 
-	o.poem_code, o.biblio_id, o.poem_name_zh, o.poem_name_ru, a.epoch FROM originals o
+	o.poem_code, o.biblio_id, o.poem_name_zh, o.poem_name_ru, a.epoch, b.zh_trad, b.zh_simple FROM originals o
 	INNER JOIN authors a ON a.author_id = o.author_id
+	INNER JOIN  authors_atrib b ON b.author_id = a.author_id 
 	 WHERE o.originals_id =? 
 	 ORDER BY a.proper_name, o.originals_id ASC;')) {
 		if (!$stmt->bind_param('i', $originals_id)) {
@@ -956,11 +957,11 @@ function getRecordfromOriginals($originals_id) {
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
-		if (!$stmt->bind_result($originals_id, $author_id, $proper_name, $dates, $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $poem_code, $biblio_id, $poem_name_zh, $poem_name_ru, $epoch)) {
+		if (!$stmt->bind_result($originals_id, $author_id, $proper_name, $dates, $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $poem_code, $biblio_id, $poem_name_zh, $poem_name_ru, $epoch, $zh_trad, $zh_simple)) {
 			throw new DBBindResultException($db, $stmt);
 		}
 		while ($stmt->fetch() === TRUE) {
-			$record = array($originals_id, $author_id, $proper_name, $dates, $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $poem_code, $biblio_id, $poem_name_zh, $poem_name_ru, $epoch);
+			$record = array($originals_id, $author_id, $proper_name, $dates, $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $poem_code, $biblio_id, $poem_name_zh, $poem_name_ru, $epoch, $zh_trad, $zh_simple);
 			array_push($records, $record);
 		}
 		$stmt->free_result();
@@ -1962,24 +1963,89 @@ function getWithoutPoem_textFromPoemsByBiblioID($biblio_id) {
 	}
 }
 /**
- * get a list of all news from table news
+ * get a list of all news from table news without fulltext
  *
  * @return array array of records
  * @throws DBException
  */
-function getAllNews() {
+function getAllNewsWithoutFullText() {
 	$db = UserConfig::getDB();
 	$records = array();
 	$record = null;
-	if ($stmt = $db->prepare('SELECT `news_id`,`header`,`ntext`,`ndate` FROM  news ORDER BY ndate DESC, news_id  DESC;')) {
+	if ($stmt = $db->prepare('SELECT `news_id`,`header`,`home`,`ndate` FROM  news ORDER BY ndate DESC, news_id  DESC;')) {
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
-		if (!$stmt->bind_result($news_id, $header,$ntext,$ndate)) {
+		if (!$stmt->bind_result($news_id, $header,$text,$ndate)) {
 			throw new DBBindResultException($db, $stmt);
 		}
 		while ($stmt->fetch() === TRUE) {
-			$record = array($news_id, $header,$ntext,$ndate);
+			$record = array($news_id, $header,$text,$ndate);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * get a list of limited number news from table news without fulltext
+ *
+ * @param $limit int
+ * @return array array of records
+ * @throws DBException
+ */
+function getLimitedNewsWithoutFullText($limit) {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT `news_id`,`header`,`home`,`ndate` FROM  news ORDER BY ndate DESC, news_id  DESC LIMIT ?;')) {
+		if (!$stmt->bind_param('i', $limit)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($news_id, $header,$text,$ndate)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($news_id, $header,$text,$ndate);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * get a list of all news from table news 
+ *
+ * @return array array of records
+ * @throws DBException
+ */
+function getAllNews($from) {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT `news_id`,`header`,`home`, `ntext`, `ndate` FROM news
+	  WHERE news_id <= ?
+	  ORDER BY ndate DESC, news_id  DESC LIMIT 5;')) {
+		if (!$stmt->bind_param('i', $from)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($news_id, $header, $text, $fulltext, $ndate)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($news_id, $header, $text, $fulltext, $ndate);
 			array_push($records, $record);
 		}
 		$stmt->free_result();
@@ -1998,18 +2064,18 @@ function getAllNews() {
 function getByIDFromNews($news_id) {
 	$db = UserConfig::getDB();
 	$record = null;
-	if ($stmt = $db->prepare('SELECT `news_id`,`header`,`ntext`,`ndate` FROM  news WHERE news_id = ?;')) {
+	if ($stmt = $db->prepare('SELECT `news_id`,`header`, `home`, `ntext`,`ndate` FROM  news WHERE news_id = ?;')) {
 		if (!$stmt->bind_param('i', $news_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
-		if (!$stmt->bind_result($id, $header, $ntext, $dt)) {
+		if (!$stmt->bind_result($id, $header, $text, $fulltext, $dt)) {
 			throw new DBBindResultException($db, $stmt);
 		}
 		while ($stmt->fetch() === TRUE) {
-			$record = array($id, $header, $ntext, $dt);
+			$record = array($id, $header, $text, $fulltext, $dt);
 		}
 		$stmt->free_result();
 		$stmt->close();
@@ -2027,11 +2093,11 @@ function getByIDFromNews($news_id) {
 * @return inserted record id
  * @throws DBException
  */
-function updateNewsByID($news_id, $header, $text) {
+function updateNewsByID($news_id, $header, $text, $fulltext) {
 	$db = UserConfig::getDB();
 	$r_id = NULL;
-	if ($stmt = $db->prepare('UPDATE `news` SET `header`=?, `ntext`=?, `ndate`= CURDATE()  WHERE `news_id`=?;')) {
-		if (!$stmt->bind_param('ssi', $header, $text, $news_id)) {
+	if ($stmt = $db->prepare('UPDATE `news` SET `header`=?, `home`=?, `ntext`=?  WHERE `news_id`=?;')) {
+		if (!$stmt->bind_param('sssi', $header, $text, $fulltext, $news_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
 		if (!$stmt->execute()) {
@@ -2052,14 +2118,13 @@ function updateNewsByID($news_id, $header, $text) {
  * @return inserted record id
  * @throws DBException
  */
-function news_insert_record($header, $text) {
+function news_insert_record($header, $text, $fulltext) {
 	$db = UserConfig::getDB();
 	$header = (!empty($header)) ? $header : NULL;
-	$text = (!empty($text)) ? $text : NULL;
 	$r_id = NULL;
-	if ($stmt = $db->prepare('INSERT INTO `news` (`header`, `ntext`, `ndate`) 
-		VALUES (?, ?, CURDATE())')) {
-		if (!$stmt->bind_param('ss', $header, $text)) {
+	if ($stmt = $db->prepare('INSERT INTO `news` (`header`, `home`, `ntext`, `ndate`) 
+		VALUES (?, ?, ?, CURDATE())')) {
+		if (!$stmt->bind_param('sss', $header, $text, $fulltext)) {
 			throw new DBBindParamException($db, $stmt);
 		}
 		if (!$stmt->execute()) {
@@ -2071,4 +2136,31 @@ function news_insert_record($header, $text) {
 		throw new DBPrepareStmtException($db);
 	}
 	return $r_id;
+}
+/**
+ * get max id of news
+ *
+ * @return array array of records
+ * @throws DBException
+ */
+function getMaxIDFromNews() {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT MAX(news_id) FROM news;')) {
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($max)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = $max;
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $record;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
 }

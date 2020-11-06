@@ -1,0 +1,23 @@
+{% extends 'page_root.html.twig' %} 
+{% block content %}
+<!-- news.html.twig -->
+<div class="jumbotron" id="news_jumbotron">
+    <h4 class="news header" id="news_header">Новости</h4>
+    <div class="row">
+        <div class="col-10 mx-auto">
+            {% for record in records %}
+            <a class="invisible" id="record{{ record[0] }}"></a>
+            <div class="newsheaders">
+                <span class="newsdatestamp">{{ record[4] }}</span>
+                <span class="newsheader">{{ record[1] }}</span>
+            </div>
+            <div class="newsfulltext">{{ record[3]|raw }}</div>
+            <hr class="newsdivider">
+            {% endfor %}
+            {% if from %}
+            <div id="newsmorelink" style="text-align:center;"><a href="./news.php?from={{ from }}">Предшествуещие новости</a></div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

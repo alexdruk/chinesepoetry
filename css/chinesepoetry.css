@@ -372,11 +372,35 @@ font-size: 1.3em;
    font-size: 70%;
    font-weight: lighter;
    font-style: italic;
-   text-align: right;
+}
+span.newsdate {
+    float:right;
+}
+span.morenews {
+    float: left;
+}
+.newsdatestamp{
+    float: left;
+}
+.newsheader{
+    padding: 1.0rem;
+    font-weight: bolder;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.newsheaders {
+    margin-top: 20px;
+    margin-bottom: 15px;
+    background-color: rgba(0,0,0,.03);   
+}
+#news_header {
+    font-size: 1.3em;
+    margin-bottom: 30px;
+    text-align: center!important;
+    color:#007bff;
 }
 .card-header {
     font-weight: bolder;
-    text-align: center;
     padding: 0.5rem 1.0rem; 
 }
 .card-body{
