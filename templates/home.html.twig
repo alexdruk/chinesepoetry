@@ -31,14 +31,6 @@
         </div>
         </div>
     </div>
-    <!--div class="row">
-      <div class="col-sm-8 mx-auto">
-          <h1 class="text-center" style="text-decoration:none;margin-bottom:20px;margin-top:30;">О проекте "Китайская поэзия"</h1>
-      </div>
-      <div class="col-sm-4 mx-auto">
-        <h1 class="text-center" style="text-decoration:none;margin-bottom:20px;margin-top:30;">Новости сайта</h1>
-      </div>
-  </div -->
     <div class="row">
       <p style="text-decoration:none;margin-bottom:30px;margin-top:30;">&nbsp;</p>
     </div>
@@ -104,16 +96,17 @@
           {% for record in records %}
           <div class="card" id="newsfeed">
             {% if record[1] %}
-              <div class="card-header">{{ record[1] }}</div>
+              <div class="card-header">{{ record[1]|raw }}</div>
             {% endif %}
             {% if record[2] %}
-              <div class="card-body">
-                <p class="card-text">{{ record[2] }}</p>
-              </div>
-            {% endif %}
-              <div class="card-footer">{{ record[3] }}</div>
+              <div class="card-body">{{ record[2]|raw }}</div>
+            {% endif %}            
+            <div class="card-footer">
+              <span class="morenews"><a href="./news.php#record{{ record[0] }}">Показать полностью</a></span>
+              <span class="newsdate">{{ record[3] }}</span>
+            </div>
           </div>
-                {% endfor %}
+          {% endfor %}
     </div>
   </div> <!--container-->
 </div><!-- jumbotron -->        

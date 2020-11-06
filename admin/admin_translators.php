@@ -99,7 +99,7 @@ if (array_key_exists('action', $_GET)) {
         if (preg_match("/^\d+$/", $_GET['record_id'])) {
             $record_id = $_GET['record_id'];
             list($id,$translator_id,$full_name,$dates,$summary,$img,$doc_text) = getTranslatorDescByID($record_id) ;           
-            $template_info["record_id"] = $id;
+            $template_info["record_id"] = $record_id;
             $template_info["translator_id"] = $translator_id;
             if (empty($_POST)) {
                 $template_info["success"] = false;
@@ -110,10 +110,8 @@ if (array_key_exists('action', $_GET)) {
                 $template_info["summary"] = $summary;
                 $template_info["img"] = $img;
                 $template_info["doc_text"] = $doc_text;
-                $template = $twig->load('translators_insertfile_form.html.twig');
             }
             else {
-                    $record_id = $_GET['record_id'];
                     $translator_id = $_POST['translator_id'];
                     if (array_key_exists('full_name', $_POST)) {
                         $full_name = (!empty($_POST['full_name'])) ? $_POST['full_name'] : NULL;
@@ -140,7 +138,7 @@ if (array_key_exists('action', $_GET)) {
                      
                     $r_id = translators_modify_description($translator_id, $full_name, $dates, $summary, $img, $doc_text);
                     if ($r_id > 0) {
-                        $success = 'Success! A '.$r_id.' record was inserted';
+                        $success = 'Success! A '.$r_id.' record was updated';
                         $template_info["success"] = $success;
                         $template_info["error"] = false;
                         }
@@ -197,7 +195,7 @@ if (array_key_exists('action', $_GET)) {
                 $died_place = (!empty($_POST['died_place'])) ? $_POST['died_place'] : NULL;
             }
             if (array_key_exists('present', $_POST)) {
-                $present = (!empty($_POST['present'])) ? $_POST['present'] : NULL;
+                $present = (!empty($_POST['present'])) ? $_POST['present'] : 0;
             }
             $template_info["record_id"] = $translator_id;
             $template_info["full_name"] = $full_name;
