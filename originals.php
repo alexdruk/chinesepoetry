@@ -18,10 +18,17 @@ if ($_GET['action'] == 'showall') {
 }
 elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
     $record_id = $_GET['record_id'];
-    list($originals_id,$author_id,$proper_name, $dates,$epoch,$cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru,$poem_name_zh, $poem_name_ru,$poem_code,$biblio_id,$poem_text) = getOriginalsByPoemID($record_id);
+    list($originals_id,$author_id,$proper_name, $dates,$epoch,$cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru,
+    $poem_name_zh, $poem_name_ru,$poem_code,$biblio_id,$poem_text,$genres,$size, $zh_trad, $zh_simple) = getOriginalsByPoemID($record_id);
+    $zname = '';
+    if ($zh_trad) {
+        $zname = '&nbsp;<span class="name zh">'.$zh_trad.'</span>';
+    }
+    else if ($zh_simple) {
+        $zname = '&nbsp;<span class="name zh">'.$zh_simple.'</span>';
+    }
     $header = '<a href="./authors.php?action=show&record_id='.$author_id.'"><span class="author name">'
-    .$proper_name.'</span> <span class="author dates">'.$dates.'</span></a>
-    <span class="epoch">'.$epoch.'</span>';
+    .$proper_name.'</span> <span class="author dates">'.$dates.'</span></a>'.$zname.'<span class="epoch">'.$epoch.'</span>';
     $template_info["header"] = $header;
     $template_info["author_id"] = $author_id;
     $template_info["poem_name"] = '<span class="poem_name zh">'.$poem_name_zh.'</span> <span class="poem_name ru">'.$poem_name_ru.'</span>';
@@ -80,6 +87,13 @@ elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
             $template_info["page_description"] = 'Стихотворение "'.$poem_name_ru.'". Автор: '.$proper_name.' '.$dates.'.';
         }
     }
+    if (stripos($cycle_ru, 'Из') !== false) {
+        $fromcycle = true;
+    }
+    else {
+        $fromcycle = false;
+    }
+    $template_info["fromcycle"] = $fromcycle;
     $template = $twig->load('poem.html.twig');
 }
 elseif ($_GET['action'] == 'search') {

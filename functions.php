@@ -1017,19 +1017,24 @@ function getOriginalsByPoemID($originals_id) {
 	$db = UserConfig::getDB();
 	$record = null;
 	if ($stmt = $db->prepare('SELECT o.originals_id, a.author_id, a.proper_name, a.dates, a.epoch, o.cycle_zh, o.cycle_ru, o.subcycle_zh, o.subcycle_ru,
-	 o.poem_name_zh, o.poem_name_ru, o.poem_code,o.biblio_id,o.poem_text,o.genres,o.size FROM originals o
-	INNER JOIN authors a ON a.author_id = o.author_id WHERE o.originals_id=?;')) {
+	 o.poem_name_zh, o.poem_name_ru, o.poem_code,o.biblio_id,o.poem_text,o.genres,o.size, b.zh_trad, b.zh_simple 
+	FROM originals o
+	INNER JOIN authors a ON a.author_id = o.author_id 
+	INNER JOIN  authors_atrib b ON b.author_id = a.author_id 
+	WHERE o.originals_id=?;')) {
 		if (!$stmt->bind_param('i', $originals_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
-		if (!$stmt->bind_result($originals_id,$author_id,$proper_name, $dates,$epoch,$cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru,$poem_name_zh, $poem_name_ru,$poem_code,$biblio_id,$poem_text,$genres,$size)) {
+		if (!$stmt->bind_result($originals_id,$author_id,$proper_name, $dates,$epoch,$cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru,
+		$poem_name_zh, $poem_name_ru,$poem_code,$biblio_id,$poem_text,$genres,$size, $zh_trad, $zh_simple )) {
 			throw new DBBindResultException($db, $stmt);
 		}
 		while ($stmt->fetch() === TRUE) {
-			$record = array($originals_id,$author_id,$proper_name, $dates,$epoch,$cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru,$poem_name_zh, $poem_name_ru,$poem_code,$biblio_id,$poem_text,$genres,$size);
+			$record = array($originals_id,$author_id,$proper_name, $dates,$epoch,$cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru,
+			$poem_name_zh, $poem_name_ru,$poem_code,$biblio_id,$poem_text,$genres,$size, $zh_trad, $zh_simple);
 		}
 		$stmt->free_result();
 		$stmt->close();
