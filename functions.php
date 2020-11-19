@@ -386,7 +386,7 @@ function authors_insert_record($full_name, $proper_name, $dates, $epoch, $presen
 	$db = UserConfig::getDB();
 	$r_id = NULL;
 	if ($stmt = $db->prepare('INSERT INTO authors (full_name, proper_name,  dates,  epoch, present) 
-		VALUES (?, ?, ?, ?, ?, ?, ?)')) {
+		VALUES (?, ?, ?, ?, ?)')) {
 		if (!$stmt->bind_param('ssssi', $full_name, $proper_name,  $dates,  $epoch, $present)) {
 			throw new DBBindParamException($db, $stmt);
 		}
@@ -510,15 +510,17 @@ function searchAuthors($pattern) {
 	$val = str_replace("%", "", $pattern);
 	$val = str_replace("_", "", $val);
 	$like = '%'.$val.'%';
-	$sql = "SELECT a.author_id, a.full_name, a.proper_name, a.dates, a.epoch FROM authors a WHERE MATCH (a.full_name, a.proper_name, a.dates, a.epoch) against ('$pattern' IN NATURAL LANGUAGE MODE)
+	$sql = "SELECT a.author_id, a.full_name, a.proper_name, a.dates, a.epoch, a.present, b.zh_trad, b.zh_simple FROM authors a 
+	INNER JOIN  authors_atrib b ON b.author_id = a.author_id
+	WHERE MATCH (a.full_name, a.proper_name, a.dates, a.epoch) against ('$pattern' IN NATURAL LANGUAGE MODE)
 	UNION DISTINCT 
-	SELECT a.author_id, a.full_name, a.proper_name, a.dates, a.epoch  FROM authors a WHERE a.full_name LIKE '$like'
+	SELECT a.author_id, a.full_name, a.proper_name, a.dates, a.epoch, a.present, b.zh_trad, b.zh_simple  FROM authors a 
+	INNER JOIN  authors_atrib b ON b.author_id = a.author_id
+	WHERE a.full_name LIKE '$like' OR a.proper_name LIKE '$like' OR  a.dates LIKE '$like'
 	UNION DISTINCT 
-	SELECT a.author_id, a.full_name, a.proper_name, a.dates, a.epoch  FROM authors a WHERE a.proper_name LIKE '$like'
-	UNION DISTINCT 
-	SELECT a.author_id, a.full_name, a.proper_name, a.dates, a.epoch  FROM authors a WHERE a.dates LIKE '$like'
-	UNION DISTINCT 
-	SELECT a.author_id, a.full_name, a.proper_name, a.dates, a.epoch  FROM authors a WHERE author_id IN
+	SELECT a.author_id, a.full_name, a.proper_name, a.dates, a.epoch, a.present, b.zh_trad, b.zh_simple  FROM authors a 
+	INNER JOIN  authors_atrib b ON b.author_id = a.author_id
+	WHERE a.author_id IN
 	(SELECT author_id FROM authors_atrib  WHERE MATCH (forsearch) against ('$pattern'IN NATURAL LANGUAGE MODE));";
 
 //print_r ($sql);
@@ -526,11 +528,11 @@ function searchAuthors($pattern) {
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
-		if (!$stmt->bind_result($author_id, $full_name, $proper_name, $dates, $epoch)) {
+		if (!$stmt->bind_result($author_id, $full_name, $proper_name, $dates, $epoch, $present, $zh_trad, $zh_simple)) {
 			throw new DBBindResultException($db, $stmt);
 		}
 		while ($stmt->fetch() === TRUE) {
-			$record = array($author_id, $full_name, $proper_name, $dates, $epoch);
+			$record = array($author_id, $full_name, $proper_name, $dates, $epoch, $present, $zh_trad, $zh_simple);
 			array_push($records, $record);
 		}
 		$stmt->free_result();
@@ -1778,8 +1780,8 @@ $nickname,$nickname_zh,$nickname_simple,$nickname_pinyin,$forsearch) {
 	`second_name_simple`,`second_name_pinyin`,`postmortem_name`,`postmortem_name_zh`,`postmortem_name_simple`,
 	`postmortem_name_pinyin`,`pseudonim_name`,`pseudonim_name_zh`,`pseudonim_name_simple`,`pseudonim_name_pinyin`,
 	`nickname`,`nickname_zh`,`nickname_simple`,`nickname_pinyin`,`forsearch`)
-	 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')) {
-		if (!$stmt->bind_param('issssssssssssssssssssssss', $author_id, $palladian,$zh_trad,$zh_simple,$pinyin,$real_name,$real_name_zh,
+	 VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')) {
+		if (!$stmt->bind_param('isssssssssssssssssssssssss', $author_id, $palladian,$zh_trad,$zh_simple,$pinyin,$real_name,$real_name_zh,
 		$real_name_simple,$real_name_pinyin,$second_name,$second_name_zh,$second_name_simple,$second_name_pinyin,
 		$postmortem_name,$postmortem_name_zh,$postmortem_name_simple,$postmortem_name_pinyin,
 		$pseudonim_name,$pseudonim_name_zh,$pseudonim_name_simple,$pseudonim_name_pinyin,
