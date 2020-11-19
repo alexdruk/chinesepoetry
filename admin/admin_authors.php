@@ -217,6 +217,7 @@ if (array_key_exists('action', $_GET)) {
                 $nickname_zh = (!empty($_POST['nickname_zh'])) ? $_POST['nickname_zh'] : NULL;
                 $nickname_simple = (!empty($_POST['nickname_simple'])) ? $_POST['nickname_simple'] : NULL;
                 $nickname_pinyin = (!empty($_POST['nickname_pinyin'])) ? $_POST['nickname_pinyin'] : NULL;
+                $forsearch = (!empty($_POST['forsearch'])) ? $_POST['forsearch'] : NULL;
                 $r_id = authors_insert_atrib($author_id, $palladian,$zh_trad,$zh_simple,$pinyin,$real_name,$real_name_zh,
                 $real_name_simple,$real_name_pinyin,$second_name,$second_name_zh,$second_name_simple,$second_name_pinyin,
                 $postmortem_name,$postmortem_name_zh,$postmortem_name_simple,$postmortem_name_pinyin,
