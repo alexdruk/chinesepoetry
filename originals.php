@@ -53,6 +53,11 @@ elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
         $otherTranslations = array('header' => 'Переводы', 'translations' => $otherTranslations);
         $template_info["otherTranslation"] = $otherTranslations;
     }
+    else {
+        $otherTranslations = array('header' => 'Пожалуйста помогите найти перевод!', 'translations' => []);
+        $template_info["otherTranslation"] = $otherTranslations;
+    }
+
     $template_info["cycle"] = $cycle;
     $template_info["subcycle"] = $subcycle;
     $template_info["biblio"] = false;

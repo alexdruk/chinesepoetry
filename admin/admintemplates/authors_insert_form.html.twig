@@ -23,14 +23,42 @@
     </div>
     <div class="form-group">
         <label for="inputepoch">Эпоха</label>
-        <input type="text" class="form-control" name="epoch" id="inputepoch" placeholder="Эпоха Шести династий" required>
-    </div>
+        <!--input type="text" class="form-control" name="epoch" id="inputepoch" placeholder="Эпоха Шести династий" required -->
+        <select class="custom-select" name="epoch" id="byEpoch">
+            <option value="КНР">КНР</option>
+            <option value="Китайская республика - КНР">Китайская республика - КНР</option>
+            <option value="Китайская республика">Китайская республика</option>
+            <option value="Династия Цин">Династия Цин</option>
+            <option value="Династия Мин">Династия Мин</option>
+            <option value="Династия Юань">Династия Юань</option>
+            <option value="Династия Сун, Династия Южная Сун">Династия Сун, Династия Южная Сун</option>
+            <option value="Династия Сун, Династия Северная Сун">Династия Сун, Династия Северная Сун</option>
+            <option value="Династия Сун">Династия Сун</option>
+            <option value="Династия Тан">Династия Тан</option>
+            <option value="Династия Суй">Династия Суй</option>
+            <option value="Эпоха Шести династий, Период Южных династий">Эпоха Шести династий, Период Южных династий</option>
+            <option value="Эпоха Шести династий, Период Южных династий, Династия Ци">Эпоха Шести династий, Период Южных династий, Династия Ци</option>
+            <option value="Эпоха Шести династий, Эпоха Южных и Северных династий">Эпоха Шести династий, Эпоха Южных и Северных династий</option>
+            <option value="Эпоха Шести династий, Династия Восточная Цзинь и 16 царств">Эпоха Шести династий, Династия Восточная Цзинь и 16 царств</option>
+            <option value="Эпоха Шести династий, Династия Западная Цзинь">Эпоха Шести династий, Династия Западная Цзинь</option>
+            <option value="Эпоха Шести династий, Период Троецарствия">Эпоха Шести династий, Период Троецарствия</option>
+            <option value="Эпоха Шести династий">Эпоха Шести династий</option>
+            <option value="Династия Хань, Поздняя (Восточная) Хань">Династия Хань, Поздняя (Восточная) Хань</option>
+            <option value="Династия Хань, Ранняя (Западная) Хань">Династия Хань, Ранняя (Западная) Хань</option>
+            <option value="Династия Хань">Династия Хань</option>
+            <option value="Династия Цинь">Династия Цинь</option>
+            <option value="Эпоха Чжоу, Период Чжаньго (Воюющих царств)">Эпоха Чжоу, Период Чжаньго (Воюющих царств)</option>
+            <option value="Эпоха Чжоу, Период Чуньцю (Весны и Осени)">Эпоха Чжоу, Период Чуньцю (Весны и Осени)</option>
+            <option value="I-XX в.в.">I-XX в.в.</option>
+          </select>
+</div>
     <div class="form-group">
-        <label for="inputpresent">Наличие в антологии</label>
+        <input type="hidden" class="form-control" name="present" id="inputpresent" value="1">
+        <!-- label for="inputpresent">Наличие в антологии</label>
         <select class="custom-select" name="present" id="inputpresent">
 			<option value="0">Нет</option>
 			<option value="1">Да</option>
-		</select>
+		</select -->
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
