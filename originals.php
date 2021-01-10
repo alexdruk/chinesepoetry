@@ -54,7 +54,7 @@ elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
         $template_info["otherTranslation"] = $otherTranslations;
     }
     else {
-        $otherTranslations = array('header' => 'Пожалуйста помогите найти перевод!', 'translations' => []);
+        $otherTranslations = array('header' => 'Пожалуйста, помогите найти перевод!', 'translations' => []);
         $template_info["otherTranslation"] = $otherTranslations;
     }
 
