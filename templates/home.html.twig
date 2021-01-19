@@ -94,7 +94,7 @@
       <div class="col-sm-4 mx-auto news">
         <h1 class="text-center" style="text-decoration:none;margin-bottom:20px;">Новости сайта</h1>
           {% for record in records %}
-          <div class="card" id="newsfeed">
+          <div class="card page{{ loop.index0 }}">
             {% if record[1] %}
               <div class="card-header">{{ record[1]|raw }}</div>
             {% endif %}
@@ -102,12 +102,45 @@
               <div class="card-body">{{ record[2]|raw }}</div>
             {% endif %}            
             <div class="card-footer">
-              <span class="morenews"><a href="./news.php#record{{ record[0] }}">Показать полностью</a></span>
+              <span class="morenews"><a href="./news.php?from={{ record[0] }}">Показать полностью</a></span>
               <span class="newsdate">{{ record[3] }}</span>
             </div>
           </div>
           {% endfor %}
+          <div class="card-header" id="showmore" onclick="togglediv({{ floor }})">Показать предыдущие 5</div>
     </div>
   </div> <!--container-->
 </div><!-- jumbotron -->        
+<script>
+  let classes = document.querySelectorAll('.card');
+  let currentPage = 1;
+  for (let i = 0; i < classes.length; i++) {
+    if (i < 5) {
+      classes[i].style.display = 'block';
+    }
+    else {
+      classes[i].style.display = 'none';
+    }
+  }
+  function togglediv(floor) {
+    if (currentPage >= floor) {
+      document.getElementById('showmore').style.display = 'none';
+    }
+    switch (currentPage) {
+      {% for j in 1..floor %}
+      case {{ j }}:        
+        for (let i = 0; i < classes.length; i++) {
+          if ((i > {{ j*5-1 }}) && (i < {{ (j+1)*5 }})) {
+            classes[i].style.display = 'block';
+          }
+          else {
+            classes[i].style.display = 'none';
+          }
+        } //for
+        currentPage++;
+        break;
+      {% endfor %}      
+    }//switch
+};//func
+</script>
 {% endblock %}

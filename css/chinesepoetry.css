@@ -533,3 +533,10 @@ cite {
 .alphabet {
     margin-bottom: 15px;
 }
+#showmore {
+    margin-top:10px;
+    text-align: center;
+    text-decoration: underline;
+    font-size: 90%;
+    font-weight: lighter; 
+}
