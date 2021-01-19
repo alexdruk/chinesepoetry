@@ -2000,18 +2000,15 @@ function getAllNewsWithoutFullText() {
 /**
  * get a list of limited number news from table news without fulltext
  *
- * @param $limit int
+ *
  * @return array array of records
  * @throws DBException
  */
-function getLimitedNewsWithoutFullText($limit) {
+function getLimitedNewsWithoutFullText() {
 	$db = UserConfig::getDB();
 	$records = array();
 	$record = null;
-	if ($stmt = $db->prepare('SELECT `news_id`,`header`,`home`,`ndate` FROM  news ORDER BY ndate DESC, news_id  DESC LIMIT ?;')) {
-		if (!$stmt->bind_param('i', $limit)) {
-			throw new DBBindParamException($db, $stmt);
-		}
+	if ($stmt = $db->prepare('SELECT `news_id`,`header`,`home`,`ndate` FROM  news ORDER BY ndate DESC, news_id  DESC;')) {
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
