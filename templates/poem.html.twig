@@ -19,7 +19,11 @@
         {% if cycle %}
         <div class="col-8 mx-auto">
             {% if fromcycle %}
-                <h4 class="poems cycle" id="poems_cycle">{{ cycle|raw }}</h4>
+                {% if melody %}
+                    <h4 class="poems cycle" id="poems_cycle">На мелодию {{ cycle|raw }}</h4>
+                {% else %}
+                    <h4 class="poems cycle" id="poems_cycle">{{ cycle|raw }}</h4>
+                {% endif %}
             {% else %}
                 <h4 class="poems cycle" id="poems_cycle">Из цикла: {{ cycle|raw }}</h4>
             {% endif %}

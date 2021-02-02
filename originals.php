@@ -98,6 +98,14 @@ elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
     else {
         $fromcycle = false;
     }
+    if ((stripos($cycle_ru, '("') !== false) && ($cycle_zh)) {
+        $melody = true;
+        $fromcycle = true;
+    }
+    else {
+        $melody = false;
+    }
+    $template_info["melody"] = $melody;
     $template_info["fromcycle"] = $fromcycle;
     $template = $twig->load('poem.html.twig');
 }

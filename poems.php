@@ -237,6 +237,14 @@ elseif ( ($_GET['action'] == 'show')  && ($_GET['poem_id'] > 0) ){
     else {
         $fromcycle = false;
     }
+    if ((stripos($cycle_ru, '("') !== false) && ($cycle_zh)) {
+        $melody = true;
+        $fromcycle = true;
+    }
+    else {
+        $melody = false;
+    }
+    $template_info["melody"] = $melody;
     $cycle = makeCycle($cycle_ru, $cycle_zh);
     $subcycle = makeSubCycle($subcycle_ru, $subcycle_zh);
     $template_info["header"] = $author;
