@@ -99,6 +99,10 @@ elseif  ( ($_GET['action'] == 'bySource') && (array_key_exists('biblio_id', $_GE
     $template_info["title"] ='Все стихи из источника';
     $template = $twig->load('at_list.html.twig');
 }
+elseif ($_GET['action'] == 'showrandom') {
+    $poem_id = getRandomPoemID();
+    header("Location: poems.php?action=show&poem_id=$poem_id");
+}
 elseif ($_GET['action'] == 'search') {
     $template_info["header"] ='Полнотекстный поиск по переводам стихов';
     if (array_key_exists('posted', $_GET)) {
