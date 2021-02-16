@@ -76,6 +76,12 @@
         </div>
         {% endif %}
     </div>
+    {% if genres %}
+    <div  class="text-left col-8 mx-auto">Жанр:&nbsp;&nbsp;&nbsp;{{ genres }}</div>
+    {% endif %}
+    {% if size %}
+    <div  class="text-left col-8 mx-auto">Размер: {{ size }}</div>
+    {% endif %}
     {% if biblio %}
     <div class="d-flex align-items-end"><cite title="{{ biblio[0]|raw }}"><a href="./biblio.php?biblio_id={{ biblio[1] }}" id="biblio_poems">Источник: {{ biblio[0] }}</a></cite></div>
     {% endif %}

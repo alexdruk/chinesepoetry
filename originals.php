@@ -107,6 +107,8 @@ elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
     }
     $template_info["melody"] = $melody;
     $template_info["fromcycle"] = $fromcycle;
+    $template_info["genres"] = $genres;
+    $template_info["size"] = $size;
     $template = $twig->load('poem.html.twig');
 }
 elseif ($_GET['action'] == 'search') {
