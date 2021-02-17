@@ -295,6 +295,8 @@ elseif ( ($_GET['action'] == 'show')  && ($_GET['poem_id'] > 0) ){
             $template_info["page_description"] = 'Стихотворение "'.$poem_name_ru.'". Автор: '.$proper_name.' '.$dates.'. Перевод: '.$transl;
         }
     }
+    $template_info["genres"] = false;
+    $template_info["size"] = false;
     $template = $twig->load('poem.html.twig');
 }
 else {

@@ -79,7 +79,7 @@ body {
 .jumbotron {
     background-color: #fff !important;
     margin-top: 20px;
-    border: 1px solid #f2ca06; 
+    border: 1px solid #f2ca06;
 }
 
 
@@ -540,3 +540,14 @@ cite {
     font-size: 90%;
     font-weight: lighter; 
 }
+.genres {
+    margin-top: -2em;
+    font-size: 90%;
+    font-weight: lighter; 
+}
+.sizes {
+    margin-bottom: 2em;
+    font-size: 90%;
+    font-weight: lighter; 
+}
+
