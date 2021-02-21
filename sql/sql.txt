@@ -1186,3 +1186,9 @@ SELECT `poems_id`,`author_id`,`translator1_id`,`translator2_id`,
 	`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id` FROM  poems 
 	 WHERE biblio_id =320
 	 ORDER BY `author_id`, `translator1_id`, cast(`poem_name_ru` as unsigned),`poem_name_ru`,`cycle_ru`, `subcycle_ru`, `poems_id` ASC;
+
+
+ALTER TABLE originals ADD site VARCHAR(50) DEFAULT NULL;
+ALTER TABLE originals ADD siteURL VARCHAR(250) DEFAULT NULL;
+ALTER TABLE poems ADD site VARCHAR(50) DEFAULT NULL;
+ALTER TABLE poems ADD siteURL VARCHAR(250) DEFAULT NULL;
