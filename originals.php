@@ -19,7 +19,7 @@ if ($_GET['action'] == 'showall') {
 elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
     $record_id = $_GET['record_id'];
     list($originals_id,$author_id,$proper_name, $dates,$epoch,$cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru,
-    $poem_name_zh, $poem_name_ru,$poem_code,$biblio_id,$poem_text,$genres,$size, $zh_trad, $zh_simple) = getOriginalsByPoemID($record_id);
+    $poem_name_zh, $poem_name_ru,$poem_code,$biblio_id,$poem_text,$genres,$size, $zh_trad, $zh_simple, $site, $siteURL) = getOriginalsByPoemID($record_id);
     $zname = '';
     if ($zh_trad) {
         $zname = '&nbsp;<span class="name zh">'.$zh_trad.'</span>';
@@ -109,6 +109,8 @@ elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
     $template_info["fromcycle"] = $fromcycle;
     $template_info["genres"] = $genres;
     $template_info["size"] = $size;
+    $template_info["site"] = $site;
+    $template_info["siteURL"] = $siteURL;
     $template = $twig->load('poem.html.twig');
 }
 elseif ($_GET['action'] == 'search') {

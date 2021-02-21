@@ -53,6 +53,14 @@
         <label for="size">Размер</label>
         <input type="text" class="form-control" name="size"  value="{{ size }}">
     </div>
+    <div class="form-group" width="50">
+        <label for="site">Сайт (только если нет ID источника)</label>
+        <input type="text" class="form-control" name="site" value="{{ site }}">
+    </div>
+    <div class="form-group">
+        <label for="siteURL">Сайт URL (только если нет ID источника)</label>
+        <input type="text" class="form-control" name="siteURL"  value="{{ siteURL }}">
+    </div>
     <div class="form-group">
         <label for="inputproper_name">отредактируйте HTML текста стиха</label>
         <textarea class="form-control" name="poem_text" id="poem_text" rows="30">{{ poem_text }}</textarea>

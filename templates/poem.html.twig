@@ -94,6 +94,9 @@
     {% if biblio %}
     <div class="d-flex align-items-end"><cite title="{{ biblio[0]|raw }}"><a href="./biblio.php?biblio_id={{ biblio[1] }}" id="biblio_poems">Источник: {{ biblio[0] }}</a></cite></div>
     {% endif %}
+    {% if siteURL %}
+    <div class="d-flex align-items-end"><cite><a  href="{{ siteURL }}" id="biblio_poems">Источник: {{ site }}</a></cite></div>
+    {% endif %}
 </div>
 <script type="text/javascript">
     var images = ['y1.jpg', 'y2.jpg', 'y3.jpg','y4.jpg', 'y5.jpg', 'y6.jpg','y7.jpg', 'y8.jpg', 'y9.jpg'];

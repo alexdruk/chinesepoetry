@@ -207,7 +207,7 @@ elseif ( ($_GET['action'] == 'show')  && ($_GET['poem_id'] > 0) ){
 
     list($poems_id,$author_id,$translator1_id,$translator2_id,
     $topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
-    $poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$poem_hash) = $records[0];
+    $poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$poem_hash,$site, $siteURL) = $records[0];
     list($author_html, $proper_name,  $dates,  $epoch) = makeAuthor($author_id);
     $author = $author_html;
     $translator = makeTranslator($translator1_id, $translator2_id);
@@ -297,6 +297,8 @@ elseif ( ($_GET['action'] == 'show')  && ($_GET['poem_id'] > 0) ){
     }
     $template_info["genres"] = false;
     $template_info["size"] = false;
+    $template_info["site"] = $site;
+    $template_info["siteURL"] = $siteURL;
     $template = $twig->load('poem.html.twig');
 }
 else {

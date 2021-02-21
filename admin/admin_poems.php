@@ -36,6 +36,8 @@ if (array_key_exists('action', $_GET)) {
             $totallines  = $_POST['totallines'];
             $fulllines  = $_POST['fulllines'];
             $genres  = $_POST['genres'];
+            $site = $_POST['site'];;
+            $siteURL = $_POST['siteURL'];;
             if (array_key_exists('translator2_id', $_POST)) {
                 $translator2_id = (!empty($_POST['translator2_id'])) ? $_POST['translator2_id'] : NULL;
             }
@@ -81,10 +83,16 @@ if (array_key_exists('action', $_GET)) {
             if (array_key_exists('genres', $_POST)) {
                 $genres = (!empty($_POST['genres'])) ? $_POST['genres'] : NULL;
             }
+            if (array_key_exists('site', $_POST)) {
+                $site = (!empty($_POST['site'])) ? $_POST['site'] : NULL;
+            }
+            if (array_key_exists('siteURL', $_POST)) {
+                $siteURL = (!empty($_POST['siteURL'])) ? $_POST['siteURL'] : NULL;
+            }
             $poem_hash = md5($poem_text);
 			$r_id = poems_insert_record($author_id,$translator1_id,$translator2_id,
 			$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
-			$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$poem_hash,$totallines,$fulllines,$genres);
+			$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$poem_hash,$totallines,$fulllines,$genres,$site,$siteURL);
 			if ($r_id > 0) {
 				$success = 'Success! A new record was created id='.$r_id;
 			}
@@ -152,6 +160,12 @@ if (array_key_exists('action', $_GET)) {
             if (array_key_exists('genres', $_POST)) {
                 $genres = (!empty($_POST['genres'])) ? $_POST['genres'] : NULL;
             }
+            if (array_key_exists('site', $_POST)) {
+                $site = (!empty($_POST['site'])) ? $_POST['site'] : NULL;
+            }
+            if (array_key_exists('siteURL', $_POST)) {
+                $siteURL = (!empty($_POST['siteURL'])) ? $_POST['siteURL'] : NULL;
+            }
             $template_info["record_id"] = $poems_id;
             $template_info["author_id"] = $author_id;
             $template_info["translator1_id"] = $translator1_id;
@@ -173,9 +187,11 @@ if (array_key_exists('action', $_GET)) {
             $template_info["totallines"] = $totallines;
             $template_info["fulllines"] = $fulllines;
             $template_info["genres"] = $genres;
+            $template_info["site"] = $site;
+            $template_info["siteURL"] = $siteURL;
           $r_id = updatePoemsByID($poems_id,$author_id,$translator1_id,$translator2_id,
           $topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
-          $poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$totallines,$fulllines,$genres);
+          $poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$totallines,$fulllines,$genres,$site,$siteURL);
             if ($r_id > 0) {
                 $success = 'Success! A record was updated.';
                 $error = false;
@@ -194,7 +210,7 @@ if (array_key_exists('action', $_GET)) {
             $record = getByIDFromPoems($_GET['record_id']);
             list($author_id,$translator1_id,$translator2_id,
 			$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
-			$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$totallines,$fulllines,$genres) = $record;
+			$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$totallines,$fulllines,$genres,$site, $siteURL) = $record;
             $template_info["record_id"] = $_GET['record_id'];
             $template_info["author_id"] = $author_id;
             $template_info["translator1_id"] = $translator1_id;
@@ -216,6 +232,8 @@ if (array_key_exists('action', $_GET)) {
             $template_info["totallines"] = $totallines;
             $template_info["fulllines"] = $fulllines;
             $template_info["genres"] = $genres;
+            $template_info["site"] = $site;
+            $template_info["siteURL"] = $siteURL;
             $error = false;
             $template_info["error"] = $error;
             $template_info["success"] = false;
