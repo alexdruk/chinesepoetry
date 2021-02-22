@@ -125,7 +125,8 @@ if (array_key_exists('action', $_GET)) {
         else {
             $record = array();
             $record = getOriginalsByPoemID($_GET['record_id']);
-            list($originals_id,$author_id,$proper_name, $dates,$epoch,$cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru,$poem_name_zh, $poem_name_ru,$poem_code,$biblio_id,$poem_text, $genres, $size, $site, $siteURL) = $record;
+//            print_r($record);
+            list($originals_id,$author_id,$proper_name, $dates,$epoch,$cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru,$poem_name_zh, $poem_name_ru,$poem_code,$biblio_id,$poem_text, $genres, $size,$zh_trad, $zh_simple, $site, $siteURL) = $record;
             $template_info["header"] = 'Редактировать оригинал';
             $author = $proper_name.' '.$dates;
             $template_info["record_id"] = $originals_id;
