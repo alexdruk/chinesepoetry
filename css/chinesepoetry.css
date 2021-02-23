@@ -548,4 +548,15 @@ cite {
     font-size: 90%;
     font-weight: lighter; 
 }
+#vote-btn {
+    border-radius:3px;
+    color:#007bff;
+    border:1px solid #f2ca06;
+    border-color:#f2ca06;
+    background:#FFFBE9;
+    padding:3px;
+    font-size: 80%;
+    font-weight: lighter; 
+    
+}
 

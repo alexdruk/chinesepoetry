@@ -2196,3 +2196,75 @@ function getMaxIDFromNews() {
 		throw new DBPrepareStmtException($db);
 	}
 }
+/**
+ * get ip of the user
+ *
+ * @return ip
+ */
+function getIP() {
+	$ip = null;
+	if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+		$ip = $_SERVER['HTTP_CLIENT_IP'];
+	} elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+		$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+	} else {
+		$ip = $_SERVER['REMOTE_ADDR'];
+	}
+	return $ip;
+}
+/**
+ * count ip
+ *
+ * @return count
+ * @throws DBException
+ */
+function countIP($ip) {
+	$db = UserConfig::getDB();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT count(ip) FROM selectedpoems WHERE ip=?')) {
+		if (!$stmt->bind_param('s', $ip)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($ip)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = $ip;
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $record;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * insert a new records into table selectedpoems
+ *
+ * @param int  poems_id 
+ * @param string  ip
+ * @param string  CURRENT_TIMESTAMP
+ * @return inserted record id
+ * @throws DBException
+ */
+function votes_insert_record($poems_id, $ip) {
+	$db = UserConfig::getDB();
+	$r_id = NULL;
+	if ($stmt = $db->prepare('INSERT INTO `selectedpoems` (`poems_id`, `ip`) 
+		VALUES (?, ?)')) {
+		if (!$stmt->bind_param('is', $poems_id, $ip)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->insert_id;
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
