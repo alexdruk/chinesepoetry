@@ -302,7 +302,7 @@ elseif ( ($_GET['action'] == 'show')  && ($_GET['poem_id'] > 0) ){
     $ip = getIP();
     $countIPs = countIP($ip );
     $countIP = false;
-    if ($countIPs < 10) {
+    if ($countIPs < 30) {
         $countIP = true;
     }
     $template_info["countIP"] = $countIP;
