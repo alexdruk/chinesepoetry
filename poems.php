@@ -299,6 +299,14 @@ elseif ( ($_GET['action'] == 'show')  && ($_GET['poem_id'] > 0) ){
     $template_info["size"] = false;
     $template_info["site"] = $site;
     $template_info["siteURL"] = $siteURL;
+    $ip = getIP();
+    $countIPs = countIP($ip );
+    $countIP = false;
+    if ($countIPs < 10) {
+        $countIP = true;
+    }
+    $template_info["countIP"] = $countIP;
+    $template_info["poems_id"] = $poems_id;
     $template = $twig->load('poem.html.twig');
 }
 else {

@@ -91,6 +91,23 @@
         </div>
         {% endif %}
     </div>
+    {% if countIP %}
+    <script>
+        function getVote(pageid) {
+          var xmlhttp=new XMLHttpRequest();
+          xmlhttp.onreadystatechange=function() {
+            if (this.readyState==4 && this.status==200) {
+              document.getElementById("vote").innerHTML='Спасибо!';
+            }
+          }
+          xmlhttp.open("GET","vote.php?pageid="+pageid,true);
+          xmlhttp.send();
+        }
+    </script>
+    <div class="vote text-center" id="vote">
+            <input type="button" id="vote-btn" name="NNN" value='Нажмите здесь чтобы включить в "Избранное"' onclick="getVote({{ poems_id }})">
+    </div>
+    {% endif %}
     {% if biblio %}
     <div class="d-flex align-items-end"><cite title="{{ biblio[0]|raw }}"><a href="./biblio.php?biblio_id={{ biblio[1] }}" id="biblio_poems">Источник: {{ biblio[0] }}</a></cite></div>
     {% endif %}
