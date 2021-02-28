@@ -6,8 +6,4 @@ vendor/
 /httpd.conf
 /mistakes/mistakes.php
 mistakes/mistakes.php
-<<<<<<< HEAD
 /bashscripts/DBdump.sh
-=======
-/bashscripts/DBdump.sh
->>>>>>> d30e6b4189f9aeff3080e545334b2157905ff3e7
