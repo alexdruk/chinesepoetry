@@ -1,0 +1,31 @@
+{% extends 'page.html.twig' %} {% block content %}
+    {% if success %}
+    <div class="alert alert-success" role="alert">
+        {{ success }}
+    </div>
+    {% endif %} 
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endif %}
+    <div class="col-auto">
+    <p>&nbsp;</p>
+    <p>Название файла должно быть authorID.extention или translatorID.extention.</p>
+    <p>Для дополнительных файлов используйте буквы. Например: "author123а.png"</p>
+    <p>Старайтесь не использовать размер больше чем 200x200 px.</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <form action="./admin_imageupload.php" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="fileToUpload">Select image to upload:</label>
+            <input type="file" name="fileToUpload" id="fileToUpload"></br>
+        </div>
+        <button type="submit " class="btn btn-primary" value="Submit" name="submit">Submit</button>
+    </form>
+    <p>&nbsp;</p>
+    <p>Если нужно загрузить больше одного файла, не пользуйтесь клавишами "Назад"  или "Перезагрузить".</p>
+    <p>Вместо этого пользуйтесь меню или нажимайте <a href="./admin_imageupload.php">сюда.</a></p>
+    
+    </div>
+{% endblock %}

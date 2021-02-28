@@ -7,7 +7,7 @@ if (array_key_exists('action', $_GET)) {
     if ($_GET['action'] == 'showall') {
         $template_info["header"] ='Все оригиналы';
         $template_info["showDataTable"] = true;
-        $records = getListfromOriginals();       
+        $records = getListfromOriginals();
 		$template_info["records"] = $records;
         $template = $twig->load('admin_originals_showall.html.twig');
     }

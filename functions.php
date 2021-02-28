@@ -2268,3 +2268,53 @@ function votes_insert_record($poems_id, $ip) {
 	}
 	return $r_id;
 }
+/**
+ * delete record from table poems
+ *
+ * @param int  record_id 
+ * @return affected_rows
+ * @throws DBException
+ */
+function deleteRecordFromPoems($record_id) {
+	$db = UserConfig::getDB();
+	$r_id = NULL;
+	$record_id = trim($record_id);
+	if ($stmt = $db->prepare('DELETE FROM `poems` WHERE `poems_id`=?')) {
+		if (!$stmt->bind_param('i', $record_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->affected_rows; // this works only if actual changes were made, if nothing changed return 0
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
+/**
+ * delete record from table originals
+ *
+ * @param int  record_id 
+ * @return affected_rows
+ * @throws DBException
+ */
+function deleteRecordFromOriginals($record_id) {
+	$db = UserConfig::getDB();
+	$r_id = NULL;
+	$record_id = trim($record_id);
+	if ($stmt = $db->prepare('DELETE FROM `originals` WHERE `poems_id`=?')) {
+		if (!$stmt->bind_param('i', $record_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->affected_rows; // this works only if actual changes were made, if nothing changed return 0
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
