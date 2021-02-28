@@ -1,0 +1,23 @@
+{% extends 'page.html.twig' %} {% block content %}
+    {% if success %}
+    <div class="alert alert-success" role="alert">
+        {{ success }}
+    </div>
+    {% endif %} 
+    {% if error %}
+    <div class="alert alert-danger" role="alert">
+        {{ error }}
+    </div>
+    {% endif %}
+    <div class="col-auto">
+    <p>&nbsp;</p>
+    <p style="color:red">Действуйте только если уверены. Востановить запись будет нельзя!</p>
+    <form action="./admin_delete_record.php?table={{ type }}&posted=1" method="POST">
+        <div class="form-group">
+            <label for="recordID">Enter record  ID in the table <b>{{ type }}</b> : </label>
+            <input type="text" name="recordID" id="recordID"  maxlength="4" size="4" required></br>
+        </div>
+        <button type="submit " class="btn btn-primary" value="Submit" name="submit">Submit</button>
+    </form>
+    </div>
+{% endblock %}
