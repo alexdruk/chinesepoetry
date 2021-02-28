@@ -6,4 +6,4 @@ vendor/
 /httpd.conf
 /mistakes/mistakes.php
 mistakes/mistakes.php
-
+/bashscripts/DBdump.sh
