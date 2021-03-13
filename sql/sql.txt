@@ -1200,3 +1200,17 @@ CREATE TABLE IF NOT EXISTS selectedpoems (
 	`datetime` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	FOREIGN KEY (poems_id) REFERENCES poems(poems_id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;
+
+select poems_id, poem_text from poems where poem_text RLIKE ' [\.]{3}';
+UPDATE poems SET poem_text = REGEXP_REPLACE(poem_text, ' [\.]{3}', '\.\.\.')  
+where poem_text RLIKE ' [\.]{3}'; #
+
+select poems_id, cycle_ru from poems where cycle_ru RLIKE '^Из стихов ';
+UPDATE poems SET cycle_ru = REGEXP_REPLACE(cycle_ru, '^Из стихов ', '')  
+where cycle_ru RLIKE '^Из стихов '; #
+select poems_id, cycle_ru from poems where cycle_ru RLIKE '^Из ';
+UPDATE poems SET cycle_ru = REGEXP_REPLACE(cycle_ru, '^Из ', '')  
+where cycle_ru RLIKE '^Из '; #
+select poems_id, subcycle_ru from poems where subcycle_ru RLIKE '^Из ';
+
+select poems_id, cycle_ru from poems where cycle_ru RLIKE '^Из ';
