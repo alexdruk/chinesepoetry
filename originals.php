@@ -9,7 +9,7 @@ if ($_GET['action'] == 'showall') {
     $template_info["search"] = false;
     $records = getListfromOriginals();
 #    print_r($records);
-    $final = makeFinalArray ($records);
+    $final =  makeOrigFinalArray ($records);
 #    print_r($final);
     $template_info["final"] = $final;
     $template_info["title"] ='Все оригиналы стихов';
@@ -34,11 +34,11 @@ elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
     $template_info["poem_name"] = '<span class="poem_name zh">'.$poem_name_zh.'</span> <span class="poem_name ru">'.$poem_name_ru.'</span>';
     $template_info["poem_text"] = $poem_text;
     if ($cycle_ru) {
-        $cycle = '<span class="cycle zh">'.$cycle_zh.'</span> <span class="cycle ru">'.$cycle_ru.'</span>';
+        $cycle = '<span class="cycle zh"><a href="/cycles.php?cycle_zh='.urlencode($cycle_zh).'">'.$cycle_zh.'</a></span> <span class="cycle ru">'.$cycle_ru.'</span>';
     }
     else { $cycle = false; }
     if ($subcycle_ru) {
-        $subcycle = '<span class="subcycle zh">'.$subcycle_zh.'</span> <span class="subcycle ru">'.$subcycle_ru.'</span>';
+        $subcycle = '<span class="subcycle zh"><a href="/cycles.php?subcycle_zh='.urlencode($subcycle_zh).'">'.$subcycle_zh.'</a></span> <span class="subcycle ru">'.$subcycle_ru.'</span>';
     }
     else { $subcycle = false; }
     $entries = getOtherTranslationsByPoemCode($poem_code);
@@ -132,7 +132,7 @@ elseif ($_GET['action'] == 'search') {
         foreach ($rs as $record) {
             array_push($records,$record[0]);
         }
-        $final = makeFinalArray ($records);
+        $final =  makeOrigFinalArray ($records);
         $template_info["final"] = $final;
         if (count($records) < 1) {
             $template_info["header"] ='Ничего не найдено';
@@ -152,7 +152,7 @@ else {
 }
 echo $template->display($template_info);
 
-function makeFinalArray ($records) {
+function makeOrigFinalArray ($records) {
     $new_arr = array();
     $arrAuthors = array();
     $final = array();
@@ -184,11 +184,11 @@ function makeFinalArray ($records) {
         $poems = array();
         for ($i=0; $i < count($new_arr[$author]) ; $i++) {
             $poem = $new_arr[$author][$i];
-            $cycle = '<span class="cycle zh">'.$poem[4].'</span> <span class="cycle ru">'.$poem[5].'</span>';
+            $cycle = '<span class="cycle zh"><a href="/cycles.php?cycle_zh='.urlencode($poem[4]).'">'.$poem[4].'</a></span> <span class="cycle ru">'.$poem[5].'</span>';
+            $subcycle = '<span class="subcycle zh"><a href="/cycles.php?subcycle_zh='.urlencode($poem[6]).'">'.$poem[6].'</a></span> <span class="subcycle ru">'.$poem[7].'</span>';
             if ($cycle == '<span class="cycle zh"></span> <span class="cycle ru"></span>') {
                 $cycle = 'default'.$i;
             }
-            $subcycle = '<span class="subcycle zh">'.$poem[6].'</span> <span class="subcycle ru">'.$poem[7].'</span>';
             if ($subcycle == '<span class="subcycle zh"></span> <span class="subcycle ru"></span>') {
                 $subcycle = 'default'.$i;
             }

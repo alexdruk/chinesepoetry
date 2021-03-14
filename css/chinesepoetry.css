@@ -232,9 +232,10 @@ p:empty {
     background: #fff;
 }
 
-.zh {
+.zh,
+.zh a {
     color: #c00000;
-    font-family: SimSun;
+    font-family: NSimSun;
 }
 
 .blockquote-footer {
@@ -305,8 +306,8 @@ li.poem_name
 .cycle.zh,
 .subcycle.zh,
 .subsubcycle.zh {
-    color: #c00000;
-    font-family: SimSun;
+    color: #c00000 !important;
+    font-family: NSimSun;
 }
 /*
 .poem_name.ru,

@@ -50,7 +50,7 @@
                     </div>
                 </div>
             {% else %}    
-            <h4 class="poems poem_name" id="poems_poem_name">{{ poem_name|raw }}</h4>
+            <h4 class="poems poem_name">{{ poem_name|raw }}</h4>
             {% endif %}    
         </div>
     </div>
@@ -59,7 +59,7 @@
         <div class="poetry text-left col-sm-7 mx-auto">
             {{  poem_text|raw }}
         </div>
-        <div class="poetry text-right col-sm-3 mx-0 float-right" id="forbirds"></div>
+        <div class="poetry text-right col-sm-3 mx-0 float-right forbirds"></div>
         {% if topics %}
         <div class="originalLink text-left col-8 mx-auto">
             <h4 class="poems poem_name">Темы</h4>
@@ -117,7 +117,9 @@
 </div>
 <script type="text/javascript">
     var images = ['y1.jpg', 'y2.jpg', 'y3.jpg','y4.jpg', 'y5.jpg', 'y6.jpg','y7.jpg', 'y8.jpg', 'y9.jpg'];
-    var elem = document.getElementById('forbirds');
-    elem.style.background = ' top right url(../images/' + images[Math.floor(Math.random() * images.length)] + ')  repeat-y';
+    var elems = document.getElementsByClassName('forbirds');
+    for (var i = 0; i < elems.length; i++) {
+        elems[i].style.background = ' top right url(../images/' + images[Math.floor(Math.random() * images.length)] + ')  repeat-y';
+    }
 </script>
 {% endblock %}

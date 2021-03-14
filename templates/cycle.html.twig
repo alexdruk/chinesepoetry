@@ -1,0 +1,100 @@
+{% extends 'page_root.html.twig' %} {% block content %}
+<!-- poem.html.twig-->
+<div class="jumbotron" id="poems_jumbotron">
+   <div class="row">
+    <div class="secondaryNav col-sm-2 mx-auto"></div>
+    <div class="col-8 mx-auto">
+            <h4 class="poems header" id="poems_header">{{ header|raw }}</h4>
+        </div>
+        <div class="secondaryNav col-sm-2 mx-auto"></div>
+    </div>
+{% if originals %}
+    {% if cycle %}
+    <div class="col-8 mx-auto">
+        {% if fromcycle %}
+            {% if melody %}
+                <h4 class="poems cycle" id="poems_cycle">На мелодию: {{ cycle|raw }}</h4>
+            {% else %}
+                <h4 class="poems cycle" id="poems_cycle">{{ cycle|raw }}</h4>
+            {% endif %}
+        {% else %}
+            <h4 class="poems cycle" id="poems_cycle">{{ cycle|raw }}</h4>
+        {% endif %}
+    </div>
+    {% endif %}
+    <!--/div-->
+    {% for record in records %}
+        {% if  record[7] and record[8] %} 
+        <div class="col-8 mx-auto">
+            <h5 class="poems subcycle" id="poems_subcycle">
+                <span class="subcycle zh">{{ record[7]|raw }}</span><span class="subcycle ru">{{ record[8]|raw }}</span>
+            </h5>
+        </div>
+        {% endif %}
+    <div class="col-8 mx-auto">
+        <h4 class="poems poem_name">{{ record[10]|raw }}</h4>
+    </div>
+    <div class="row">
+        <div class="text-left col-sm-2 mx-auto"></div>
+        <div class="poetry text-left col-sm-7 mx-auto">
+            {{  record[11]|raw }}
+        </div>
+        <div class="poetry text-right col-sm-3 mx-0 float-right forbirds"></div>
+    </div>
+    {% endfor %}
+{% else %}
+    <div class="row">
+        {% if translator %}
+        <div class="col-8 mx-auto">
+            <h4 class="poems translators" id="poems_translators">Перевод: {{ translator|raw }}</h4>
+        </div>
+        {% endif %}
+        {% if cycle %}
+        <div class="col-8 mx-auto">
+            {% if fromcycle %}
+                {% if melody %}
+                    <h4 class="poems cycle" id="poems_cycle">На мелодию: {{ cycle|raw }}</h4>
+                {% else %}
+                    <h4 class="poems cycle" id="poems_cycle">{{ cycle|raw }}</h4>
+                {% endif %}
+            {% else %}
+                <h4 class="poems cycle" id="poems_cycle">{{ cycle|raw }}</h4>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+    {% for record in records %}
+    {% if  record[9] and record[10] %} 
+        <div class="col-8 mx-auto">
+            <h5 class="poems subcycle" id="poems_subcycle">
+                <span class="subcycle zh">{{ record[9]|raw }}</span><span class="subcycle ru"><a href="/cycles.php?translator={{ translator_id }}&subcycle={{ record[10]|url_encode }}">{{ record[10]|raw }}</a></span>
+            </h5>
+        </div>
+    {% elseif (record[10] and not record[9]) %}
+    <div class="col-8 mx-auto">
+        <h5 class="poems subcycle" id="poems_subcycle">
+            <span class="subcycle ru"><a href="/cycles.php?translator={{ translator_id }}&subcycle={{ record[10]|url_encode }}">{{ record[10]|raw }}</a></span>
+        </h5>
+    </div>
+    {% endif %}
+    <div class="col-8 mx-auto">
+        <h4 class="poems poem_name">{{ record[12]|raw }}</h4>
+    </div>
+    <div class="row">
+        <div class="text-left col-sm-2 mx-auto"></div>
+        <div class="poetry text-left col-sm-7 mx-auto">
+            {{  record[13]|raw }}
+        </div>
+        <div class="poetry text-right col-sm-3 mx-0 float-right forbirds"></div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+<script type="text/javascript">
+    var images = ['y1.jpg', 'y2.jpg', 'y3.jpg','y4.jpg', 'y5.jpg', 'y6.jpg','y7.jpg', 'y8.jpg', 'y9.jpg'];
+    var elems = document.getElementsByClassName('forbirds');
+    for (var i = 0; i < elems.length; i++) {
+        elems[i].style.background = ' top right url(../images/' + images[Math.floor(Math.random() * images.length)] + ')  repeat-y';
+    }
+</script>
+{% endblock %}

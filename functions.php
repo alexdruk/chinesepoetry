@@ -619,7 +619,7 @@ function authors_insert_description($author_id, $desc) {
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
-		$r_id = $stmt->affected_rows;
+		$r_id = $stmt->insert_id;
 		$stmt->close();
 	} else {
 		throw new DBPrepareStmtException($db);
@@ -646,7 +646,7 @@ function translators_insert_description($translator_id, $full_name, $dates, $img
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
-		$r_id = $stmt->affected_rows;
+		$r_id = $stmt->insert_id;;
 		$stmt->close();
 	} else {
 		throw new DBPrepareStmtException($db);
@@ -986,7 +986,7 @@ function getOriginalsByAuthorID($author_id) {
 	$records = array();
 	if ($stmt = $db->prepare('SELECT o.originals_id, o.author_id, o.cycle_zh, o.cycle_ru, o.subcycle_zh, o.subcycle_ru,
 	o.poem_name_zh, o.poem_name_ru, o.poem_code,o.biblio_id  FROM originals o
-	 WHERE o.author_id=? ORDER BY o.originals_id ASC;')) {
+	 WHERE o.author_id=? ORDER BY o.cycle_ru, o.subcycle_ru, o.poem_name_ru, o.originals_id ASC;')) {
 		if (!$stmt->bind_param('i', $author_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
@@ -1059,8 +1059,8 @@ function getOriginalsByPoemID($originals_id) {
 function originals_insert_record($author_id, $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $poem_name_zh, $poem_name_ru, $poem_code, $biblio_id, $poem_text, $genres, $size, $site, $siteURL) {
 	$db = UserConfig::getDB();
 	$r_id = NULL;
-	if ($stmt = $db->prepare('INSERT INTO originals (author_id, cycle_zh, cycle_ru, subcycle_zh, subcycle_ru, poem_name_zh, poem_name_ru, poem_code, biblio_id, poem_text, genres, size, site, siteURL) 
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')) {
+	if ($stmt = $db->prepare('INSERT INTO originals (author_id, cycle_zh, cycle_ru, subcycle_zh, subcycle_ru, poem_name_zh, poem_name_ru, poem_code, biblio_id, poem_text, genres, size, `site`, siteURL) 
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')) {
 		if (!$stmt->bind_param('isssssssisssss', $author_id, $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $poem_name_zh, $poem_name_ru, $poem_code, $biblio_id, $poem_text, $genres, $size, $site, $siteURL)) {
 			throw new DBBindParamException($db, $stmt);
 		}
@@ -1119,7 +1119,7 @@ function getWithoutPoem_textFromPoemsByAuthorID($author_id) {
 	if ($stmt = $db->prepare('SELECT `poems_id`,`author_id`,`translator1_id`,`translator2_id`,
 	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,`subcycle_ru`,
 	`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id` FROM  poems WHERE author_id = ? 
-	ORDER BY `author_id`, translator1_id, cast(`poem_name_ru` as unsigned),`poem_name_ru`,`cycle_ru`, `subcycle_ru`, `poems_id` ASC;')) {
+	ORDER BY `cycle_ru`, `subcycle_ru`,`author_id`, translator1_id, cast(`poem_name_ru` as unsigned),`poem_name_ru`,`cycle_ru`, `subcycle_ru`, `poems_id` ASC;')) {
 		if (!$stmt->bind_param('i', $author_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
@@ -1196,7 +1196,7 @@ function getWithoutPoem_textFromPoemsByTranslatorID($translator_id) {
 	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,`subcycle_ru`,
 	`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id` FROM  poems WHERE 
 	translator1_id = ? OR translator2_id = ? 
-	ORDER BY `author_id`, cast(`poem_name_ru` as unsigned),`poem_name_ru`,`cycle_ru`, `subcycle_ru`, `poems_id` ASC;')) {
+	ORDER BY `subcycle_ru`, `author_id`, cast(`poem_name_ru` as unsigned),`poem_name_ru`,`cycle_ru`,  `poems_id` ASC;')) {
 		if (!$stmt->bind_param('ii', $translator_id,$translator_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
@@ -1250,6 +1250,158 @@ function getPoemsByPoemID($poem_id) {
 			$record = array($poems_id,$author_id,$translator1_id,$translator2_id,
 			$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
 			$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$poem_hash,$site, $siteURL);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * get a record from table poems with poem_id
+ *
+ * @return array array of records
+ * @throws DBException
+ */
+function getPoemsByCycleTranslator($cycle, $translator_id) {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT p.poems_id, a.author_id, a.proper_name, a.dates, a.epoch, p.translator1_id, p.translator2_id,
+	 p.cycle_zh, p.cycle_ru, p.subcycle_zh, p.subcycle_ru, p.poem_name_zh, p.poem_name_ru, p.poem_text 
+	 FROM  poems p 
+	 INNER JOIN authors a ON a.author_id = p.author_id 
+	 WHERE p.cycle_ru = ?  and (p.translator1_id = ? or p.translator2_id = ?) 
+	 ORDER BY p.subcycle_ru, cast(p.poem_name_ru as unsigned),p.poem_name_ru,p.cycle_ru,  p.poems_id ASC;')) {
+		if (!$stmt->bind_param('sii', $cycle, $translator_id, $translator_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($poems_id,$author_id, $proper_name, $dates, $epoch, $translator1_id,$translator2_id,
+		$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,$poem_name_zh,$poem_name_ru,$poem_text)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($poems_id,$author_id, $proper_name, $dates, $epoch, $translator1_id,$translator2_id,
+			$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,$poem_name_zh,$poem_name_ru,$poem_text);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * get a record from table poems with poem_id
+ *
+ * @return array array of records
+ * @throws DBException
+ */
+function getPoemsBySubCycleTranslator($subcycle, $translator_id) {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT p.poems_id, a.author_id, a.proper_name, a.dates, a.epoch, p.translator1_id, p.translator2_id,
+	 p.cycle_zh, p.cycle_ru, p.subcycle_zh, p.subcycle_ru, p.poem_name_zh, p.poem_name_ru, p.poem_text 
+	 FROM  poems p 
+	 INNER JOIN authors a ON a.author_id = p.author_id 
+	 WHERE p.subcycle_ru = ?  and (p.translator1_id = ? or p.translator2_id = ?) 
+	 ORDER BY  cast(p.poem_name_ru as unsigned),p.poem_name_ru,p.cycle_ru,  p.poems_id ASC;')) {
+		if (!$stmt->bind_param('sii', $subcycle, $translator_id, $translator_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($poems_id,$author_id, $proper_name, $dates, $epoch, $translator1_id,$translator2_id,
+		$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,$poem_name_zh,$poem_name_ru,$poem_text)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($poems_id,$author_id, $proper_name, $dates, $epoch, $translator1_id,$translator2_id,
+			$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,$poem_name_zh,$poem_name_ru,$poem_text);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * get a record from table poems with poem_id
+ *
+ * @return array array of records
+ * @throws DBException
+ */
+function getOriginalsByCycleZH($cycle_zh) {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT p.originals_id, a.author_id, a.proper_name, a.dates, a.epoch,
+	 p.cycle_zh, p.cycle_ru, p.subcycle_zh, p.subcycle_ru, p.poem_name_zh, p.poem_name_ru, p.poem_text 
+	 FROM  originals p 
+	 INNER JOIN authors a ON a.author_id = p.author_id 
+	 WHERE p.cycle_zh = ? 
+	 ORDER BY p.subcycle_zh, cast(p.poem_name_ru as unsigned),p.poem_name_ru,p.cycle_ru,  p.originals_id ASC;')) {
+		if (!$stmt->bind_param('s', $cycle_zh)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($originals_id,$author_id, $proper_name, $dates, $epoch,
+		$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,$poem_name_zh,$poem_name_ru,$poem_text)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($originals_id,$author_id, $proper_name, $dates, $epoch,
+			$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,$poem_name_zh,$poem_name_ru,$poem_text);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * get a record 
+ *
+ * @return array array of records
+ * @throws DBException
+ */
+function getOriginalsBySubCycleZH($subcycle_zh) {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT p.originals_id, a.author_id, a.proper_name, a.dates, a.epoch,
+	 p.cycle_zh, p.cycle_ru, p.subcycle_zh, p.subcycle_ru, p.poem_name_zh, p.poem_name_ru, p.poem_text 
+	 FROM  originals p 
+	 INNER JOIN authors a ON a.author_id = p.author_id 
+	 WHERE p.subcycle_zh = ? 
+	 ORDER BY cast(p.poem_name_ru as unsigned),p.poem_name_ru,p.cycle_ru,  p.originals_id ASC;')) {
+		if (!$stmt->bind_param('s', $subcycle_zh)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($originals_id,$author_id, $proper_name, $dates, $epoch,
+		$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,$poem_name_zh,$poem_name_ru,$poem_text)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($originals_id,$author_id, $proper_name, $dates, $epoch,
+			$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,$poem_name_zh,$poem_name_ru,$poem_text);
 			array_push($records, $record);
 		}
 		$stmt->free_result();
@@ -1336,7 +1488,7 @@ function getWithoutPoem_textFromPoemsByTopicID($topic_id) {
 	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,`subcycle_ru`,
 	`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id` FROM  poems 
 	 WHERE topic1_id =? OR topic2_id =? OR topic3_id =?  OR topic4_id =?  OR topic5_id =? 
-	 ORDER BY `author_id`, `translator1_id`, cast(`poem_name_ru` as unsigned),`poem_name_ru`,`cycle_ru`, `subcycle_ru`, `poems_id` ASC;')) {
+	 ORDER BY `cycle_ru`, `subcycle_ru`,`author_id`, `translator1_id`, cast(`poem_name_ru` as unsigned),`poem_name_ru`,`cycle_ru`, `subcycle_ru`, `poems_id` ASC;')) {
 		if (!$stmt->bind_param('iiiii', $topic_id,$topic_id,$topic_id,$topic_id,$topic_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
@@ -1819,7 +1971,7 @@ $nickname,$nickname_zh,$nickname_simple,$nickname_pinyin,$forsearch) {
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
-		$r_id = $stmt->affected_rows;
+		$r_id = $stmt->insert_id;;
 		$stmt->close();
 	} else {
 		throw new DBPrepareStmtException($db);
@@ -1895,7 +2047,37 @@ function getTranslatorDescByID($translator_id) {
 		throw new DBPrepareStmtException($db);
 	}
 }
-
+/**
+ * get  translator_id from by traslator full name table translators
+ *
+ * @return translator_id
+ * @throws DBException
+ */
+function getTranslatorIDByName($translator_fullname) {
+	$db = UserConfig::getDB();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT  `translator_id`
+	FROM  translators WHERE full_name=? LIMIT 1;')) {
+		if (!$stmt->bind_param('s', $translator_fullname)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($translator_id)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = $translator_id;
+		}
+		$stmt->free_result();
+		$stmt->close();
+//		echo 'id='.$record;
+		return $record;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
 /**
  * insert a new records into table mistakes
  *
@@ -2228,11 +2410,11 @@ function countIP($ip) {
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
-		if (!$stmt->bind_result($ip)) {
+		if (!$stmt->bind_result($ip_count)) {
 			throw new DBBindResultException($db, $stmt);
 		}
 		while ($stmt->fetch() === TRUE) {
-			$record = $ip;
+			$record = $ip_count;
 		}
 		$stmt->free_result();
 		$stmt->close();
@@ -2242,7 +2424,7 @@ function countIP($ip) {
 	}
 }
 /**
- * insert a new records into table selectedpoems
+ *  a new records into table selectedpoems
  *
  * @param int  poems_id 
  * @param string  ip
@@ -2317,4 +2499,272 @@ function deleteRecordFromOriginals($record_id) {
 		throw new DBPrepareStmtException($db);
 	}
 	return $r_id;
+}
+
+function maketopics($topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id) {
+    $alltopics = array();
+    if ($topic5_id) {
+        list($topic_id,$topic_name,$topic_synonym, $topic_desc) = getTopicByID($topic5_id);
+        $topics = '<a href="./topics.php?action=show&record_id='.$topic_id.'" class="topics ref">'.$topic_name.'</a>';
+        array_push($alltopics, $topics);
+    }
+    if ($topic4_id) {
+        list($topic_id,$topic_name,$topic_synonym, $topic_desc) = getTopicByID($topic4_id);
+        $topics = '<a href="./topics.php?action=show&record_id='.$topic_id.'" class="topics ref">'.$topic_name.'</a>';
+        array_push($alltopics, $topics);
+    }
+    if ($topic3_id) {
+        list($topic_id,$topic_name,$topic_synonym, $topic_desc) = getTopicByID($topic3_id);
+        $topics = '<a href="./topics.php?action=show&record_id='.$topic_id.'" class="topics ref">'.$topic_name.'</a>';
+        array_push($alltopics, $topics);
+    }
+    if ($topic2_id) {
+        list($topic_id,$topic_name,$topic_synonym, $topic_desc) = getTopicByID($topic2_id);
+        $topics = '<a href="./topics.php?action=show&record_id='.$topic_id.'" class="topics ref">'.$topic_name.'</a>';
+        array_push($alltopics, $topics);
+    }
+    if ($topic1_id) {
+        list($topic_id,$topic_name,$topic_synonym, $topic_desc) = getTopicByID($topic1_id);
+        $topics = '<a href="./topics.php?action=show&record_id='.$topic_id.'" class="topics ref">'.$topic_name.'</a>';
+        array_push($alltopics, $topics);
+    }
+    $joinedTopics = join(" | ",$alltopics);
+    return $joinedTopics;
+}
+
+function makeTranslator($translator1_id, $translator2_id) {
+    list($junk, $tr_full_name, , , , , , , , , , ) = getByIDFromTranslators($translator1_id);
+    $translator1 = '<a href="./translators.php?action=show&record_id='.$translator1_id.'">'.$tr_full_name.'</a>';
+    if ($translator2_id) {
+        list($junk, $tr2_full_name, , , , , , , , , , ) = getByIDFromTranslators($translator2_id);        
+        $translator2 = '<a href="./translators.php?action=show&record_id='.$translator2_id.'">'.$tr2_full_name.'</a>';
+        $translator = $translator1.', '. $translator2;
+    }
+    else {
+        $translator = $translator1;
+    }
+    $translator = '<span class="translators">'.$translator.'</span>';
+    return $translator;    
+}
+function makeAuthor($author_id){
+    list($author_id, $full_name, $proper_name,  $dates,  $epoch, $present, $zh_trad, $zh_simple) = getByIDFromAuthors($author_id);
+    $author = '<a href="./authors.php?action=show&record_id='.$author_id.'"><span class="author name">'.$proper_name.'</span>
+    &nbsp;<span class="author dates">'.$dates.'</span></a>';
+    if ($zh_trad) {
+        $author .= '&nbsp;<span class="name zh">'.$zh_trad.'</span>';
+    }
+    else if ($zh_simple) {
+        $author .= '&nbsp;<span class="name zh">'.$zh_simple.'</span>';
+    }
+    $author .= '&nbsp;<span class="epoch">'.$epoch.'</span>';
+    return array($author, $proper_name,  $dates,  $epoch);
+}
+function makeCycle($cycle_ru,$cycle_zh,$translator_id)  {
+    if ($cycle_ru && $cycle_zh) {
+        $cycle = '<span class="cycle zh"><a href="/cycles.php?cycle_zh='.urlencode($cycle_zh).'">'.$cycle_zh.'</a></span> 
+		<span class="cycle ru"><a href="/cycles.php?translator='.$translator_id.'&cycle='.urlencode($cycle_ru).'">'.$cycle_ru.'</a></span>';
+    }
+    elseif ($cycle_ru && !$cycle_zh) {
+        $cycle = '<span class="cycle ru"><a href="/cycles.php?translator='.$translator_id.'&cycle='.urlencode($cycle_ru).'">'.$cycle_ru.'</a></span>';
+    }
+    else { $cycle = false; }
+    return $cycle;
+}
+function makeSubCycle($subcycle_ru,$subcycle_zh,$translator_id)  {
+    if ($subcycle_ru && $subcycle_zh) {
+        $subcycle = '<span class="subcycle zh"><a href="/cycles.php?subcycle_zh='.urlencode($subcycle_zh).'">'.$subcycle_zh.'</a></span> <span class="subcycle ru"><a href="/cycles.php?translator='.$translator_id.'&subcycle='.urlencode($subcycle_ru).'">'.$subcycle_ru.'</a></span>';
+    }
+    elseif($subcycle_ru && !$subcycle_zh){
+        $subcycle = '<span class="subcycle ru"><a href="/cycles.php?translator='.$translator_id.'&subcycle='.urlencode($subcycle_ru).'">'.$subcycle_ru.'</a></span>';
+    }
+    else { $subcycle = false; }
+    return $subcycle;
+} 
+function makeFinalArray ($records) {
+    $new_arr = array();
+    $arrAuthors = array();
+    $final = array();
+    $author ='';
+    for ($i=0; $i < count($records) ; $i++) {
+        list($poems_id,$author_id,$translator1_id,$translator2_id,
+        $topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+        $poem_name_zh,$poem_name_ru,$poem_code,$biblio_id) = $records[$i];
+        list($author_html, $proper_name,  $dates,  $epoch) = makeAuthor($author_id);
+        $author = $author_html;
+        if ($translator1_id) {
+            $translator = makeTranslator($translator1_id, $translator2_id);
+        }
+        else {
+            $translator = '';
+        }
+        array_push($arrAuthors, $author);
+        if (array_key_exists($author, $new_arr)) {
+            array_push($new_arr[$author],  $records[$i]); 
+        }
+        else {
+            $new_arr[$author] = array($records[$i]);
+        }    
+    }
+    $arrAuthors = array_unique($arrAuthors);
+    foreach ($arrAuthors as  $author) {
+        $cycles = array();
+        $poems = array();
+        for ($i=0; $i < count($new_arr[$author]) ; $i++) {
+            $poem = $new_arr[$author][$i];
+			if ($translator) {
+//				echo $translator;
+				preg_match('/record_id=(\d+)">/',$translator,$match);
+				preg_match('/\d+/',$match[0], $match1);
+				$translator_id = $match1[0];
+	#            $poem[2] = makeTranslator($poem[2], $poem[3]);
+				$cycle = '<span class="cycle zh"><a href="/cycles.php?cycle_zh='.urlencode($poem[9]).'">'.$poem[9].'</a></span><span class="cycle ru"><a href="/cycles.php?translator='.$translator_id.'&cycle='.urlencode($poem[10]).'">'.$poem[10].'</a></span>';
+				$subcycle = '<span class="subcycle zh"><a href="/cycles.php?subcycle_zh='.urlencode($poem[11]).'">'.$poem[11].'</a></span> <span class="subcycle ru"><a href="/cycles.php?translator='.$translator_id.'&subcycle='.urlencode($poem[12]).'">'.$poem[12].'</a></span>';
+			}
+			else {
+//				echo 'no translator';
+				$cycle = '<span class="cycle zh"><a href="/cycles.php?cycle_zh='.urlencode($poem[9]).'">'.$poem[9].'</a></span> <span class="cycle ru">'.$poem[10].'</span>';
+				$subcycle = '<span class="subcycle zh"><a href="/cycles.php?subcycle_zh='.urlencode($poem[11]).'">'.$poem[11].'</a></span> <span class="subcycle ru">'.$poem[12].'</span>';
+			}
+			if (((strpos($cycle, 'cycle_zh=">') > 0) && (strpos($cycle, 'cycle=">') > 0)) || ((strpos($cycle, 'cycle zh"></span>') > 0) && (strpos($cycle, 'cycle ru"></span>') > 0))) {
+				$cycle = 'default'.$i;
+			}			
+			if (((strpos($subcycle, 'subcycle_zh=">') > 0) && (strpos($subcycle, 'subcycle=">') > 0)) || ((strpos($subcycle, 'subcycle zh"></span>') > 0) && (strpos($subcycle, 'subcycle ru"></span>') > 0))) {
+                $subcycle = 'default'.$i;
+            }
+            if (!array_key_exists($cycle, $poems)) {
+                $poems[$cycle] = array();
+            }
+            if (!array_key_exists($subcycle, $poems[$cycle])) {
+                $poems[$cycle][$subcycle] = array();
+            }
+            array_push($poems[$cycle][$subcycle], $poem);
+        }
+        array_push($final, array('author' => $author, 'poems' => $poems));
+    }
+    return $final;
+}
+
+function makeFinaTranslatorslArray ($records) {
+    $new_arr = array();
+    $arrTranslators = array();
+    $final = array();
+    $author ='';
+    for ($i=0; $i < count($records) ; $i++) {
+        list($poems_id,$author_id,$translator1_id,$translator2_id,
+        $topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+        $poem_name_zh,$poem_name_ru,$poem_code,$biblio_id) = $records[$i];
+        list($author_html, $proper_name,  $dates,  $epoch) = makeAuthor($author_id);
+        $author = $author_html;
+        $translator = makeTranslator($translator1_id, $translator2_id);
+        array_push($arrTranslators, $translator);
+        if (array_key_exists($translator, $new_arr)) {
+            array_push($new_arr[$translator],  $records[$i]); 
+        }
+        else {
+            $new_arr[$translator] = array($records[$i]);
+        }    
+    }
+    $arrTranslators = array_unique($arrTranslators);
+    foreach ($arrTranslators as  $translator) {
+        preg_match('/id=\d+">(.+?)<\/a>/',$translator,$match);
+        $unsorted[$match[1]] = $translator;
+    }
+    ksort($unsorted);
+    $sorted = [];
+    foreach ($unsorted as  $translator) {
+        array_push($sorted, $translator);
+    }
+//print_r($sorted);
+    foreach ($sorted as  $translator) {
+        $cycles = array();
+        $poems = array();
+        for ($i=0; $i < count($new_arr[$translator]) ; $i++) {
+            $poem = $new_arr[$translator][$i];
+//			$translator_id = getTranslatorIDByName($translator);
+			preg_match('/record_id=(\d+)">/',$translator,$match);
+			preg_match('/\d+/',$match[0], $match1);
+			$translator_id = $match1[0];
+            $cycle = '<span class="cycle zh"><a href="/cycles.php?cycle_zh='.urlencode($poem[9]).'">'.$poem[9].'</a></span> <span class="cycle ru"><a href="/cycles.php?translator='.$translator_id.'&cycle='.urlencode($poem[10]).'">'.$poem[10].'</a></span>';
+            $subcycle = '<span class="subcycle zh"><a href="/cycles.php?subcycle_zh='.urlencode($poem[11]).'">'.$poem[11].'</a></span> <span class="subcycle ru"><a href="/cycles.php?translator='.$translator_id.'&subcycle='.urlencode($poem[12]).'">'.$poem[12].'</a></span>';
+			if (((strpos($cycle, 'cycle_zh=">') > 0) && (strpos($cycle, 'cycle=">') > 0)) || ((strpos($cycle, 'cycle zh"></span>') > 0) && (strpos($cycle, 'cycle ru"></span>') > 0))) {
+				$cycle = 'default'.$i;
+			}			
+			if (((strpos($subcycle, 'subcycle_zh=">') > 0) && (strpos($subcycle, 'subcycle=">') > 0)) || ((strpos($subcycle, 'subcycle zh"></span>') > 0) && (strpos($subcycle, 'subcycle ru"></span>') > 0))) {
+                $subcycle = 'default'.$i;
+            }
+            if (!array_key_exists($cycle, $poems)) {
+                $poems[$cycle] = array();
+            }
+            if (!array_key_exists($subcycle, $poems[$cycle])) {
+                $poems[$cycle][$subcycle] = array();
+            }
+            array_push($poems[$cycle][$subcycle], $poem);
+        }
+        array_push($final, array('translator' => $translator, 'poems' => $poems));
+    }
+    return $final;
+}
+function makeFinalArraybyTopic ($records) {
+//to not make links for cycles  and subcycles
+    $new_arr = array();
+    $arrAuthors = array();
+    $final = array();
+    $author ='';
+    for ($i=0; $i < count($records) ; $i++) {
+        list($poems_id,$author_id,$translator1_id,$translator2_id,
+        $topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+        $poem_name_zh,$poem_name_ru,$poem_code,$biblio_id) = $records[$i];
+        list($author_html, $proper_name,  $dates,  $epoch) = makeAuthor($author_id);
+        $author = $author_html;
+        if ($translator1_id) {
+            $translator = makeTranslator($translator1_id, $translator2_id);
+        }
+        else {
+            $translator = '';
+        }
+        array_push($arrAuthors, $author);
+        if (array_key_exists($author, $new_arr)) {
+            array_push($new_arr[$author],  $records[$i]); 
+        }
+        else {
+            $new_arr[$author] = array($records[$i]);
+        }    
+    }
+    $arrAuthors = array_unique($arrAuthors);
+    foreach ($arrAuthors as  $author) {
+        $cycles = array();
+        $poems = array();
+        for ($i=0; $i < count($new_arr[$author]) ; $i++) {
+            $poem = $new_arr[$author][$i];
+			if ($translator) {
+//				echo $translator;
+				preg_match('/record_id=(\d+)">/',$translator,$match);
+				preg_match('/\d+/',$match[0], $match1);
+				$translator_id = $match1[0];
+	#            $poem[2] = makeTranslator($poem[2], $poem[3]);
+				$cycle = '<span class="cycle zh"><a href="/cycles.php?cycle_zh='.urlencode($poem[9]).'">'.$poem[9].'</a></span><span class="cycle ru">'.$poem[10].'</span>';
+				$subcycle = '<span class="subcycle zh"><a href="/cycles.php?subcycle_zh='.urlencode($poem[11]).'">'.$poem[11].'</a></span> <span class="subcycle ru">'.$poem[12].'</span>';
+			}
+			else {
+//				echo 'no translator';
+				$cycle = '<span class="cycle zh"><a href="/cycles.php?cycle_zh='.urlencode($poem[9]).'">'.$poem[9].'</a></span> <span class="cycle ru">'.$poem[10].'</span>';
+				$subcycle = '<span class="subcycle zh"><a href="/cycles.php?subcycle_zh='.urlencode($poem[11]).'">'.$poem[11].'</a></span> <span class="subcycle ru">'.$poem[12].'</span>';
+			}
+			if (((strpos($cycle, 'cycle_zh=">') > 0) && (strpos($cycle, 'cycle=">') > 0)) || ((strpos($cycle, 'cycle zh"></span>') > 0) && (strpos($cycle, 'cycle ru"></span>') > 0))) {
+				$cycle = 'default'.$i;
+			}			
+			if (((strpos($subcycle, 'subcycle_zh=">') > 0) && (strpos($subcycle, 'subcycle=">') > 0)) || ((strpos($subcycle, 'subcycle zh"></span>') > 0) && (strpos($subcycle, 'subcycle ru"></span>') > 0))) {
+                $subcycle = 'default'.$i;
+            }
+            if (!array_key_exists($cycle, $poems)) {
+                $poems[$cycle] = array();
+            }
+            if (!array_key_exists($subcycle, $poems[$cycle])) {
+                $poems[$cycle][$subcycle] = array();
+            }
+            array_push($poems[$cycle][$subcycle], $poem);
+        }
+        array_push($final, array('author' => $author, 'poems' => $poems));
+    }
+    return $final;
 }

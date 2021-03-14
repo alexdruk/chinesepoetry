@@ -188,9 +188,8 @@ elseif  ( ($_GET['action'] == 'show') && (array_key_exists('topic_id', $_GET)) &
             array_push($recordsForAuthor, $record);
         }
     }
-#print_r($recordsForAuthor);
-    $final = makeFinalArray ($recordsForAuthor);
-#    print_r($final);
+    $final = makeFinalArraybyTopic ($recordsForAuthor); //to not make links for cycles  and subcycles
+ 
     list($topics_id,$topic_name,$topic_synonym, $topic_desc) = getTopicByID($topic_id);
     $template_info["header"] = 'Тема: '.$topic_name;
     $template_info["byAuthor"] = true;
@@ -255,8 +254,8 @@ elseif ( ($_GET['action'] == 'show')  && ($_GET['poem_id'] > 0) ){
         $melody = false;
     }
     $template_info["melody"] = $melody;
-    $cycle = makeCycle($cycle_ru, $cycle_zh);
-    $subcycle = makeSubCycle($subcycle_ru, $subcycle_zh);
+    $cycle = makeCycle($cycle_ru, $cycle_zh,$translator1_id);
+    $subcycle = makeSubCycle($subcycle_ru, $subcycle_zh,$translator1_id);
     $template_info["header"] = $author;
     $template_info["author_id"] = $author_id;
     $template_info["translator"] = $translator;
@@ -314,192 +313,3 @@ else {
 	$template = $twig->load('page_root.html.twig');
 }
 echo $template->display($template_info);
-
-function maketopics($topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id) {
-    $alltopics = array();
-    if ($topic5_id) {
-        list($topic_id,$topic_name,$topic_synonym, $topic_desc) = getTopicByID($topic5_id);
-        $topics = '<a href="./topics.php?action=show&record_id='.$topic_id.'" class="topics ref">'.$topic_name.'</a>';
-        array_push($alltopics, $topics);
-    }
-    if ($topic4_id) {
-        list($topic_id,$topic_name,$topic_synonym, $topic_desc) = getTopicByID($topic4_id);
-        $topics = '<a href="./topics.php?action=show&record_id='.$topic_id.'" class="topics ref">'.$topic_name.'</a>';
-        array_push($alltopics, $topics);
-    }
-    if ($topic3_id) {
-        list($topic_id,$topic_name,$topic_synonym, $topic_desc) = getTopicByID($topic3_id);
-        $topics = '<a href="./topics.php?action=show&record_id='.$topic_id.'" class="topics ref">'.$topic_name.'</a>';
-        array_push($alltopics, $topics);
-    }
-    if ($topic2_id) {
-        list($topic_id,$topic_name,$topic_synonym, $topic_desc) = getTopicByID($topic2_id);
-        $topics = '<a href="./topics.php?action=show&record_id='.$topic_id.'" class="topics ref">'.$topic_name.'</a>';
-        array_push($alltopics, $topics);
-    }
-    if ($topic1_id) {
-        list($topic_id,$topic_name,$topic_synonym, $topic_desc) = getTopicByID($topic1_id);
-        $topics = '<a href="./topics.php?action=show&record_id='.$topic_id.'" class="topics ref">'.$topic_name.'</a>';
-        array_push($alltopics, $topics);
-    }
-    $joinedTopics = join(" | ",$alltopics);
-    return $joinedTopics;
-}
-
-function makeTranslator($translator1_id, $translator2_id) {
-    list($junk, $tr_full_name, , , , , , , , , , ) = getByIDFromTranslators($translator1_id);
-    $translator1 = '<a href="./translators.php?action=show&record_id='.$translator1_id.'">'.$tr_full_name.'</a>';
-    if ($translator2_id) {
-        list($junk, $tr2_full_name, , , , , , , , , , ) = getByIDFromTranslators($translator2_id);        
-        $translator2 = '<a href="./translators.php?action=show&record_id='.$translator2_id.'">'.$tr2_full_name.'</a>';
-        $translator = $translator1.', '. $translator2;
-    }
-    else {
-        $translator = $translator1;
-    }
-    $translator = '<span class="translators">'.$translator.'</span>';
-    return $translator;    
-}
-function makeAuthor($author_id){
-    list($author_id, $full_name, $proper_name,  $dates,  $epoch, $present, $zh_trad, $zh_simple) = getByIDFromAuthors($author_id);
-    $author = '<a href="./authors.php?action=show&record_id='.$author_id.'"><span class="author name">'.$proper_name.'</span>
-    &nbsp;<span class="author dates">'.$dates.'</span></a>';
-    if ($zh_trad) {
-        $author .= '&nbsp;<span class="name zh">'.$zh_trad.'</span>';
-    }
-    else if ($zh_simple) {
-        $author .= '&nbsp;<span class="name zh">'.$zh_simple.'</span>';
-    }
-    $author .= '&nbsp;<span class="epoch">'.$epoch.'</span>';
-    return array($author, $proper_name,  $dates,  $epoch);
-}
-function makeCycle($cycle_ru,$cycle_zh)  {
-    if ($cycle_ru && $cycle_zh) {
-        $cycle = '<span class="cycle zh">'.$cycle_zh.'</span> <span class="cycle ru">'.$cycle_ru.'</span>';
-    }
-    elseif ($cycle_ru && !$cycle_zh) {
-        $cycle = '<span class="cycle ru">'.$cycle_ru.'</span>';
-    }
-    else { $cycle = false; }
-    return $cycle;
-}
-function makeSubCycle($subcycle_ru,$subcycle_zh)  {
-    if ($subcycle_ru && $subcycle_zh) {
-        $subcycle = '<span class="subcycle zh">'.$subcycle_zh.'</span> <span class="subcycle ru">'.$subcycle_ru.'</span>';
-    }
-    elseif($subcycle_ru && !$subcycle_zh){
-        $subcycle = '<span class="subcycle ru">'.$subcycle_ru.'</span>';
-    }
-    else { $subcycle = false; }
-    return $subcycle;
-} 
-function makeFinalArray ($records) {
-    $new_arr = array();
-    $arrAuthors = array();
-    $final = array();
-    $author ='';
-    for ($i=0; $i < count($records) ; $i++) {
-        list($poems_id,$author_id,$translator1_id,$translator2_id,
-        $topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
-        $poem_name_zh,$poem_name_ru,$poem_code,$biblio_id) = $records[$i];
-        list($author_html, $proper_name,  $dates,  $epoch) = makeAuthor($author_id);
-        $author = $author_html;
-        if ($translator1_id) {
-            $translator = makeTranslator($translator1_id, $translator2_id);
-        }
-        else {
-            $translator = '';
-        }
-        array_push($arrAuthors, $author);
-        if (array_key_exists($author, $new_arr)) {
-            array_push($new_arr[$author],  $records[$i]); 
-        }
-        else {
-            $new_arr[$author] = array($records[$i]);
-        }    
-    }
-    $arrAuthors = array_unique($arrAuthors);
-    foreach ($arrAuthors as  $author) {
-        $cycles = array();
-        $poems = array();
-        for ($i=0; $i < count($new_arr[$author]) ; $i++) {
-            $poem = $new_arr[$author][$i];
-#            $poem[2] = makeTranslator($poem[2], $poem[3]);
-
-            $cycle = '<span class="cycle zh">'.$poem[9].'</span> <span class="cycle ru">'.$poem[10].'</span>';
-            if ($cycle == '<span class="cycle zh"></span> <span class="cycle ru"></span>') {
-                $cycle = 'default'.$i;
-            }
-            $subcycle = '<span class="subcycle zh">'.$poem[11].'</span> <span class="subcycle ru">'.$poem[12].'</span>';
-            if ($subcycle == '<span class="subcycle zh"></span> <span class="subcycle ru"></span>') {
-                $subcycle = 'default'.$i;
-            }
-            if (!array_key_exists($cycle, $poems)) {
-                $poems[$cycle] = array();
-            }
-            if (!array_key_exists($subcycle, $poems[$cycle])) {
-                $poems[$cycle][$subcycle] = array();
-            }
-            array_push($poems[$cycle][$subcycle], $poem);
-        }
-        array_push($final, array('author' => $author, 'poems' => $poems));
-    }
-    return $final;
-}
-
-function makeFinaTranslatorslArray ($records) {
-    $new_arr = array();
-    $arrTranslators = array();
-    $final = array();
-    $author ='';
-    for ($i=0; $i < count($records) ; $i++) {
-        list($poems_id,$author_id,$translator1_id,$translator2_id,
-        $topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
-        $poem_name_zh,$poem_name_ru,$poem_code,$biblio_id) = $records[$i];
-        list($author_html, $proper_name,  $dates,  $epoch) = makeAuthor($author_id);
-        $author = $author_html;
-        $translator = makeTranslator($translator1_id, $translator2_id);
-        array_push($arrTranslators, $translator);
-        if (array_key_exists($translator, $new_arr)) {
-            array_push($new_arr[$translator],  $records[$i]); 
-        }
-        else {
-            $new_arr[$translator] = array($records[$i]);
-        }    
-    }
-    $arrTranslators = array_unique($arrTranslators);
-    foreach ($arrTranslators as  $translator) {
-        preg_match('/id=\d+">(.+?)<\/a>/',$translator,$match);
-        $unsorted[$match[1]] = $translator;
-    }
-    ksort($unsorted);
-    $sorted = [];
-    foreach ($unsorted as  $translator) {
-        array_push($sorted, $translator);
-    }
-//print_r($sorted);
-    foreach ($sorted as  $translator) {
-        $cycles = array();
-        $poems = array();
-        for ($i=0; $i < count($new_arr[$translator]) ; $i++) {
-            $poem = $new_arr[$translator][$i];
-            $cycle = '<span class="cycle zh">'.$poem[9].'</span> <span class="cycle ru">'.$poem[10].'</span>';
-            if ($cycle == '<span class="cycle zh"></span> <span class="cycle ru"></span>') {
-                $cycle = 'default'.$i;
-            }
-            $subcycle = '<span class="subcycle zh">'.$poem[11].'</span> <span class="subcycle ru">'.$poem[12].'</span>';
-            if ($subcycle == '<span class="subcycle zh"></span> <span class="subcycle ru"></span>') {
-                $subcycle = 'default'.$i;
-            }
-            if (!array_key_exists($cycle, $poems)) {
-                $poems[$cycle] = array();
-            }
-            if (!array_key_exists($subcycle, $poems[$cycle])) {
-                $poems[$cycle][$subcycle] = array();
-            }
-            array_push($poems[$cycle][$subcycle], $poem);
-        }
-        array_push($final, array('translator' => $translator, 'poems' => $poems));
-    }
-    return $final;
-}

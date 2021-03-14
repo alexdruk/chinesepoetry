@@ -33,8 +33,7 @@
                                 {% endif %}
                           {% endfor %}
                         </ul></ol>
-                    {% endfor %}
-                    
+                    {% endfor %}                    
                 {% endif %}
             <ol>
                 {% for fin in final %}
@@ -49,7 +48,6 @@
                                     <li  class="subcycle">{{ subcycle|raw }}<ul>
                                 {% endif %}
                                     {% for poem in fin.poems[cycle][subcycle] %}
-
                                     <li class="poem_name"><a href="./poems.php?action=show&poem_id={{ poem[0] }}">
                                         <span class="poem_name zh">{{ poem[13]|raw }}</span> <span class="poem_name ru">{{ poem[14]|raw }}</span></a></li>
                                     {% endfor %}
