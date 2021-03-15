@@ -4,8 +4,6 @@ vendor/
 /phpinfo.php
 /linux_installation.pages
 /httpd.conf
-/mistakes/mistakes.php
-mistakes/mistakes.php
 /bashscripts/DBdump.sh
 bashscripts/DBdump.sh
 .htpasswd
