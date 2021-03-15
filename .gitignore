@@ -8,3 +8,5 @@ vendor/
 mistakes/mistakes.php
 /bashscripts/DBdump.sh
 bashscripts/DBdump.sh
+.htpasswd
+/.htpasswd
