@@ -1,6 +1,1 @@
-# Group 1
-User-agent: *
-Allow: /
-Disallow: /admin/
-
 Sitemap: http://www.chinese-poetry.ru/sitemap.xml
