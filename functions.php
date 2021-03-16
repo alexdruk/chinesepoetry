@@ -2704,7 +2704,7 @@ function makeFinaTranslatorslArray ($records) {
     }
     return $final;
 }
-function makeFinalArraybyTopic ($records) {
+function makeFinalArraybyTopicSearch ($records) {
 //to not make links for cycles  and subcycles
     $new_arr = array();
     $arrAuthors = array();

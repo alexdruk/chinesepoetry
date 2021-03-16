@@ -122,7 +122,7 @@ elseif ($_GET['action'] == 'search') {
             $template_info["header"] ='Ничего не найдено';
         }
         $final = array();
-        $final = makeFinalArray ($records);
+        $final = makeFinalArraybyTopicSearch ($records);
 #print_r($final);
         $template_info["final"] = $final;
         $template_info["title"] ='Полнотекстный поиск по переводам стихов';
@@ -188,7 +188,7 @@ elseif  ( ($_GET['action'] == 'show') && (array_key_exists('topic_id', $_GET)) &
             array_push($recordsForAuthor, $record);
         }
     }
-    $final = makeFinalArraybyTopic ($recordsForAuthor); //to not make links for cycles  and subcycles
+    $final = makeFinalArraybyTopicSearch($recordsForAuthor); //to not make links for cycles  and subcycles
  
     list($topics_id,$topic_name,$topic_synonym, $topic_desc) = getTopicByID($topic_id);
     $template_info["header"] = 'Тема: '.$topic_name;
