@@ -986,7 +986,7 @@ function getOriginalsByAuthorID($author_id) {
 	$records = array();
 	if ($stmt = $db->prepare('SELECT o.originals_id, o.author_id, o.cycle_zh, o.cycle_ru, o.subcycle_zh, o.subcycle_ru,
 	o.poem_name_zh, o.poem_name_ru, o.poem_code,o.biblio_id  FROM originals o
-	 WHERE o.author_id=? ORDER BY o.cycle_ru, o.subcycle_ru, cast(`poem_name_ru` as unsigned INTEGER),o.poem_name_ru, o.originals_id ASC;')) {
+	 WHERE o.author_id=? ORDER BY o.cycle_ru, o.subcycle_ru, cast(`poem_name_ru` as UNSIGNED  INTEGER),o.poem_name_ru, o.originals_id ASC;')) {
 		if (!$stmt->bind_param('i', $author_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
@@ -1119,7 +1119,7 @@ function getWithoutPoem_textFromPoemsByAuthorID($author_id) {
 	if ($stmt = $db->prepare('SELECT `poems_id`,`author_id`,`translator1_id`,`translator2_id`,
 	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,`subcycle_ru`,
 	`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id` FROM  poems WHERE author_id = ? 
-	ORDER BY `cycle_ru`, `subcycle_ru`,`author_id`, translator1_id, cast(`poem_name_ru` as unsigned INTEGER),`poem_name_ru`,`cycle_ru`, `subcycle_ru`, `poems_id` ASC;')) {
+	ORDER BY `cycle_ru`, `subcycle_ru`,`author_id`, translator1_id, cast(`poem_name_ru` as UNSIGNED  INTEGER),`poem_name_ru`,`cycle_ru`, `subcycle_ru`, `poems_id` ASC;')) {
 		if (!$stmt->bind_param('i', $author_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
@@ -1196,7 +1196,7 @@ function getWithoutPoem_textFromPoemsByTranslatorID($translator_id) {
 	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,`subcycle_ru`,
 	`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id` FROM  poems WHERE 
 	translator1_id = ? OR translator2_id = ? 
-	ORDER BY `subcycle_ru`, `author_id`, cast(`poem_name_ru` as unsigned),`poem_name_ru`,`cycle_ru`,  `poems_id` ASC;')) {
+	ORDER BY `subcycle_ru`, `author_id`, cast(`poem_name_ru` as UNSIGNED INTEGER),`poem_name_ru`,`cycle_ru`,  `poems_id` ASC;')) {
 		if (!$stmt->bind_param('ii', $translator_id,$translator_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
@@ -1274,7 +1274,7 @@ function getPoemsByCycleTranslator($cycle, $translator_id) {
 	 FROM  poems p 
 	 INNER JOIN authors a ON a.author_id = p.author_id 
 	 WHERE p.cycle_ru = ?  and (p.translator1_id = ? or p.translator2_id = ?) 
-	 ORDER BY p.subcycle_ru, cast(p.poem_name_ru as unsigned),p.poem_name_ru,p.cycle_ru,  p.poems_id ASC;')) {
+	 ORDER BY p.subcycle_ru, cast(p.poem_name_ru as UNSIGNED INTEGER),p.poem_name_ru,p.cycle_ru,  p.poems_id ASC;')) {
 		if (!$stmt->bind_param('sii', $cycle, $translator_id, $translator_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
@@ -1312,7 +1312,7 @@ function getPoemsBySubCycleTranslator($subcycle, $translator_id) {
 	 FROM  poems p 
 	 INNER JOIN authors a ON a.author_id = p.author_id 
 	 WHERE p.subcycle_ru = ?  and (p.translator1_id = ? or p.translator2_id = ?) 
-	 ORDER BY  cast(p.poem_name_ru as unsigned),p.poem_name_ru,p.cycle_ru,  p.poems_id ASC;')) {
+	 ORDER BY  cast(p.poem_name_ru as UNSIGNED INTEGER),p.poem_name_ru,p.cycle_ru,  p.poems_id ASC;')) {
 		if (!$stmt->bind_param('sii', $subcycle, $translator_id, $translator_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
@@ -1350,7 +1350,7 @@ function getOriginalsByCycleZH($cycle_zh) {
 	 FROM  originals p 
 	 INNER JOIN authors a ON a.author_id = p.author_id 
 	 WHERE p.cycle_zh = ? 
-	 ORDER BY p.subcycle_zh, cast(p.poem_name_ru as unsigned),p.poem_name_ru,p.cycle_ru,  p.originals_id ASC;')) {
+	 ORDER BY p.subcycle_zh, cast(p.poem_name_ru as UNSIGNED INTEGER),p.poem_name_ru,p.cycle_ru,  p.originals_id ASC;')) {
 		if (!$stmt->bind_param('s', $cycle_zh)) {
 			throw new DBBindParamException($db, $stmt);
 		}
@@ -1388,7 +1388,7 @@ function getOriginalsBySubCycleZH($subcycle_zh) {
 	 FROM  originals p 
 	 INNER JOIN authors a ON a.author_id = p.author_id 
 	 WHERE p.subcycle_zh = ? 
-	 ORDER BY cast(p.poem_name_ru as unsigned),p.poem_name_ru,p.cycle_ru,  p.originals_id ASC;')) {
+	 ORDER BY cast(p.poem_name_ru as UNSIGNED INTEGER),p.poem_name_ru,p.cycle_ru,  p.originals_id ASC;')) {
 		if (!$stmt->bind_param('s', $subcycle_zh)) {
 			throw new DBBindParamException($db, $stmt);
 		}
@@ -1488,7 +1488,7 @@ function getWithoutPoem_textFromPoemsByTopicID($topic_id) {
 	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,`subcycle_ru`,
 	`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id` FROM  poems 
 	 WHERE topic1_id =? OR topic2_id =? OR topic3_id =?  OR topic4_id =?  OR topic5_id =? 
-	 ORDER BY `cycle_ru`, `subcycle_ru`,`author_id`, `translator1_id`, cast(`poem_name_ru` as unsigned),`poem_name_ru`,`cycle_ru`, `subcycle_ru`, `poems_id` ASC;')) {
+	 ORDER BY `cycle_ru`, `subcycle_ru`,`author_id`, `translator1_id`, cast(`poem_name_ru` as UNSIGNED INTEGER),`poem_name_ru`,`cycle_ru`, `subcycle_ru`, `poems_id` ASC;')) {
 		if (!$stmt->bind_param('iiiii', $topic_id,$topic_id,$topic_id,$topic_id,$topic_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
@@ -2154,7 +2154,7 @@ function getWithoutPoem_textFromPoemsByBiblioID($biblio_id) {
 	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,`subcycle_ru`,
 	`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id` FROM  poems 
 	 WHERE biblio_id =?
-	 ORDER BY `author_id`, `translator1_id`, cast(`poem_name_ru` as unsigned),`poem_name_ru`,`cycle_ru`, `subcycle_ru`, `poems_id` ASC;')) {
+	 ORDER BY `author_id`, `translator1_id`, cast(`poem_name_ru` as UNSIGNED INTEGER),`poem_name_ru`,`cycle_ru`, `subcycle_ru`, `poems_id` ASC;')) {
 		if (!$stmt->bind_param('i', $biblio_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
