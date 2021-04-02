@@ -986,7 +986,7 @@ function getOriginalsByAuthorID($author_id) {
 	$records = array();
 	if ($stmt = $db->prepare('SELECT o.originals_id, o.author_id, o.cycle_zh, o.cycle_ru, o.subcycle_zh, o.subcycle_ru,
 	o.poem_name_zh, o.poem_name_ru, o.poem_code,o.biblio_id  FROM originals o
-	 WHERE o.author_id=? ORDER BY o.cycle_ru, o.subcycle_ru, cast(`poem_name_ru` as UNSIGNED  INTEGER),o.poem_name_ru, o.originals_id ASC;')) {
+	 WHERE o.author_id=? ORDER BY  o.cycle_ru, cast(o.poem_name_ru as UNSIGNED INTEGER),o.poem_name_ru,  o.subcycle_ru, o.originals_id ASC;')) {
 		if (!$stmt->bind_param('i', $author_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
