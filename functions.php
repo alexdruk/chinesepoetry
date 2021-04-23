@@ -1120,7 +1120,7 @@ function getWithoutPoem_textFromPoemsByAuthorID($author_id) {
 	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,`subcycle_ru`,
 	`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id` FROM  poems WHERE author_id = ? 
 	ORDER BY `cycle_ru`, `subcycle_ru`,`author_id`, `translator1_id`, cast(`poem_name_ru` as UNSIGNED  INTEGER),
-	cast(REGEXP_REPLACE(`poem_name_ru`, "[^0-9]", "") as UNSIGNED),`poem_name_ru`, `poems_id` ASC;')) {
+	`poem_name_ru`, `poems_id` ASC;')) {
 		if (!$stmt->bind_param('i', $author_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
