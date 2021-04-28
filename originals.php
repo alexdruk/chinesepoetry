@@ -18,7 +18,7 @@ if ($_GET['action'] == 'showall') {
 }
 elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
     $record_id = $_GET['record_id'];
-    list($originals_id,$author_id,$proper_name, $dates,$epoch,$cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru,
+    list($originals_id,$author_id,$proper_name, $dates,$epoch,$cycle_zh, $cycle_ru,$corder, $subcycle_zh, $subcycle_ru,$scorder,
     $poem_name_zh, $poem_name_ru,$poem_code,$biblio_id,$poem_text,$genres,$size, $zh_trad, $zh_simple, $site, $siteURL) = getOriginalsByPoemID($record_id);
     $zname = '';
     if ($zh_trad) {

@@ -26,8 +26,10 @@ if (array_key_exists('action', $_GET)) {
             $author_id = $_POST['author_id'];
             $cycle_zh = $_POST['cycle_zh'];
             $cycle_ru = $_POST['cycle_ru'];
+            $corder = $_POST['corder'];
             $subcycle_zh = $_POST['subcycle_zh']; 
             $subcycle_ru = $_POST['subcycle_ru']; 
+            $scorder = $_POST['scorder'];
             $poem_name_zh = $_POST['poem_name_zh'];
             $poem_name_ru = $_POST['poem_name_ru'];
             $biblio_id = $_POST['biblio_id'];
@@ -37,7 +39,9 @@ if (array_key_exists('action', $_GET)) {
             $size  = $_POST['size'];
             $site  = $_POST['site'];
             $siteURL  = $_POST['siteURL'];
-			$r_id = originals_insert_record($author_id, $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $poem_name_zh, $poem_name_ru, $poem_code, $biblio_id, $poem_text, $genres, $size, $site, $siteURL);
+			$r_id = originals_insert_record($author_id, $cycle_zh, 
+            $cycle_ru, $corder, $subcycle_zh, $subcycle_ru, $scorder,$poem_name_zh, 
+            $poem_name_ru, $poem_code, $biblio_id, $poem_text, $genres, $size, $site, $siteURL);
             if ($r_id > 0) {
 				$success = 'Success! A new record was created id='.$r_id;
 			}
@@ -60,11 +64,17 @@ if (array_key_exists('action', $_GET)) {
             if (array_key_exists('cycle_ru', $_POST)) {
                 $cycle_ru = (!empty($_POST['cycle_ru'])) ? $_POST['cycle_ru'] : NULL;
             }
+            if (array_key_exists('corder', $_POST)) {
+                $corder = (!empty($_POST['corder'])) ? $_POST['corder'] : NULL;
+            }
             if (array_key_exists('subcycle_zh', $_POST)) {
                 $subcycle_zh = (!empty($_POST['subcycle_zh'])) ? $_POST['subcycle_zh'] : NULL;
             }
             if (array_key_exists('subcycle_ru', $_POST)) {
                 $subcycle_ru = (!empty($_POST['subcycle_ru'])) ? $_POST['subcycle_ru'] : NULL;
+            }
+            if (array_key_exists('scorder', $_POST)) {
+                $scorder = (!empty($_POST['scorder'])) ? $_POST['scorder'] : NULL;
             }
             if (array_key_exists('biblio_id', $_POST)) {
                 $biblio_id = (!empty($_POST['biblio_id'])) ? $_POST['biblio_id'] : NULL;
@@ -97,8 +107,10 @@ if (array_key_exists('action', $_GET)) {
             $template_info["record_id"] = $originals_id;
             $template_info["cycle_zh"] = $cycle_zh;
             $template_info["cycle_ru"] = $cycle_ru;
+            $template_info["corder"] = $corder;
             $template_info["subcycle_zh"] = $subcycle_zh;
             $template_info["subcycle_ru"] = $subcycle_ru;
+            $template_info["scorder"] = $scorder;
             $template_info["poem_name_zh"] = $poem_name_zh;
             $template_info["poem_name_ru"] = $poem_name_ru;
             $template_info["biblio_id"] = $biblio_id;
@@ -108,7 +120,9 @@ if (array_key_exists('action', $_GET)) {
             $template_info["size"] = $size;
             $template_info["site"] = $site;
             $template_info["siteURL"] = $siteURL;
-            $r_id = updateOriginalPoemByID($originals_id, $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $biblio_id, $poem_code, $poem_name_zh,  $poem_name_ru, $poem_text, $genres, $size, $site, $siteURL);
+            $r_id = updateOriginalPoemByID($originals_id, $cycle_zh, $cycle_ru, $corder,
+            $subcycle_zh, $subcycle_ru, $scorder, $biblio_id, $poem_code, $poem_name_zh,
+              $poem_name_ru, $poem_text, $genres, $size, $site, $siteURL);
             if ($r_id > 0) {
                 $success = 'Success! A record was updated.';
                 $error = false;
@@ -126,14 +140,18 @@ if (array_key_exists('action', $_GET)) {
             $record = array();
             $record = getOriginalsByPoemID($_GET['record_id']);
 //            print_r($record);
-            list($originals_id,$author_id,$proper_name, $dates,$epoch,$cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru,$poem_name_zh, $poem_name_ru,$poem_code,$biblio_id,$poem_text, $genres, $size,$zh_trad, $zh_simple, $site, $siteURL) = $record;
+            list($originals_id,$author_id,$proper_name, $dates,$epoch,$cycle_zh, $cycle_ru, $corder, 
+            $subcycle_zh, $subcycle_ru, $scorder, $poem_name_zh, $poem_name_ru,$poem_code,
+            $biblio_id,$poem_text, $genres, $size,$zh_trad, $zh_simple, $site, $siteURL) = $record;
             $template_info["header"] = 'Редактировать оригинал';
             $author = $proper_name.' '.$dates;
             $template_info["record_id"] = $originals_id;
             $template_info["cycle_zh"] = $cycle_zh;
             $template_info["cycle_ru"] = $cycle_ru;
+            $template_info["corder"] = $corder;
             $template_info["subcycle_zh"] = $subcycle_zh;
             $template_info["subcycle_ru"] = $subcycle_ru;
+            $template_info["scorder"] = $scorder;
             $template_info["poem_name_zh"] = $poem_name_zh;
             $template_info["poem_name_ru"] = $poem_name_ru;
             $template_info["biblio_id"] = $biblio_id;

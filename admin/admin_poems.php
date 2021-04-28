@@ -26,8 +26,10 @@ if (array_key_exists('action', $_GET)) {
             $topic5_id = $_POST['topic5_id']; 
             $cycle_zh = $_POST['cycle_zh']; 
             $cycle_ru = $_POST['cycle_ru']; 
+            $corder = $_POST['corder']; 
             $subcycle_zh = $_POST['subcycle_zh']; 
             $subcycle_ru = $_POST['subcycle_ru']; 
+            $scorder = $_POST['scorder']; 
             $poem_name_zh = $_POST['poem_name_zh']; 
             $poem_name_ru = $_POST['poem_name_ru']; 
             $poem_code = $_POST['poem_code']; 
@@ -59,11 +61,17 @@ if (array_key_exists('action', $_GET)) {
             if (array_key_exists('cycle_ru', $_POST)) {
                 $cycle_ru = (!empty($_POST['cycle_ru'])) ? $_POST['cycle_ru'] : NULL;
             }
+            if (array_key_exists('corder', $_POST)) {
+                $corder = (!empty($_POST['corder'])) ? $_POST['corder'] : NULL;
+            }
             if (array_key_exists('subcycle_zh', $_POST)) {
                 $subcycle_zh = (!empty($_POST['subcycle_zh'])) ? $_POST['subcycle_zh'] : NULL;
             }
             if (array_key_exists('subcycle_ru', $_POST)) {
                 $subcycle_ru = (!empty($_POST['subcycle_ru'])) ? $_POST['subcycle_ru'] : NULL;
+            }
+            if (array_key_exists('scorder', $_POST)) {
+                $scorder = (!empty($_POST['scorder'])) ? $_POST['scorder'] : NULL;
             }
             if (array_key_exists('poem_name_zh', $_POST)) {
                 $poem_name_zh = (!empty($_POST['poem_name_zh'])) ? $_POST['poem_name_zh'] : NULL;
@@ -91,7 +99,7 @@ if (array_key_exists('action', $_GET)) {
             }
             $poem_hash = md5($poem_text);
 			$r_id = poems_insert_record($author_id,$translator1_id,$translator2_id,
-			$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+			$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$corder,$subcycle_zh,$subcycle_ru,$scorder,
 			$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$poem_hash,$totallines,$fulllines,$genres,$site,$siteURL);
 			if ($r_id > 0) {
 				$success = 'Success! A new record was created id='.$r_id;
@@ -136,11 +144,17 @@ if (array_key_exists('action', $_GET)) {
             if (array_key_exists('cycle_ru', $_POST)) {
                 $cycle_ru = (!empty($_POST['cycle_ru'])) ? $_POST['cycle_ru'] : NULL;
             }
+            if (array_key_exists('corder', $_POST)) {
+                $corder = (!empty($_POST['corder'])) ? $_POST['corder'] : NULL;
+            }
             if (array_key_exists('subcycle_zh', $_POST)) {
                 $subcycle_zh = (!empty($_POST['subcycle_zh'])) ? $_POST['subcycle_zh'] : NULL;
             }
             if (array_key_exists('subcycle_ru', $_POST)) {
                 $subcycle_ru = (!empty($_POST['subcycle_ru'])) ? $_POST['subcycle_ru'] : NULL;
+            }
+            if (array_key_exists('scorder', $_POST)) {
+                $scorder = (!empty($_POST['scorder'])) ? $_POST['scorder'] : NULL;
             }
             if (array_key_exists('poem_name_zh', $_POST)) {
                 $poem_name_zh = (!empty($_POST['poem_name_zh'])) ? $_POST['poem_name_zh'] : NULL;
@@ -177,8 +191,10 @@ if (array_key_exists('action', $_GET)) {
             $template_info["topic5_id"] = $topic5_id;
             $template_info["cycle_zh"] = $cycle_zh;
             $template_info["cycle_ru"] = $cycle_ru;
+            $template_info["corder"] = $corder;
             $template_info["subcycle_zh"] = $subcycle_zh;
             $template_info["subcycle_ru"] = $subcycle_ru;
+            $template_info["scorder"] = $scorder;
             $template_info["poem_name_zh"] = $poem_name_zh;
             $template_info["poem_name_ru"] = $poem_name_ru;
             $template_info["poem_code"] = $poem_code;
@@ -190,7 +206,7 @@ if (array_key_exists('action', $_GET)) {
             $template_info["site"] = $site;
             $template_info["siteURL"] = $siteURL;
           $r_id = updatePoemsByID($poems_id,$author_id,$translator1_id,$translator2_id,
-          $topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+          $topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$corder,$subcycle_zh,$subcycle_ru,$scorder,
           $poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$totallines,$fulllines,$genres,$site,$siteURL);
             if ($r_id > 0) {
                 $success = 'Success! A record was updated.';
@@ -209,7 +225,7 @@ if (array_key_exists('action', $_GET)) {
             $record = array();
             $record = getByIDFromPoems($_GET['record_id']);
             list($author_id,$translator1_id,$translator2_id,
-			$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
+			$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$corder,$subcycle_zh,$subcycle_ru,$scorder,
 			$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$totallines,$fulllines,$genres,$site, $siteURL) = $record;
             $template_info["record_id"] = $_GET['record_id'];
             $template_info["author_id"] = $author_id;
@@ -222,8 +238,10 @@ if (array_key_exists('action', $_GET)) {
             $template_info["topic5_id"] = $topic5_id;
             $template_info["cycle_zh"] = $cycle_zh;
             $template_info["cycle_ru"] = $cycle_ru;
+            $template_info["corder"] = $corder;
             $template_info["subcycle_zh"] = $subcycle_zh;
             $template_info["subcycle_ru"] = $subcycle_ru;
+            $template_info["scorder"] = $scorder;
             $template_info["poem_name_zh"] = $poem_name_zh;
             $template_info["poem_name_ru"] = $poem_name_ru;
             $template_info["poem_code"] = $poem_code;

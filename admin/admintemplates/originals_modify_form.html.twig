@@ -1,87 +1,175 @@
 {% extends 'page.html.twig' %} {% block content %} {% if success %}
 <div class="alert alert-success" role="alert">
-    {{ success }}
+  {{ success }}
 </div>
-{% endif %} 
-{% if error %}
+{% endif %} {% if error %}
 <div class="alert alert-danger" role="alert">
-    {{ error }}
+  {{ error }}
 </div>
-{% endif %}
-{% if header %}
-<h2>{{ header }}</h2> 
+{% endif %} {% if header %}
+<h2>{{ header }}</h2>
 {% endif %}
 <script src="/js/tinymce/js/tinymce/tinymce.min.js"></script>
-<form action="./admin_originals.php?action=modify&record_id={{ record_id }}&posted=1" method="POST">
-    <div class="form-group" width="20">
-        <label for="inputfull_name">Цикл  кит.</label>
-        <input type="text" class="form-control" name="cycle_zh" id="cycle_zh"  value="{{ cycle_zh }}">
+<form
+  action="./admin_originals.php?action=modify&record_id={{
+    record_id
+  }}&posted=1"
+  method="POST"
+>
+  <div class="form-group" width="20">
+    <label for="cycle_zh">Цикл кит.</label>
+    <input
+      type="text"
+      class="form-control"
+      name="cycle_zh"
+      id="cycle_zh"
+      value="{{ cycle_zh }}"
+    />
+  </div>
+  <div class="form-row text-center justify-content-center">
+    <div class="col-10">
+      <label for="cycle_ru">Название цикла рус.</label>
+      <input
+        type="text"
+        class="form-control"
+        name="cycle_ru"
+        value="{{ cycle_ru }}"
+      />
     </div>
-    <div class="form-group" width="20">
-        <label for="inputfull_name">Цикл  рус.</label>
-        <input type="text" class="form-control" name="cycle_ru" id="cycle_ru"  value="{{ cycle_ru }}">
+    <div class="col-2">
+      <label for="corder">Порядковый номер</label>
+      <input
+        type="text"
+        class="form-control"
+        name="corder"
+        value="{{ corder }}"
+      />
     </div>
-    <div class="form-group" width="20">
-        <label for="inputfull_name">Подцикл  кит.</label>
-        <input type="text" class="form-control" name="subcycle_zh" id="subcycle_zh"  value="{{ subcycle_zh }}">
+  </div>
+  <div class="form-group" width="20">
+    <label for="subcycle_zh">Подцикл кит.</label>
+    <input
+      type="text"
+      class="form-control"
+      name="subcycle_zh"
+      id="subcycle_zh"
+      value="{{ subcycle_zh }}"
+    />
+  </div>
+  <div class="form-row text-center justify-content-center">
+    <div class="col-10">
+      <label for="subcycle_ru">Название подцикла рус.</label>
+      <input
+        type="text"
+        class="form-control"
+        name="subcycle_ru"
+        value="{{ subcycle_ru }}"
+      />
     </div>
-    <div class="form-group" width="20">
-        <label for="inputfull_name">Подцикл рус.</label>
-        <input type="text" class="form-control" name="subcycle_ru" id="subcycle_ru"  value="{{ subcycle_ru }}">
+    <div class="col-2">
+      <label for="scorder">Порядковый номер</label>
+      <input
+        type="text"
+        class="form-control"
+        name="scorder"
+        value="{{ scorder }}"
+      />
     </div>
-    <div class="form-group" width="20">
-        <label for="inputfull_name">Введите id источника из таблицы "Все источники"</label>
-        <input type="text" class="form-control" name="biblio_id" id="biblio_id"  value="{{ biblio_id }}">
-    </div>
-    <div class="form-group" width="20">
-        <label for="inputfull_name">Код стиха</label>
-        <input type="text" class="form-control" name="poem_code" id="poem_code"  value="{{ poem_code }}">
-    </div>
-    <div class="form-group" width="20">
-        <label for="inputfull_name">Название стиха  кит.</label>
-        <input type="text" class="form-control" name="poem_name_zh" id="poem_name_zh"  value="{{ poem_name_zh }}">
-    </div>
-    <div class="form-group" width="20">
-        <label for="inputfull_name">Название стиха рус.</label>
-        <input type="text" class="form-control" name="poem_name_ru" id="poem_name_ru"  value="{{ poem_name_ru }}">
-    </div>
-    <div class="form-group">
-        <label for="genres">Жанр</label>
-        <input type="text" class="form-control" name="genres"  value="{{ genres }}">
-    </div>
-    <div class="form-group">
-        <label for="size">Размер</label>
-        <input type="text" class="form-control" name="size"  value="{{ size }}">
-    </div>
-    <div class="form-group" width="50">
-        <label for="site">Сайт (только если нет ID источника)</label>
-        <input type="text" class="form-control" name="site" value="{{ site }}">
-    </div>
-    <div class="form-group">
-        <label for="siteURL">Сайт URL (только если нет ID источника)</label>
-        <input type="text" class="form-control" name="siteURL"  value="{{ siteURL }}">
-    </div>
-    <div class="form-group">
-        <label for="inputproper_name">отредактируйте HTML текста стиха</label>
-        <textarea class="form-control" name="poem_text" id="poem_text" rows="30">{{ poem_text }}</textarea>
-    </div>
-    <button type="submit" class="btn btn-primary">Submit</button>
+  </div>
+  <div class="form-group" width="20">
+    <label for="biblio_id"
+      >Введите id источника из таблицы "Все источники"</label
+    >
+    <input
+      type="text"
+      class="form-control"
+      name="biblio_id"
+      id="biblio_id"
+      value="{{ biblio_id }}"
+    />
+  </div>
+  <div class="form-group" width="20">
+    <label for="poem_code">Код стиха</label>
+    <input
+      type="text"
+      class="form-control"
+      name="poem_code"
+      id="poem_code"
+      value="{{ poem_code }}"
+    />
+  </div>
+  <div class="form-group" width="20">
+    <label for="poem_name_zh">Название стиха кит.</label>
+    <input
+      type="text"
+      class="form-control"
+      name="poem_name_zh"
+      id="poem_name_zh"
+      value="{{ poem_name_zh }}"
+    />
+  </div>
+  <div class="form-group" width="20">
+    <label for="poem_name_ru">Название стиха рус.</label>
+    <input
+      type="text"
+      class="form-control"
+      name="poem_name_ru"
+      id="poem_name_ru"
+      value="{{ poem_name_ru }}"
+    />
+  </div>
+  <div class="form-group">
+    <label for="genres">Жанр</label>
+    <input
+      type="text"
+      class="form-control"
+      name="genres"
+      value="{{ genres }}"
+    />
+  </div>
+  <div class="form-group">
+    <label for="size">Размер</label>
+    <input type="text" class="form-control" name="size" value="{{ size }}" />
+  </div>
+  <div class="form-group" width="50">
+    <label for="site">Сайт (только если нет ID источника)</label>
+    <input type="text" class="form-control" name="site" value="{{ site }}" />
+  </div>
+  <div class="form-group">
+    <label for="siteURL">Сайт URL (только если нет ID источника)</label>
+    <input
+      type="text"
+      class="form-control"
+      name="siteURL"
+      value="{{ siteURL }}"
+    />
+  </div>
+  <div class="form-group">
+    <label for="poem_text">отредактируйте HTML текста стиха</label>
+    <textarea class="form-control" name="poem_text" id="poem_text" rows="30">{{
+      poem_text
+    }}</textarea>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 <script>
-    tinymce.init({
-    content_css : "/css/bootstrap.css,/css/chinesepoetry2.css,/css/chinesepoetry.css",
-    selector: 'textarea#poem_text',
+  tinymce.init({
+    content_css:
+      "/css/bootstrap.min.css,/css/chinesepoetry2.css,/css/chinesepoetry.css",
+    selector: "textarea#poem_text",
     height: 500,
 
     plugins: [
-      'advlist autolink lists link image charmap print preview anchor',
-      'searchreplace visualblocks code fullscreen',
-      'insertdatetime media table code help template'
+      "advlist autolink lists link image charmap print preview anchor",
+      "searchreplace visualblocks code fullscreen",
+      "insertdatetime media table code help template",
     ],
-    toolbar: 'undo redo | formatselect | ' +
-    'bold italic backcolor | alignleft aligncenter ' +
-    'alignright alignjustify | bullist numlist outdent indent | ' +
-    'removeformat | template | help'});
-</script> 
+    toolbar:
+      "undo redo | formatselect | " +
+      "bold italic backcolor | alignleft aligncenter " +
+      "alignright alignjustify | bullist numlist outdent indent | " +
+      "removeformat | template | help",
+  });
+</script>
 
 {% endblock %}
