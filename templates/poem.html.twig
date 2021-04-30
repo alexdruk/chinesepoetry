@@ -1,125 +1,169 @@
 {% extends 'page_root.html.twig' %} {% block content %}
 <!-- poem.html.twig-->
 <div class="jumbotron" id="poems_jumbotron">
-   <div class="row">
-        <div class="secondaryNav text-left col-sm-2 mx-auto">
-             <a href="/poems.php?action=show&author_id={{ author_id }}" class="badge secondaryNavButton">< Bсе стихи автора</a>
-        </div>
-        <div class="col-8 mx-auto">
-            <h4 class="poems header" id="poems_header">{{ header|raw }}</h4>
-        </div>
-        <div class="secondaryNav col-sm-2 mx-auto"></div>
+  <div class="row">
+    <div class="secondaryNav text-left col-sm-2 mx-auto">
+      <a
+        href="/poems.php?action=show&author_id={{ author_id }}"
+        class="badge secondaryNavButton"
+        >< Bсе стихи автора</a
+      >
     </div>
-    <div class="row">
-        {% if translator %}
-        <div class="col-8 mx-auto">
-            <h4 class="poems translators" id="poems_translators">Перевод: {{ translator|raw }}</h4>
-        </div>
-        {% endif %}
-        {% if cycle %}
-        <div class="col-8 mx-auto">
-            {% if fromcycle %}
-                {% if melody %}
-                    <h4 class="poems cycle" id="poems_cycle">На мелодию: {{ cycle|raw }}</h4>
-                {% else %}
-                    <h4 class="poems cycle" id="poems_cycle">{{ cycle|raw }}</h4>
-                {% endif %}
-            {% else %}
-                <h4 class="poems cycle" id="poems_cycle">Из цикла: {{ cycle|raw }}</h4>
+    <div class="col-8 mx-auto">
+      <h4 class="poems header" id="poems_header">{{ header | raw }}</h4>
+    </div>
+    <div class="secondaryNav col-sm-2 mx-auto"></div>
+  </div>
+  <div class="row">
+    {% if translator %}
+    <div class="col-8 mx-auto">
+      <h4 class="poems translators" id="poems_translators">
+        Перевод: {{ translator | raw }}
+      </h4>
+    </div>
+    {% endif %} {% if cycle %}
+    <div class="col-8 mx-auto">
+      {% if fromcycle %} {% if melody %}
+      <h4 class="poems cycle" id="poems_cycle">
+        На мелодию: {{ cycle | raw }}
+      </h4>
+      {% else %}
+      <h4 class="poems cycle" id="poems_cycle">{{ cycle | raw }}</h4>
+      {% endif %} {% else %}
+      <h4 class="poems cycle" id="poems_cycle">Из цикла: {{ cycle | raw }}</h4>
+      {% endif %}
+    </div>
+    {% endif %} {% if subcycle %}
+    <div class="col-8 mx-auto">
+      <h5 class="poems subcycle" id="poems_subcycle">{{ subcycle | raw }}</h5>
+    </div>
+    {% endif %}
+    <div class="col-8 mx-auto">
+      {% if genres or size %}
+      <h4
+        class="poems poem_name tip"
+        id="poems_poem_name"
+        data-tip="tip_genres"
+      >
+        {{ poem_name | raw }}
+      </h4>
+      <div id="tip_genres" class="tip-content">
+        <div style="overflow-x: auto">
+          <table class="author_atrib" id="author_atrib">
+            {% if genres %}
+            <tr>
+              <td><b>Жанр:</b></td>
+              <td>{{ genres }}</td>
+            </tr>
+            {% endif %} {% if size %}
+            <tr>
+              <td><b>Размер:</b></td>
+              <td>{{ size }}</td>
+            </tr>
             {% endif %}
+          </table>
         </div>
-        {% endif %}
-        {% if subcycle %}
-        <div class="col-8 mx-auto">
-            <h5 class="poems subcycle" id="poems_subcycle">{{ subcycle|raw }}</h5>
-        </div>
-        {% endif %}
-        <div class="col-8 mx-auto">
-            {% if genres or size %}
-                <h4 class="poems poem_name tip" id="poems_poem_name" data-tip="tip_genres">{{ poem_name|raw}}</h4>
-                <div  id="tip_genres" class="tip-content">
-                    <div style="overflow-x:auto">
-                        <table class="author_atrib" id="author_atrib">
-                            {% if genres %}
-                            <tr><td><b>Жанр:</b></td><td>{{ genres }}</td></tr>
-                            {% endif %}    
-                            {% if size %}
-                            <tr><td><b>Размер:</b></td><td>{{ size }}</td></tr>
-                            {% endif %}    
-                        </table>
-                    </div>
-                </div>
-            {% else %}    
-            <h4 class="poems poem_name">{{ poem_name|raw }}</h4>
-            {% endif %}    
-        </div>
+      </div>
+      {% else %}
+      <h4 class="poems poem_name">{{ poem_name | raw }}</h4>
+      {% endif %}
     </div>
-    <div class="row">
-        <div class="text-left col-sm-2 mx-auto"></div>
-        <div class="poetry text-left col-sm-7 mx-auto">
-            {{  poem_text|raw }}
-        </div>
-        <div class="poetry text-right col-sm-3 mx-0 float-right forbirds"></div>
-        {% if topics %}
-        <div class="originalLink text-left col-8 mx-auto">
-            <h4 class="poems poem_name">Темы</h4>
-            <ul>
-                <li class="topics">{{ topics|raw }}</li>
-            </ul>
-        </div>
-        {% endif %}
-
-        {% if original %}
-        <div class="originalLink text-left col-8 mx-auto">
-            <h4 class="poems poem_name">Оригинал</h4>
-            <ul>
-                {% for record in original %}
-                <li class="otherTranslations list">{{ record|raw }}</li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
-        {% if otherTranslation %}
-        <div class="otherTranslation text-left col-8 mx-auto">
-            <h4 class="poems poem_name">{{ otherTranslation['header'] }}</h4>
-            <ul>
-                {% for record in otherTranslation.translations %}
-
-                <li class="otherTranslations list"><a href="./poems.php?action=show&poem_id={{ record['id'] }}">{{ record['translator']|raw }} {{ record['poem_name']|raw }}</a></li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
+  </div>
+  <div class="row">
+    <div class="text-left col-sm-2 mx-auto"></div>
+    <div class="poetry text-left col-sm-7 mx-auto">
+      {{ poem_text | raw }}
     </div>
-    {% if countIP %}
-    <script>
-        function getVote(pageid) {
-          var xmlhttp=new XMLHttpRequest();
-          xmlhttp.onreadystatechange=function() {
-            if (this.readyState==4 && this.status==200) {
-              document.getElementById("vote").innerHTML='Спасибо!';
-            }
-          }
-          xmlhttp.open("GET","vote.php?pageid="+pageid,true);
-          xmlhttp.send();
+    <div class="poetry text-right col-sm-3 mx-0 float-right forbirds"></div>
+    {% if topics %}
+    <div class="originalLink text-left col-8 mx-auto">
+      <h4 class="poems poem_name">Темы</h4>
+      <ul>
+        <li class="topics">{{ topics | raw }}</li>
+      </ul>
+    </div>
+    {% endif %} {% if original %}
+    <div class="originalLink text-left col-8 mx-auto">
+      <h4 class="poems poem_name">Оригинал</h4>
+      <ul>
+        {% for record in original %}
+        <li class="otherTranslations list">{{ record | raw }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %} {% if otherTranslation %}
+    <div class="otherTranslation text-left col-8 mx-auto">
+      <h4 class="poems poem_name">{{ otherTranslation["header"] }}</h4>
+      <ul>
+        {% for record in otherTranslation.translations %}
+
+        <li class="otherTranslations list">
+          <a href="./poems.php?action=show&poem_id={{ record['id'] }}"
+            >{{ record["translator"] | raw }} {{ record["poem_name"] | raw }}</a
+          >
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endif %}
+  </div>
+{% if countIP %}
+  <script>
+    function getVote(pageid) {
+      var xmlhttp = new XMLHttpRequest();
+      xmlhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+          document.getElementById("vote").innerHTML = "Спасибо!";
         }
-    </script>
-    <div class="vote text-center" id="vote">
-            <input type="button" id="vote-btn" name="NNN" value='Нажмите здесь чтобы включить в "Избранное"' onclick="getVote({{ poems_id }})">
-    </div>
-    {% endif %}
-    {% if biblio %}
-    <div class="d-flex align-items-end"><cite title="{{ biblio[0]|raw }}"><a href="./biblio.php?biblio_id={{ biblio[1] }}" id="biblio_poems">Источник: {{ biblio[0] }}</a></cite></div>
-    {% endif %}
-    {% if siteURL %}
-    <div class="d-flex align-items-end"><cite><a  href="{{ siteURL }}" id="biblio_poems">Источник: {{ site }}</a></cite></div>
-    {% endif %}
+      };
+      xmlhttp.open("GET", "vote.php?pageid=" + pageid, true);
+      xmlhttp.send();
+    }
+  </script>
+  <div class="vote text-center" id="vote">
+    <input
+      type="button"
+      id="vote-btn"
+      name="NNN"
+      value='Нажмите здесь чтобы включить в "Избранное"'
+      onclick="getVote({{ poems_id }})"
+    />
+  </div>
+  {% endif %}
+ {% if biblio %}
+  <div class="d-flex align-items-end">
+    <cite title="{{ biblio[0] | raw }}"
+      ><a href="./biblio.php?biblio_id={{ biblio[1] }}" id="biblio_poems"
+        >Источник: {{ biblio[0] }}</a
+      ></cite
+    >
+  </div>
+  {% endif %} {% if siteURL %}
+  <div class="d-flex align-items-end">
+    <cite
+      ><a href="{{ siteURL }}" id="biblio_poems">Источник: {{ site }}</a></cite
+    >
+  </div>
+  {% endif %}
 </div>
 <script type="text/javascript">
-    var images = ['y1.jpg', 'y2.jpg', 'y3.jpg','y4.jpg', 'y5.jpg', 'y6.jpg','y7.jpg', 'y8.jpg', 'y9.jpg'];
-    var elems = document.getElementsByClassName('forbirds');
-    for (var i = 0; i < elems.length; i++) {
-        elems[i].style.background = ' top right url(../images/' + images[Math.floor(Math.random() * images.length)] + ')  repeat-y';
-    }
+  var images = [
+    "y1.jpg",
+    "y2.jpg",
+    "y3.jpg",
+    "y4.jpg",
+    "y5.jpg",
+    "y6.jpg",
+    "y7.jpg",
+    "y8.jpg",
+    "y9.jpg",
+  ];
+  var elems = document.getElementsByClassName("forbirds");
+  for (var i = 0; i < elems.length; i++) {
+    elems[i].style.background =
+      " top right url(../images/" +
+      images[Math.floor(Math.random() * images.length)] +
+      ")  repeat-y";
+  }
 </script>
 {% endblock %}

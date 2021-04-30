@@ -1449,6 +1449,34 @@ function getRandomPoemID() {
 	}
 }
 /**
+ * get a random  poem from selectedpoems
+ *
+ * @return array random poem_id
+ * @throws DBException
+ */
+function getRandomSelectedPoemID() {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT `poems_id` FROM  selectedpoems ORDER BY RAND() LIMIT 1;')) {
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($poems_id)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = $poems_id;
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $record;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+
+/**
  * get a list of all records from table authors by topic
  *
  * @return array array of records
