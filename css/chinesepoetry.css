@@ -557,7 +557,12 @@ cite {
     background:#FFFBE9;
     padding:3px;
     font-size: 80%;
-    font-weight: lighter; 
-    
+    font-weight: lighter;     
 }
-
+.poemlist {
+    display: none;
+}
+.btn.btn-outline-warning.btn-sm {
+    padding-top: 1px;
+    padding-bottom: 1px;
+}

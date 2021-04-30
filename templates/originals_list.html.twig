@@ -6,12 +6,25 @@
             <h4 class="originals header" id="originals_header">{{ header }}</h4>
             <p>&nbsp;</p>
             {% if showall %}
+            <script>
+                function showHide(id) {
+                  var x = document.getElementById(id);;
+                  if ((x.style.display === "none")||(x.style.display === "")) {
+                    x.style.display = "block";
+                  } else {
+                    x.style.display = "none";
+                  }
+                }
+                </script>
+                
             <div id="originals_content_table">
             <ol>
                 {% for fin in final %}
                 {% set authorsline = fin.author|split('#') %}
-                <h4><li class="originals autors list"><a href="./authors.php?action=show&record_id={{ authorsline[1] }}">{{ authorsline[0]|raw }}</a>{{ authorsline[3]|raw }} - {{ authorsline[2] }}</li></h4>
-                    <ul>
+                <h4><li class="originals autors list"><a href="./authors.php?action=show&record_id={{ authorsline[1] }}">{{ authorsline[0]|raw }}</a>{{ authorsline[3]|raw }} - {{ authorsline[2] }}
+                    &nbsp;<button  type="button" class="btn  btn-outline-warning btn-sm" onclick="showHide('a{{ authorsline[1] }}')">Стихи</button></li></h4>
+                
+                    <ul id="a{{ authorsline[1] }}" class="poemlist">
                         {% for cycle in fin.poems|keys %}
                             {% if not (cycle starts with  'default') %}                        
                                 <li class="originals cycle">{{ cycle|raw }}<ul>
