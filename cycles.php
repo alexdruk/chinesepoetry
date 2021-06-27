@@ -83,6 +83,7 @@ elseif (isset($_GET['cycle_zh'])) {
     $records = sortRecordsWithoutSubcycleOrig($records);
     list($originals_id,$author_id, $proper_name, $dates, $epoch,
     $cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,$poem_name_zh,$poem_name_ru,$poem_text) = $records[0];
+//    print_r($records[0]);
     list($author_html, $proper_name,  $dates,  $epoch) = makeAuthor($author_id);
     if (stripos($cycle_ru, 'Из') !== false) {
         $fromcycle = true;
