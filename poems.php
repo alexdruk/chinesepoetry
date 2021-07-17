@@ -151,7 +151,12 @@ elseif  ( ($_GET['action'] == 'show') && (array_key_exists('author_id', $_GET)) 
     (!array_key_exists('topic_id', $_GET)) && (!array_key_exists('poem_id', $_GET)) ){
     $author_id = $_GET['author_id'];
     $records = getWithoutPoem_textFromPoemsByAuthorID($author_id);
-    $final = makeFinaTranslatorslArray ($records);
+    if (!empty($records)) {
+        $final = makeFinaTranslatorslArray ($records);
+    }
+    else {
+        $final = array();
+    }
 //    print_r($final);
     list($author_html, $proper_name,  $dates,  $epoch) = makeAuthor($author_id);
     $template_info["header"] = $author_html;
