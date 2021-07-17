@@ -1,68 +1,163 @@
 <!-- nav_root.html.twig-->
 <nav class="navbar navbar-expand-lg navbar-light bg-dark rounded">
+  <a class="navbar-brand" href="/">
+    <img
+      src="/chinesepoetry_logo.png"
+      width="204"
+      height="68"
+      alt="Китайская Поэзия - логотип сайта"
+    />
+  </a>
+  <button
+    class="navbar-toggler"
+    type="button"
+    data-toggle="collapse"
+    data-target="#adminnav"
+    aria-controls="adminnav"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
 
-    <a class="navbar-brand" href="/">
-      <img src="/chinesepoetry_logo.png" width="204" height="68" alt="Китайская Поэзия - логотип сайта">
-    </a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#adminnav" aria-controls="adminnav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-  
-    <div class="collapse navbar-collapse justify-content-md-center" id="adminnav">
-        <ul class="navbar-nav">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="" id="poetry" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Стихи</a>
-                <div class="dropdown-menu" aria-labelledby="poetry">
-                    <a class="dropdown-item" href="./originals.php?action=showall">Оригиналы</a>
-                    <a class="dropdown-item" href="./poems.php?action=byAuthor">Все стихи по авторам</a>
-                    <a class="dropdown-item" href="./poems.php?action=byTranslator">Все стихи по переводчикам</a>
-                    <a class="dropdown-item" href="./poems.php?action=byEpoch">Все стихи по эпохам</a>
-                    <a class="dropdown-item" href="./poems.php?action=byTopic">Все стихи по темам</a>
-                    <a class="dropdown-item" href="./poems.php?action=selected">Из "Избранного" (составлено нашими пользователями)</a>
-                    <a class="dropdown-item" href="./poems.php?action=showrandom">Случайно выбранный перевод</a>
-                    <a class="dropdown-item" href="./poems.php?action=search">Полнотекстовый поиск по стихам</a>
-                    <a class="dropdown-item" href="./originals.php?action=search">Полнотекстовый поиск по оригиналам</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="" id="authors" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Авторы</a>
-                <div class="dropdown-menu" aria-labelledby="authors">
-                    <a class="dropdown-item" href="./authors.php?action=showall">Все авторы</a>
-                    <a class="dropdown-item" href="./authors.php?action=byEpoch">Авторы по эпохам</a>
-                    <a class="dropdown-item" href="./authors.php?action=search">Полнотекстовый поиск по авторам</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="" id="translators" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Переводчики</a>
-                <div class="dropdown-menu" aria-labelledby="translators">
-                    <a class="dropdown-item" href="./translators.php?action=showall">Все переводчики</a>
-                    <a class="dropdown-item" href="./translators.php?action=search">Полнотекстовый поиск по именам и биографиям переводчиков</a>
-               </div>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="" id="sources" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Источники</a>
-                <div class="dropdown-menu" aria-labelledby="sources">
-                    <!-- a class="dropdown-item" href="./biblio.php?action=show_anthology">В антологии</a -->
-                    <a class="dropdown-item" href="./biblio.php?action=showall">Все записи</a>
-                    <!--a class="dropdown-item" href="./biblio.php?action=needed">Нужны!</a -->
-                    <a class="dropdown-item" href="./biblio.php?action=search">Полнотекстовый поиск</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="" id="topics" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Темы</a>
-                <div class="dropdown-menu" aria-labelledby="topics">
-                    <a class="dropdown-item" href="./topics.php?action=show&record_id=1">О темах</a>
-                    <a class="dropdown-item" href="./topics.php?action=show">Все темы</a>
-                    <a class="dropdown-item" href="./topics.php?action=search">Полнотекстовый поиск по темам</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="" id="chronology" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Хронология</a>
-                <div class="dropdown-menu" aria-labelledby="chronology">
-                    <a class="dropdown-item" href="./chrono.php">Краткая хронология Китая</a>
-                </div>
-            </li>
-        </ul>
-    </div>
+  <div class="collapse navbar-collapse justify-content-md-center" id="adminnav">
+    <ul class="navbar-nav">
+      <li class="nav-item dropdown">
+        <a
+          class="nav-link dropdown-toggle"
+          href=""
+          id="poetry"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+          >Стихи</a
+        >
+        <div class="dropdown-menu" aria-labelledby="poetry">
+          <!-- a class="dropdown-item" href="./originals.php?action=showall">Оригиналы</a -->
+          <a class="dropdown-item" href="./poems.php?action=byAuthor"
+            >Все стихи по авторам</a
+          >
+          <a class="dropdown-item" href="./poems.php?action=byTranslator"
+            >Все стихи по переводчикам</a
+          >
+          <a class="dropdown-item" href="./poems.php?action=byEpoch"
+            >Все стихи по эпохам</a
+          >
+          <a class="dropdown-item" href="./poems.php?action=byTopic"
+            >Все стихи по темам</a
+          >
+          <a class="dropdown-item" href="./poems.php?action=selected"
+            >Из "Избранного" (составлено нашими пользователями)</a
+          >
+          <a class="dropdown-item" href="./poems.php?action=showrandom"
+            >Случайно выбранный перевод</a
+          >
+          <a class="dropdown-item" href="./poems.php?action=search"
+            >Полнотекстовый поиск по стихам</a
+          >
+          <a class="dropdown-item" href="./originals.php?action=search"
+            >Полнотекстовый поиск по оригиналам</a
+          >
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a
+          class="nav-link dropdown-toggle"
+          href=""
+          id="authors"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+          >Авторы</a
+        >
+        <div class="dropdown-menu" aria-labelledby="authors">
+          <a class="dropdown-item" href="./authors.php?action=showall"
+            >Все авторы</a
+          >
+          <a class="dropdown-item" href="./authors.php?action=byEpoch"
+            >Авторы по эпохам</a
+          >
+          <a class="dropdown-item" href="./authors.php?action=search"
+            >Полнотекстовый поиск по авторам</a
+          >
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a
+          class="nav-link dropdown-toggle"
+          href=""
+          id="translators"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+          >Переводчики</a
+        >
+        <div class="dropdown-menu" aria-labelledby="translators">
+          <a class="dropdown-item" href="./translators.php?action=showall"
+            >Все переводчики</a
+          >
+          <a class="dropdown-item" href="./translators.php?action=search"
+            >Полнотекстовый поиск по именам и биографиям переводчиков</a
+          >
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a
+          class="nav-link dropdown-toggle"
+          href=""
+          id="sources"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+          >Источники</a
+        >
+        <div class="dropdown-menu" aria-labelledby="sources">
+          <!-- a class="dropdown-item" href="./biblio.php?action=show_anthology">В антологии</a -->
+          <a class="dropdown-item" href="./biblio.php?action=showall"
+            >Все записи</a
+          >
+          <!--a class="dropdown-item" href="./biblio.php?action=needed">Нужны!</a -->
+          <a class="dropdown-item" href="./biblio.php?action=search"
+            >Полнотекстовый поиск</a
+          >
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a
+          class="nav-link dropdown-toggle"
+          href=""
+          id="topics"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+          >Темы</a
+        >
+        <div class="dropdown-menu" aria-labelledby="topics">
+          <a class="dropdown-item" href="./topics.php?action=show&record_id=1"
+            >О темах</a
+          >
+          <a class="dropdown-item" href="./topics.php?action=show">Все темы</a>
+          <a class="dropdown-item" href="./topics.php?action=search"
+            >Полнотекстовый поиск по темам</a
+          >
+        </div>
+      </li>
+      <li class="nav-item dropdown">
+        <a
+          class="nav-link dropdown-toggle"
+          href=""
+          id="chronology"
+          data-toggle="dropdown"
+          aria-haspopup="true"
+          aria-expanded="false"
+          >Хронология</a
+        >
+        <div class="dropdown-menu" aria-labelledby="chronology">
+          <a class="dropdown-item" href="./chrono.php"
+            >Краткая хронология Китая</a
+          >
+        </div>
+      </li>
+    </ul>
+  </div>
 </nav>
