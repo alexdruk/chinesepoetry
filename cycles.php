@@ -24,6 +24,17 @@ if (isset($_GET['cycle']) && isset($_GET['translator'])) {
     else {
         $melody = false;
     }
+    if ($melody) {
+        $prev_auth = $author_id;
+        for ($i=0; $i < count($records); $i++) {
+            $current_auth = $records[$i][1];
+            if ($current_auth !== $prev_auth) {
+                array_push($records[$i], "NEW");
+                $prev_auth = $current_auth;
+            }    
+        }
+    }    
+
     $cycle = makeCycle($cycle_ru, $cycle_zh,$translator_id );
     $subcycle = makeSubCycle($subcycle_ru, $subcycle_zh,$translator_id);
     $template_info["records"] = $records;
@@ -79,7 +90,7 @@ elseif ((isset($_GET['subcycle'])) && isset($_GET['translator'])) {
 elseif (isset($_GET['cycle_zh'])) {
     $cycle_zh = $_GET['cycle_zh'];
     $records = getOriginalsByCycleZH($cycle_zh );
-//    print_r($records);
+    // print_r($records);
     $records = sortRecordsWithoutSubcycleOrig($records);
     list($originals_id,$author_id, $proper_name, $dates, $epoch,
     $cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,$poem_name_zh,$poem_name_ru,$poem_text) = $records[0];
@@ -117,7 +128,17 @@ elseif (isset($_GET['cycle_zh'])) {
     else {
         $subcycle = false;
     }
-
+    if ($melody) {
+        $prev_auth = $author_id;
+        for ($i=0; $i < count($records); $i++) {
+            $current_auth = $records[$i][1];
+            if ($current_auth !== $prev_auth) {
+                array_push($records[$i], "NEW");
+                $prev_auth = $current_auth;
+            }    
+        }
+    }    
+    // print_r($records);
 
     $template_info["records"] = $records;
     $template_info["originals"] = true;

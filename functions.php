@@ -1284,7 +1284,7 @@ function getPoemsByCycleTranslator($cycle, $translator_id) {
 	 FROM  poems p 
 	 INNER JOIN authors a ON a.author_id = p.author_id 
 	 WHERE p.cycle_ru = ?  and (p.translator1_id = ? or p.translator2_id = ?) 
-	 ORDER BY  p.scorder, p.subcycle_ru, cast(p.poem_name_ru as UNSIGNED INTEGER),p.poem_name_ru, p.corder, p.cycle_ru, p.poems_id ASC;')) {
+	 ORDER BY  p.scorder, p.subcycle_ru, cast(p.poem_name_ru as UNSIGNED INTEGER),a.author_id, p.poem_name_ru, p.corder, p.cycle_ru, p.poems_id ASC;')) {
 		if (!$stmt->bind_param('sii', $cycle, $translator_id, $translator_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
@@ -1360,7 +1360,7 @@ function getOriginalsByCycleZH($cycle_zh) {
 	 FROM  originals p 
 	 INNER JOIN authors a ON a.author_id = p.author_id 
 	 WHERE p.cycle_zh = ? 
-	 ORDER BY  p.scorder, p.subcycle_zh, cast(p.poem_name_ru as UNSIGNED INTEGER),p.poem_name_ru, p.corder, p.cycle_ru,  p.originals_id ASC;')) {
+	 ORDER BY  p.scorder, p.subcycle_zh, cast(p.poem_name_ru as UNSIGNED INTEGER),a.author_id, p.poem_name_ru, p.corder, p.cycle_ru,  p.originals_id ASC;')) {
 		if (!$stmt->bind_param('s', $cycle_zh)) {
 			throw new DBBindParamException($db, $stmt);
 		}
