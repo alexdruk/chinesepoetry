@@ -1,78 +1,79 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-dark rounded">
-    <a class="nav-brand" href="./index.php">Admin</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#adminnav" aria-controls="adminnav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-    </button>
+	<a class="nav-brand" href="./index.php">Admin</a>
+	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#adminnav" aria-controls="adminnav" aria-expanded="false" aria-label="Toggle navigation">
+		<span class="navbar-toggler-icon"></span>
+	</button>
 
-    <div class="collapse navbar-collapse justify-content-md-center" id="adminnav">
-        <ul class="navbar-nav">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="" id="poetry" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Стихи</a>
-                <div class="dropdown-menu" aria-labelledby="poetry">
-                    <!-- a class="dropdown-item" href="./admin_originals.php?action=showall">Все оригиналы</a -->
-                    <a class="dropdown-item" href="./admin_originals.php?action=insert">Добавить оригинал</a>
-                    <a class="dropdown-item" href="./admin_originals.php?action=modify&record_id=?">Редактировать оригинал</a>
-                    <a class="dropdown-item" href="./admin_poems.php?action=insert">Добавить стих</a>
-                    <a class="dropdown-item" href="./admin_poems.php?action=modify&record_id=?">Редактировать стих</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="" id="translators" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Переводчики</a>
-                <div class="dropdown-menu" aria-labelledby="authors">
-                    <a class="dropdown-item" href="./admin_translators.php?action=showall">Все переводчики</a>
-                    <a class="dropdown-item" href="./admin_translators.php?action=insert">Добавить переводчика</a>
-                    <a class="dropdown-item" href="./admin_translators.php?action=modify&record_id=?">Редактировать переводчика</a>
-                    <a class="dropdown-item" href="./admin_translators.php?action=insertfile">Добавить биографию переводчика</a>
-                    <a class="dropdown-item" href="./admin_translators.php?action=modifyfile&record_id=?">Редактировать биографию  переводчика</a>
-                </div>
-           </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="" id="authors" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Авторы</a>
-                <div class="dropdown-menu" aria-labelledby="authors">
-                    <a class="dropdown-item" href="./admin_authors.php?action=showall">Все авторы</a>
-                    <a class="dropdown-item" href="./admin_authors.php?action=insert">Добавить автора</a>
-                    <a class="dropdown-item" href="./admin_authors.php?action=modify&record_id=?">Редактировать автора</a>
-                    <a class="dropdown-item" href="./admin_authors.php?action=insertfile">Добавить биографию  автора</a>
-                    <a class="dropdown-item" href="./admin_authors.php?action=modifyfile&record_id=?">Редактировать биографию  автора</a>
-                    <a class="dropdown-item" href="./admin_authors.php?action=insertAtributes">Добавить атрибуты автора</a>
-                    <a class="dropdown-item" href="./admin_authors.php?action=modifyAtributes&record_id=?">Редактировать  атрибуты  автора</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="" id="nav_topics" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Темы</a>
-                <div class="dropdown-menu" aria-labelledby="nav_topics">
-                    <a class="dropdown-item" href="./admin_topics.php?action=showall">Все темы</a>
-                    <a class="dropdown-item" href="./admin_topics.php?action=addtopic">Добавить тему</a>
-                    <a class="dropdown-item" href="./admin_topics.php?action=insertDesc">Добавить описание</a>
-                    <a class="dropdown-item" href="./admin_topics.php?action=modifyDesc&record_id=?">Pедактировать описание</a>
-                </div>
-            </li>
-           <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="" id="dropdown1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Источники</a>
-                <div class="dropdown-menu" aria-labelledby="dropdown1">
-                    <a class="dropdown-item" href="./admin_biblio.php?action=showall">Все записи</a>
-                    <a class="dropdown-item" href="./admin_biblio.php?action=showlast">Последняя запись</a>
-                    <a class="dropdown-item" href="./admin_biblio.php?action=insert">Добавить запись</a>
-                    <a class="dropdown-item" href="./admin_biblio.php?action=modify&record_id=?">Изменить запись</a>
-                </div>
-            </li>
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="" id="dropdown1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Новости</a>
-                <div class="dropdown-menu" aria-labelledby="dropdown1">
-                    <a class="dropdown-item" href="./admin_news.php?action=showall">Все записи</a>
-                    <a class="dropdown-item" href="./admin_news.php?action=insert">Добавить запись</a>
-                    <a class="dropdown-item" href="./admin_news.php?action=modify&record_id=?">Изменить запись</a>
-                </div>
-            </li>
-            <!--li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="" id="dropdown1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Опасное</a>
-                <div class="dropdown-menu" aria-labelledby="dropdown1">
-                    <a class="dropdown-item" href="./admin_imageupload.php">Зарузить новый image</a>
-                    <a class="dropdown-item" href="./admin_delete_record.php?table=poems">БЕЗВОЗВРАТНО уничтожить перевод</a>
-                    <a class="dropdown-item" href="./admin_delete_record.php?table=originals">БЕЗВОЗВРАТНО уничтожить оригинал</a>
-                    <a class="dropdown-item" href="./admin_restoreDB.php">Востановить DB из последнего архива</a>
-                </div>
-            </li -->
-        </ul>
-    </div>
+	<div class="collapse navbar-collapse justify-content-md-center" id="adminnav">
+		<ul class="navbar-nav">
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="" id="poetry" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Стихи</a>
+				<div
+					class="dropdown-menu" aria-labelledby="poetry">
+					<!-- a class="dropdown-item" href="./admin_originals.php?action=showall">Все оригиналы</a -->
+					<a class="dropdown-item" href="./admin_originals.php?action=insert">Добавить оригинал</a>
+					<a class="dropdown-item" href="./admin_originals.php?action=modify&record_id=?">Редактировать оригинал</a>
+					<a class="dropdown-item" href="./admin_poems.php?action=insert">Добавить стих</a>
+					<a class="dropdown-item" href="./admin_poems.php?action=modify&record_id=?">Редактировать стих</a>
+				</div>
+			</li>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="" id="translators" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Переводчики</a>
+				<div class="dropdown-menu" aria-labelledby="authors">
+					<a class="dropdown-item" href="./admin_translators.php?action=showall">Все переводчики</a>
+					<a class="dropdown-item" href="./admin_translators.php?action=insert">Добавить переводчика</a>
+					<a class="dropdown-item" href="./admin_translators.php?action=modify&record_id=?">Редактировать переводчика</a>
+					<a class="dropdown-item" href="./admin_translators.php?action=insertfile">Добавить биографию переводчика</a>
+					<a class="dropdown-item" href="./admin_translators.php?action=modifyfile&record_id=?">Редактировать биографию  переводчика</a>
+				</div>
+			</li>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="" id="authors" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Авторы</a>
+				<div class="dropdown-menu" aria-labelledby="authors">
+					<a class="dropdown-item" href="./admin_authors.php?action=showall">Все авторы</a>
+					<a class="dropdown-item" href="./admin_authors.php?action=insert">Добавить автора</a>
+					<a class="dropdown-item" href="./admin_authors.php?action=modify&record_id=?">Редактировать автора</a>
+					<a class="dropdown-item" href="./admin_authors.php?action=insertfile">Добавить биографию  автора</a>
+					<a class="dropdown-item" href="./admin_authors.php?action=modifyfile&record_id=?">Редактировать биографию  автора</a>
+					<a class="dropdown-item" href="./admin_authors.php?action=insertAtributes">Добавить атрибуты автора</a>
+					<a class="dropdown-item" href="./admin_authors.php?action=modifyAtributes&record_id=?">Редактировать  атрибуты  автора</a>
+				</div>
+			</li>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="" id="nav_topics" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Темы</a>
+				<div class="dropdown-menu" aria-labelledby="nav_topics">
+					<a class="dropdown-item" href="./admin_topics.php?action=showall">Все темы</a>
+					<a class="dropdown-item" href="./admin_topics.php?action=addtopic">Добавить тему</a>
+					<a class="dropdown-item" href="./admin_topics.php?action=insertDesc">Добавить описание</a>
+					<a class="dropdown-item" href="./admin_topics.php?action=modifyDesc&record_id=?">Pедактировать описание</a>
+				</div>
+			</li>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="" id="dropdown1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Источники</a>
+				<div class="dropdown-menu" aria-labelledby="dropdown1">
+					<a class="dropdown-item" href="./admin_biblio.php?action=showall">Все записи</a>
+					<a class="dropdown-item" href="./admin_biblio.php?action=showlast">Последняя запись</a>
+					<a class="dropdown-item" href="./admin_biblio.php?action=insert">Добавить запись</a>
+					<a class="dropdown-item" href="./admin_biblio.php?action=modify&record_id=?">Изменить запись</a>
+				</div>
+			</li>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="" id="dropdown1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Новости</a>
+				<div class="dropdown-menu" aria-labelledby="dropdown1">
+					<a class="dropdown-item" href="./admin_news.php?action=showall">Все записи</a>
+					<a class="dropdown-item" href="./admin_news.php?action=insert">Добавить запись</a>
+					<a class="dropdown-item" href="./admin_news.php?action=modify&record_id=?">Изменить запись</a>
+				</div>
+			</li>
+			<li class="nav-item dropdown">
+				<a class="nav-link dropdown-toggle" href="" id="dropdown1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Опасное</a>
+				<div class="dropdown-menu" aria-labelledby="dropdown1">
+					<a class="dropdown-item" href="./admin_imageupload.php">Зарузить новый image</a>
+					<a class="dropdown-item" href="./admin_delete_record.php?table=poems">БЕЗВОЗВРАТНО уничтожить перевод</a>
+					<a class="dropdown-item" href="./admin_delete_record.php?table=originals">БЕЗВОЗВРАТНО уничтожить оригинал</a>
+					<a class="dropdown-item" href="./admin_restoreDB.php">Востановить DB из последнего архива</a>
+				</div>
+			</li>
+		</ul>
+	</div>
 </nav>
