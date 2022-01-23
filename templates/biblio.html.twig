@@ -69,15 +69,18 @@
         {% endapply %}
         </div>
         {% elseif records %}
-        <div class="secondaryNav text-left mb-5">
+       <div class="secondaryNav text-left mb-5">
             <a href="/poems.php?action=bySource&biblio_id={{ biblio_id }}" class="badge secondaryNavButton">< Bсе стихи из источника</a>
         </div>
-        <div id="biblio_content_table">
+        <div id="biblio_content_table" >
             <ol>
                 {% for record in records %}
                 <li class="biblio">{{ record }}</li>
                 {% endfor %}
             </ol>
+            {% if iframe %} 
+                <iframe src="https://docs.google.com/document/d/e/{{ iframe }}/pub?embedded=true"></iframe>
+            {% endif %}
         </div>
             {% if special_message %}
                 <footer class="blockquote-footer">{{ special_message }}</footer>

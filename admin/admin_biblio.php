@@ -44,12 +44,15 @@ if (array_key_exists('action', $_GET)) {
             if (array_key_exists('ISBN', $_POST)) {
                 $ISBN = (!empty($_POST['ISBN'])) ? $_POST['ISBN'] : NULL;
             }
+			if (array_key_exists('iframe', $_POST)) {
+				$iframe = (!empty($_POST['iframe'])) ? $_POST['iframe'] : NULL;
+			}
 			$book_name = $_POST['book_name'];
 			$ref_name = $_POST['ref_name'];
 			$year = $_POST['year'];
 			$in_antology = $_POST['in_antology'];
 			$biblio_name = $_POST['biblio_name'];
-			$r_id = sources_insert_record($author, $book_name, $translator, $ref_name, $seria, $publisher, $code, $year, $ISBN, $in_antology, $biblio_name);
+			$r_id = sources_insert_record($author, $book_name, $translator, $ref_name, $seria, $publisher, $code, $year, $ISBN, $in_antology, $biblio_name, $iframe);
 			if ($r_id > 0) {
 				$success = 'Success! A new record was created id='.$r_id;
 			}
@@ -97,6 +100,9 @@ if (array_key_exists('action', $_GET)) {
 				if (array_key_exists('ISBN', $_POST)) {
 					$ISBN = (!empty($_POST['ISBN'])) ? $_POST['ISBN'] : NULL;
 				}
+				if (array_key_exists('iframe', $_POST)) {
+					$iframe = (!empty($_POST['iframe'])) ? $_POST['iframe'] : NULL;
+				}
 				$present = $_POST['present'];
 #				if (array_key_exists('present', $_POST)) {
 #					$present = (!empty($_POST['present'])) ? $_POST['present'] : 0;
@@ -113,7 +119,8 @@ if (array_key_exists('action', $_GET)) {
 				$template_info["biblio_name"] = $biblio_name;
 				$template_info["ISBN"] = $ISBN;
 				$template_info["present"] = $present;
-				$r_id = updateSourcesByID($biblio_id,$author,$book_name,$translator,$ref_name,$seria,$publisher,$year,$code,$biblio_name,$ISBN,$present);
+				$template_info["iframe"] = $iframe;
+				$r_id = updateSourcesByID($biblio_id, $author, $book_name, $translator, $ref_name, $seria, $publisher, $year, $code, $biblio_name, $ISBN, $present, $iframe);
 				if ($r_id > 0) {
 					$success = 'Success! A record was updated.';
 					$error = false;
@@ -130,7 +137,7 @@ if (array_key_exists('action', $_GET)) {
 			else {
 				$record = array();
 				$record = getByIDFromSources($_GET['record_id']);
-				list($biblio_id,$author,$book_name,$translator,$ref_name,$seria,$publisher,$year,$code,$biblio_name,$ISBN,$present) = $record;
+				list($biblio_id, $author, $book_name, $translator, $ref_name, $seria, $publisher, $year, $code, $biblio_name, $ISBN, $present, $iframe) = $record;
 #print_r($record);
 				$template_info["record_id"] = $biblio_id;
 				$template_info["author"] = $author;
@@ -144,6 +151,7 @@ if (array_key_exists('action', $_GET)) {
 				$template_info["biblio_name"] = $biblio_name;
 				$template_info["ISBN"] = $ISBN;
 				$template_info["present"] = $present;
+				$template_info["iframe"] = $iframe;
 				$error = false;
 				$template_info["error"] = $error;
 				$template_info["success"] = false;

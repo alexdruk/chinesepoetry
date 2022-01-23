@@ -36,18 +36,18 @@ function getAllFromTopics() {
 function getByIDFromSources($biblioID) {
 	$db = UserConfig::getDB();
 	$record = null;
-	if ($stmt = $db->prepare('SELECT b.biblio_id,b.author,b.book_name,b.translator,b.ref_name,b.seria,b.publisher,b.year,b.code,b.biblio_name,b.ISBN,b.present FROM  biblio b  WHERE biblio_id=? ORDER BY b.biblio_id ASC;')) {
+	if ($stmt = $db->prepare('SELECT b.biblio_id,b.author,b.book_name,b.translator,b.ref_name,b.seria,b.publisher,b.year,b.code,b.biblio_name,b.ISBN,b.present,b.iframe FROM  biblio b  WHERE biblio_id=? ORDER BY b.biblio_id ASC;')) {
 		if (!$stmt->bind_param('i', $biblioID)) {
 			throw new DBBindParamException($db, $stmt);
 		}
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
-		if (!$stmt->bind_result($biblio_id,$author,$book_name,$translator,$ref_name,$seria,$publisher,$year,$code,$biblio_name,$ISBN,$present)) {
+		if (!$stmt->bind_result($biblio_id, $author, $book_name, $translator, $ref_name, $seria, $publisher, $year, $code, $biblio_name, $ISBN, $present, $iframe)) {
 			throw new DBBindResultException($db, $stmt);
 		}
 		while ($stmt->fetch() === TRUE) {
-			$record = array($biblio_id,$author,$book_name,$translator,$ref_name,$seria,$publisher,$year,$code,$biblio_name,$ISBN,$present);
+			$record = array($biblio_id, $author, $book_name, $translator, $ref_name, $seria, $publisher, $year, $code, $biblio_name, $ISBN, $present, $iframe);
 		}
 		$stmt->free_result();
 		$stmt->close();
@@ -66,15 +66,15 @@ function getAllFromSources() {
 	$db = UserConfig::getDB();
 	$records = array();
 	$record = null;
-	if ($stmt = $db->prepare('SELECT b.biblio_id,b.author,b.book_name,b.translator,b.ref_name,b.seria,b.publisher,b.year,b.code,b.biblio_name,b.ISBN,b.present FROM  biblio b ORDER BY b.biblio_id ASC;')) {
+	if ($stmt = $db->prepare('SELECT b.biblio_id,b.author,b.book_name,b.translator,b.ref_name,b.seria,b.publisher,b.year,b.code,b.biblio_name,b.ISBN,b.present, b.iframe FROM  biblio b ORDER BY b.biblio_id ASC;')) {
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
-		if (!$stmt->bind_result($biblio_id,$author,$book_name,$translator,$ref_name,$seria,$publisher,$year,$code,$biblio_name,$ISBN,$present)) {
+		if (!$stmt->bind_result($biblio_id, $author, $book_name, $translator, $ref_name, $seria, $publisher, $year, $code, $biblio_name, $ISBN, $present, $iframe)) {
 			throw new DBBindResultException($db, $stmt);
 		}
 		while ($stmt->fetch() === TRUE) {
-			$record = array($biblio_id,$author,$book_name,$translator,$ref_name,$seria,$publisher,$year,$code,$biblio_name,$ISBN,$present);
+			$record = array($biblio_id, $author, $book_name, $translator, $ref_name, $seria, $publisher, $year, $code, $biblio_name, $ISBN, $present, $iframe);
 			array_push($records, $record);
 		}
 		$stmt->free_result();
@@ -98,10 +98,12 @@ function getAllFromSources() {
  * @param string  ISBN  can be empty
  * @param int in_antology if book is present in antology, can be 0, 1, 2, -1 required
  * @param string  biblio_name Полные выходные данные required
+ * @param string  iframe embeded link from google docs
  * @return inserted record id
  * @throws DBException
  */
-function sources_insert_record($author, $book_name, $translator, $ref_name, $seria, $publisher, $code, $year, $ISBN, $in_antology, $biblio_name) {
+function sources_insert_record($author, $book_name, $translator, $ref_name, $seria, $publisher, $code, $year, $ISBN, $in_antology, $biblio_name, $iframe)
+{
 	$db = UserConfig::getDB();
 	$author = (!empty($author)) ? $author : NULL;
 	$translator = (!empty($translator)) ? $translator : NULL;
@@ -110,10 +112,11 @@ function sources_insert_record($author, $book_name, $translator, $ref_name, $ser
 	$publisher = (!empty($publisher)) ? $publisher : NULL;
 	$code = (!empty($code)) ? $code : NULL;
 	$ISBN = (!empty($ISBN)) ? $ISBN : NULL;
+	$iframe = (!empty($iframe)) ? $iframe : NULL;
 	$r_id = NULL;
-	if ($stmt = $db->prepare('INSERT INTO `biblio` (`author`, `book_name`, `translator`, `ref_name`, `seria`, `publisher`, `code`, `year`, `ISBN`, `present`, `biblio_name`) 
-		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')) {
-		if (!$stmt->bind_param('sssssssisis', $author, $book_name, $translator, $ref_name, $seria, $publisher, $code, $year, $ISBN, $in_antology, $biblio_name)) {
+	if ($stmt = $db->prepare('INSERT INTO `biblio` (`author`, `book_name`, `translator`, `ref_name`, `seria`, `publisher`, `code`, `year`, `ISBN`, `present`, `biblio_name`, `iframe`) 
+		VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)')) {
+		if (!$stmt->bind_param('sssssssisiss', $author, $book_name, $translator, $ref_name, $seria, $publisher, $code, $year, $ISBN, $in_antology, $biblio_name, $iframe)) {
 			throw new DBBindParamException($db, $stmt);
 		}
 		if (!$stmt->execute()) {
@@ -129,8 +132,8 @@ function sources_insert_record($author, $book_name, $translator, $ref_name, $ser
 /**
  * update a record into table biblio identifyed by record ID
  *
-* @param biblio_id  record id
-* @param string  author Автор
+ * @param biblio_id  record id
+ * @param string  author Автор
  * @param string  book_name Название книги required
  * @param string  translator Составитель / переводчик  can be empty
  * @param string  ref_name Название ссылки в антологии required
@@ -141,10 +144,12 @@ function sources_insert_record($author, $book_name, $translator, $ref_name, $ser
  * @param string  ISBN  can be empty
  * @param int in_antology if book is present in antology, can be 0, 1, 2, -1 required
  * @param string  biblio_name Полные выходные данные required
+ * @param string  iframe embeded link from google docs
  * @return inserted record id
  * @throws DBException
  */
-function updateSourcesByID($biblio_id,$author,$book_name,$translator,$ref_name,$seria,$publisher,$year,$code,$biblio_name,$ISBN,$present) {
+function updateSourcesByID($biblio_id, $author, $book_name, $translator, $ref_name, $seria, $publisher, $year, $code, $biblio_name, $ISBN, $present, $iframe)
+{
 	$db = UserConfig::getDB();
 	$author = (!empty($author)) ? $author : NULL;
 	$translator = (!empty($translator)) ? $translator : NULL;
@@ -153,16 +158,18 @@ function updateSourcesByID($biblio_id,$author,$book_name,$translator,$ref_name,$
 	$publisher = (!empty($publisher)) ? $publisher : NULL;
 	$code = (!empty($code)) ? $code : NULL;
 	$ISBN = (!empty($ISBN)) ? $ISBN : NULL;
-#	$present = (!empty($present)) ? 0 : 1;
+	#	$present = (!empty($present)) ? 0 : 1;
+	$iframe = (!empty($iframe)) ? $iframe : NULL;
 	$r_id = NULL;
-/*	$sql = <<< SQL
+	/*	$sql = <<< SQL
 	'UPDATE `biblio` SET `author`=$author, `book_name`=$book_name, `translator`=$translator,
 	 `ref_name`=$ref_name, `seria`=$seria, `publisher`=$publisher, `code`=$code, `year`=$year, `ISBN`=$ISBN, 
 	 `present`=$present, `biblio_name`=$biblio_name WHERE `biblio_id`= $biblio_id'
 	SQL;
 	echo $sql; 
-*/	if ($stmt = $db->prepare('UPDATE `biblio` SET `author`=?, `book_name`=?, `translator`=?, `ref_name`=?, `seria`=?, `publisher`=?, `code`=?, `year`=?, `ISBN`=?, `present`=?, `biblio_name`=? WHERE `biblio_id`=?')) {
-		if (!$stmt->bind_param('sssssssisisi', $author, $book_name, $translator, $ref_name, $seria, $publisher, $code, $year, $ISBN, $present, $biblio_name, $biblio_id)) {
+*/
+	if ($stmt = $db->prepare('UPDATE `biblio` SET `author`=?, `book_name`=?, `translator`=?, `ref_name`=?, `seria`=?, `publisher`=?, `code`=?, `year`=?, `ISBN`=?, `present`=?, `biblio_name`=?, `iframe`=? WHERE `biblio_id`=?')) {
+		if (!$stmt->bind_param('sssssssisissi', $author, $book_name, $translator, $ref_name, $seria, $publisher, $code, $year, $ISBN, $present, $biblio_name, $iframe, $biblio_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
 		if (!$stmt->execute()) {
@@ -310,6 +317,7 @@ function getBiblioByID($biblioID) {
 		throw new DBPrepareStmtException($db);
 	}
 }
+
 /**
  * get record by biblio_id from table biblio
  *
@@ -339,7 +347,36 @@ function getFullBiblioByID($biblioID) {
 		throw new DBPrepareStmtException($db);
 	}
 }
-
+/**
+ * get iframe by biblio_id from table biblio
+ *
+ * @return array array of values
+ * @throws DBException
+ */
+function getBiblioIframeByID($biblioID)
+{
+	$db = UserConfig::getDB();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT b.iframe FROM  biblio b  WHERE biblio_id=?')) {
+		if (!$stmt->bind_param('i', $biblioID)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($iframe)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = $iframe;
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $record;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
 /**
  * get a list of all records from table authors
  *

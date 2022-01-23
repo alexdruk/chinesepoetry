@@ -51,12 +51,15 @@ if (array_key_exists('action', $_GET)) {
     }
     $template = $twig->load('biblio.html.twig');
 }
+
 elseif ($_GET['biblio_id']) {
     if ( ($_GET['biblio_id']) > 0) {
         $b_id = $_GET['biblio_id'];
         $template_info["header"] ='Литературный источник';
-        $records = getFullBiblioByID($b_id);       
-		$template_info["records"] = $records;
+        $records = getFullBiblioByID($b_id);
+        // print_r($records);
+        $template_info["records"] = $records;
+        $template_info["iframe"] = getBiblioIframeByID($b_id);
 		$template_info["biblio_id"] = $b_id;
         $template_info["show_alphabet"] = false;
         $template_info["special_message"] = false;
