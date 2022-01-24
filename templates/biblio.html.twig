@@ -73,11 +73,11 @@
             <a href="/poems.php?action=bySource&biblio_id={{ biblio_id }}" class="badge secondaryNavButton">< Bсе стихи из источника</a>
         </div>
         <div id="biblio_content_table" >
-            <ol>
+            <ul style="list-style-type:none;">
                 {% for record in records %}
-                {{ record }}
+                <li class="biblio">{{ record }}</li>
                 {% endfor %}
-            </ol>
+            </ul>
             {% if iframe %} 
                 <iframe src="https://docs.google.com/document/d/e/{{ iframe }}/pub?embedded=true"></iframe>
             {% endif %}
