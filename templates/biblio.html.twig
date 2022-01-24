@@ -75,7 +75,7 @@
         <div id="biblio_content_table" >
             <ol>
                 {% for record in records %}
-                <li class="biblio">{{ record }}</li>
+                {{ record }}
                 {% endfor %}
             </ol>
             {% if iframe %} 
