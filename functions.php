@@ -2255,6 +2255,44 @@ function getWithoutPoem_textFromPoemsByBiblioID($biblio_id) {
 	}
 }
 /**
+ * get a list of all records from table originals without text
+ * @param int biblio_id
+ * @return array array of records
+ * @throws DBException
+ */
+function getWithoutPoem_textFromOriginalsByBiblioID($biblio_id)
+{
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT o.originals_id, a.author_id, a.proper_name, a.dates, o.cycle_zh, o.cycle_ru, o.subcycle_zh, o.subcycle_ru, 
+	o.poem_code, o.biblio_id, o.poem_name_zh, o.poem_name_ru, a.epoch, b.zh_trad, b.zh_simple
+	FROM originals o
+	INNER JOIN authors a ON a.author_id = o.author_id 
+	INNER JOIN  authors_atrib b ON b.author_id = a.author_id 
+	WHERE o.biblio_id =?
+	ORDER BY a.proper_name, o.originals_id ASC;')) {
+		if (!$stmt->bind_param('i', $biblio_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($originals_id, $author_id, $proper_name, $dates, $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $poem_code, $biblio_id, $poem_name_zh, $poem_name_ru, $epoch, $zh_trad, $zh_simple)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($originals_id, $author_id, $proper_name, $dates, $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $poem_code, $biblio_id, $poem_name_zh, $poem_name_ru, $epoch, $zh_trad, $zh_simple);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
  * get a list of all news from table news without fulltext
  *
  * @return array array of records
@@ -2842,4 +2880,55 @@ function makeFinalArraybyTopicSearch ($records) {
         array_push($final, array('author' => $author, 'poems' => $poems));
     }
     return $final;
+}
+function makeOrigFinalArray($records)
+{
+	$new_arr = array();
+	$arrAuthors = array();
+	$final = array();
+	for ($i = 0; $i < count($records); $i++) {
+		$author_id = $records[$i][1];
+		$proper_name = $records[$i][2];
+		$dates = $records[$i][3];
+		$epoch = $records[$i][12];
+		$zname = '';
+		if ($records[$i][13]) {
+			$zname = '&nbsp;<span class="name zh">' . $records[$i][13] . '</span>';
+		} else if ($records[$i][14]) {
+			$zname = '&nbsp;<span class="name zh">' . $records[$i][14] . '</span>';
+		}
+		$author = '<span class="author name">' . $proper_name . '</span> <span class="author dates">' . $dates . '</span>#' . $author_id . '#' . $epoch . '#' . $zname;
+		#        $cycle = '<span class="cycle zh">'.$records[$i][4].'</span> <span class="cycle ru">'.$records[$i][5].'</span>';
+		array_push($arrAuthors, $author);
+		if (array_key_exists($author, $new_arr)) {
+			array_push($new_arr[$author],  $records[$i]);
+		} else {
+			$new_arr[$author] = array($records[$i]);
+		}
+	}
+	$arrAuthors = array_unique($arrAuthors);
+	foreach ($arrAuthors as  $author) {
+		$cycles = array();
+		$poems = array();
+		for ($i = 0; $i < count($new_arr[$author]); $i++) {
+			$poem = $new_arr[$author][$i];
+			$cycle = '<span class="cycle zh"><a href="/cycles.php?cycle_zh=' . urlencode($poem[4]) . '">' . $poem[4] . '</a></span> <span class="cycle ru">' . $poem[5] . '</span>';
+			$subcycle = '<span class="subcycle zh"><a href="/cycles.php?subcycle_zh=' . urlencode($poem[6]) . '">' . $poem[6] . '</a></span> <span class="subcycle ru">' . $poem[7] . '</span>';
+			if ($cycle == '<span class="cycle zh"></span> <span class="cycle ru"></span>') {
+				$cycle = 'default' . $i;
+			}
+			if ($subcycle == '<span class="subcycle zh"></span> <span class="subcycle ru"></span>') {
+				$subcycle = 'default' . $i;
+			}
+			if (!array_key_exists($cycle, $poems)) {
+				$poems[$cycle] = array();
+			}
+			if (!array_key_exists($subcycle, $poems[$cycle])) {
+				$poems[$cycle][$subcycle] = array();
+			}
+			array_push($poems[$cycle][$subcycle], $poem);
+		}
+		array_push($final, array('author' => $author, 'poems' => $poems));
+	}
+	return $final;
 }

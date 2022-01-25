@@ -83,21 +83,30 @@ elseif ($_GET['action'] == 'byTopic') {
 elseif  ( ($_GET['action'] == 'bySource') && (array_key_exists('biblio_id', $_GET))  ){
     $biblio_id = $_GET['biblio_id'];
     $records = getWithoutPoem_textFromPoemsByBiblioID($biblio_id);
-    $recordsForAuthor = array();
-    foreach ($records as $record) {
-//        if ($record[1] == $author_id) {
-            array_push($recordsForAuthor, $record);
-//        }
-    }
-#print_r($recordsForAuthor);
-    $final = makeFinalArray ($recordsForAuthor);
-#    print_r($final);
     $template_info["header"] = 'Из источника';
     $template_info["byAuthor"] = true;
     $template_info["byTranslator"] = false;
-    $template_info["final"] = $final;
-    $template_info["title"] ='Все стихи из источника';
-    $template = $twig->load('at_list.html.twig');
+    $template_info["title"] = 'Все стихи из источника';
+    if (!empty($records)) {
+        $recordsForAuthor = array();
+        foreach ($records as $record) {
+            //        if ($record[1] == $author_id) {
+            array_push($recordsForAuthor, $record);
+            //        }
+        }
+        #print_r($recordsForAuthor);
+        $final = makeFinalArray($recordsForAuthor);
+        #    print_r($final);
+        $template_info["final"] = $final;
+        $template = $twig->load('at_list.html.twig');
+    } else {
+        $records = getWithoutPoem_textFromOriginalsByBiblioID($biblio_id);
+        $final = makeOrigFinalArray($records);
+        #    print_r($final);
+        $template_info["final"] = $final;
+        $template_info["showall"] = true;
+        $template = $twig->load('originals_list.html.twig');
+    }
 }
 elseif ($_GET['action'] == 'showrandom') {
     $poem_id = getRandomPoemID();
