@@ -2778,16 +2778,31 @@ function makeFinaTranslatorslArray ($records) {
         }    
     }
     $arrTranslators = array_unique($arrTranslators);
-    foreach ($arrTranslators as  $translator) {
+	$unsorted = array();
+	// print_r($arrTranslators);
+	foreach ($arrTranslators as  $translator) {
         preg_match('/id=\d+">(.+?)<\/a>/',$translator,$match);
-        $unsorted[$match[1]] = $translator;
-    }
-    ksort($unsorted);
+		$pos = strpos($translator, ',');
+		// to avoid case when 2 translators hide one translator. See: poems.php?action=show&author_id=7 for Орлова Н.А. and Орлова Н.А., Кобзев А.И.
+		if ($pos === false) {
+			$unsorted[$match[1]] = $translator;
+		} else {
+			$unsorted[$match[1] . 'a'] = $translator;
+		}
+		// echo '<br>';
+		// echo $translator;
+		// echo '<br>';
+	}
+	// echo '<br>before ksort<br>';
+	// print_r($unsorted);
+	ksort($unsorted);
+	// echo '<br>after ksort<br>';
+	// print_r($unsorted);
     $sorted = [];
     foreach ($unsorted as  $translator) {
         array_push($sorted, $translator);
     }
-//print_r($sorted);
+	print_r($sorted);
     foreach ($sorted as  $translator) {
         $cycles = array();
         $poems = array();
