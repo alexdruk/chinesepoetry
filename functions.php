@@ -2802,7 +2802,7 @@ function makeFinaTranslatorslArray ($records) {
     foreach ($unsorted as  $translator) {
         array_push($sorted, $translator);
     }
-	print_r($sorted);
+	// print_r($sorted);
     foreach ($sorted as  $translator) {
         $cycles = array();
         $poems = array();
