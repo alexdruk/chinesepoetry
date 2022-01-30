@@ -2,6 +2,9 @@
 require_once dirname(__DIR__).'/globals.php';
 $template_info["ERROR"] = $ERROR;
 $template_info["title"] ='Стихи';
+$template_info["page_description"] = 'Антология современной и старинной китайской поэзии. Свыше 3000 стихов 429 авторов от VI в. до н.э. вплоть до наших дней в лучших переводах.';
+$template_info["error"] = false;
+$template_info["success"] = false;
 if (array_key_exists('action', $_GET)) { 
     $records = array();
     if ($_GET['action'] == 'insert') {
@@ -265,8 +268,29 @@ if (array_key_exists('action', $_GET)) {
     }
     $template = $twig->load('poem_modify_form.html.twig');
 }
-
-//    $template = $twig->load('admin_authors.html.twig');
+    if ($_GET['action'] == 'search') {
+        $template_info["header"] = 'Полнотекстный поиск по переводам стихов и автору';
+        if (array_key_exists('posted', $_GET)) {
+            $template_info["search"] = false;
+            $template_info["byAuthor"] = true;
+            $pattern = $_POST['pattern'];
+            $author_id = $_POST['authorID'];
+            $records = searchPoemsWithAuthorID($author_id, $pattern);
+            if (count($records) < 1) {
+                $template_info["header"] = 'Ничего не найдено';
+            }
+            $final = array();
+            $final = makeFinalArraybyTopicSearch($records);
+            #print_r($final);
+            $template_info["final"] = $final;
+            $template_info["title"] = 'Полнотекстный поиск по переводам стихов';
+        } else {
+            $template_info["search"] = true;
+            $template_info["byAuthor"] = false;
+            $template_info["authorID"] = true;
+        }
+        $template = $twig->load('admin_at_list.html.twig');
+    }
 }
 else {
 	$template_info["content"] ='Requested page does not exist. Contact site admin. ';

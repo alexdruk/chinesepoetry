@@ -1222,3 +1222,4 @@ ALTER TABLE originals add column scorder int default null after subcycle_ru;
 delete from selectedpoems where poems_id=0;
 
 alter table poetry.biblio add column iframe varchar(200) default null;
+CREATE FULLTEXT INDEX poem_text_ft_ind ON poems (poem_name_ru,poem_text);

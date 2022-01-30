@@ -1,0 +1,65 @@
+{% extends 'page.html.twig' %} {% block content %} 
+{% if success %}
+<div class="alert alert-success" role="alert">
+  {{ success }}
+</div>
+{% endif %} 
+{% if error %}
+<div class="alert alert-danger" role="alert">
+  {{ error }}
+</div>
+{% endif %} 
+<div class="jumbotron" id="originals_jumbotron">
+    <div class="row">
+        <div class="col-10 mx-auto">
+{% if byAuthor %}
+<h4 class="author header" id="author_header">{{ header|raw }}</h4>
+<p>&nbsp;</p>
+<div id="authors_content_table">
+<ol>
+    {% for fin in final %}
+    <li class="poems authors list"><h4>{{ fin.author|replace({'./a': "../a"})|raw }}</h4></li>
+        <ul>
+            {% for cycle in fin.poems|keys %}
+                {% if not (cycle starts with  'default') %}                        
+                    <li class="cycle">{{ cycle|raw }}<ul>
+                {% endif %}
+                {% for subcycle in fin.poems[cycle]|keys %}
+                    {% if not (subcycle starts with  'default') %}                        
+                        <li  class="subcycle">{{ subcycle|raw }}<ul>
+                    {% endif %}
+                        {% for poem in fin.poems[cycle][subcycle] %}
+                        <li class="poem_name"><a href="../poems.php?action=show&poem_id={{ poem[0] }}">
+                            <span class="poem_name zh">{{ poem[13]|raw }}</span> <span class="poem_name ru">{{ poem[14]|raw }}</span></a></li>
+                        {% endfor %}
+                                    
+                    {% if not (subcycle starts with  'default') %}                        
+                        </ul></li>
+                    {% endif %}
+                {% endfor %}
+                {% if not (cycle starts with  'default') %}                        
+                    </ul></li>
+                {% endif %}
+          {% endfor %}
+        </ul></li>
+    {% endfor %}
+</ol>
+</div>
+{% elseif search %}
+            <form action="./admin_poems.php?action=search&posted=1" method="POST">
+                <div class="form-group">
+                    <label for="inputAuthorID">Введите id автора</label>
+                    <input type="text" name="authorID" id="inputAuthorID" maxlength="3" size="3" required>
+                </div>
+                <div class="form-group">
+                    <label for="inputPattern">Введите слово или словосочитание для поиска (не менее 5 знаков)</label>
+                    <input type="text" class="form-control" name="pattern" id="inputPattern" placeholder="Не толкай ты большую телегу" required minlength="5">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+
+{% endif %}
+</div>
+</div>
+</div>
+{% endblock %}

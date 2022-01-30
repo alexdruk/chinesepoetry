@@ -1853,6 +1853,77 @@ function searchPoems($pattern) {
 	return $records;
 }
 /**
+ * search table poems for a pattern
+ *
+ * @param string pattern
+ * @return array array of records
+ * @throws DBException
+ */
+function searchPoemsWithAuthorID($author_id, $pattern)
+{
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	$pattern = mysqli_real_escape_string($db, $pattern);
+	$val = str_replace("%", "", $pattern);
+	$val = str_replace("_", "", $val);
+	$like = '%' . $val . '%';
+	$sql = "SELECT `poems_id`,`author_id`,`translator1_id`,`translator2_id`,
+	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,
+	`subcycle_ru`,`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id`,`poem_text`,`poem_hash`
+	 FROM poems a WHERE `author_id` = ? AND MATCH ( poem_name_ru,poem_text) against ('$pattern' IN NATURAL LANGUAGE MODE)
+	UNION DISTINCT 
+	SELECT `poems_id`,`author_id`,`translator1_id`,`translator2_id`,
+	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,
+	`subcycle_ru`,`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id`,`poem_text`,`poem_hash` 
+	FROM poems WHERE `author_id` = ? AND poem_text LIKE '$like'";
+	//print_r ($sql);
+	if ($stmt = $db->prepare($sql)) {
+		if (!$stmt->bind_param('ii', $author_id, $author_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result(
+			$poems_id,
+			$author_id,
+			$translator1_id,
+			$translator2_id,
+			$topic1_id,
+			$topic2_id,
+			$topic3_id,
+			$topic4_id,
+			$topic5_id,
+			$cycle_zh,
+			$cycle_ru,
+			$subcycle_zh,
+			$subcycle_ru,
+			$poem_name_zh,
+			$poem_name_ru,
+			$poem_code,
+			$biblio_id,
+			$poem_text,
+			$poems_hash
+		)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array(
+				$poems_id, $author_id, $translator1_id, $translator2_id,
+				$topic1_id, $topic2_id, $topic3_id, $topic4_id, $topic5_id, $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru,
+				$poem_name_zh, $poem_name_ru, $poem_code, $biblio_id, $poem_text, $poems_hash
+			);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $records;
+}
+/**
  * search table originals for a pattern
  *
  * @param string pattern
