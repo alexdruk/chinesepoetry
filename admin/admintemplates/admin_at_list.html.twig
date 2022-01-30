@@ -18,7 +18,7 @@
 <div id="authors_content_table">
 <ol>
     {% for fin in final %}
-    <li class="poems authors list"><h4>{{ fin.author|replace({'./a': "../a"})|raw }}</h4></li>
+    <li class="poems authors list"><h4>{{ fin.author|replace({'./a': "/a"})|raw }}</h4></li>
         <ul>
             {% for cycle in fin.poems|keys %}
                 {% if not (cycle starts with  'default') %}                        
@@ -29,7 +29,7 @@
                         <li  class="subcycle">{{ subcycle|raw }}<ul>
                     {% endif %}
                         {% for poem in fin.poems[cycle][subcycle] %}
-                        <li class="poem_name"><a href="../poems.php?action=show&poem_id={{ poem[0] }}">
+                        <li class="poem_name"><a href="/poems.php?action=show&poem_id={{ poem[0] }}">
                             <span class="poem_name zh">{{ poem[13]|raw }}</span> <span class="poem_name ru">{{ poem[14]|raw }}</span></a></li>
                         {% endfor %}
                                     
@@ -52,8 +52,8 @@
                     <input type="text" name="authorID" id="inputAuthorID" maxlength="3" size="3" required>
                 </div>
                 <div class="form-group">
-                    <label for="inputPattern">Введите слово или словосочитание для поиска (не менее 5 знаков)</label>
-                    <input type="text" class="form-control" name="pattern" id="inputPattern" placeholder="Не толкай ты большую телегу" required minlength="5">
+                    <label for="inputPattern">Введите слово или словосочитание для поиска (не менее 3 знаков)</label>
+                    <input type="text" class="form-control" name="pattern" id="inputPattern" placeholder="Не толкай ты большую телегу" required minlength="3">
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>
             </form>
