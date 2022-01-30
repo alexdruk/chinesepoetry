@@ -1,4 +1,5 @@
 {% extends 'page.html.twig' %} {% block content %} 
+<!-- you cannot use this page locally because links are absolute -->
 {% if success %}
 <div class="alert alert-success" role="alert">
   {{ success }}
@@ -18,7 +19,7 @@
 <div id="authors_content_table">
 <ol>
     {% for fin in final %}
-    <li class="poems authors list"><h4>{{ fin.author|replace({'./a': "/a"})|raw }}</h4></li>
+    <li class="poems authors list"><h4>{{ fin.author|replace({'./a': 'https://chinese-poetry.ru/a'})|raw }}</h4></li>
         <ul>
             {% for cycle in fin.poems|keys %}
                 {% if not (cycle starts with  'default') %}                        
@@ -29,7 +30,7 @@
                         <li  class="subcycle">{{ subcycle|raw }}<ul>
                     {% endif %}
                         {% for poem in fin.poems[cycle][subcycle] %}
-                        <li class="poem_name"><a href="/poems.php?action=show&poem_id={{ poem[0] }}">
+                        <li class="poem_name"><a href="https://chinese-poetry.ru/poems.php?action=show&poem_id={{ poem[0] }}">
                             <span class="poem_name zh">{{ poem[13]|raw }}</span> <span class="poem_name ru">{{ poem[14]|raw }}</span></a></li>
                         {% endfor %}
                                     
