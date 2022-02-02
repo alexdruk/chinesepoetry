@@ -164,6 +164,30 @@ if (array_key_exists('action', $_GET)) {
 		}
 		$template = $twig->load('sources_modify_form.html.twig');
 	}
+	if ($_GET['action'] == 'addbiblio') {
+		if ((array_key_exists('posted', $_GET))  && (!empty($_POST))) {
+			$error = false;
+			$success = false;
+			$poems_id = $_POST['poems_id'];
+			$main_biblio_id = $_POST['main_biblio_id'];
+			$other_biblio_id = $_POST['other_biblio_id'];
+			$r_id = insert_other_biblio_id($poems_id, $main_biblio_id, $other_biblio_id);
+			if ($r_id > 0) {
+				$success = 'Success! A new record was created id=' . $r_id;
+			} else {
+				$error = 'An error occur! See DB log files.';
+			}
+			$already = getOther_biblio_ids($poems_id, $main_biblio_id);
+			$template_info["already"] = $already;
+			$template_info["error"] = $error;
+			$template_info["success"] = $success;
+		} else {
+			$template_info["error"] = false;
+			$template_info["success"] = false;
+			$template_info["already"] = false;
+		}
+		$template = $twig->load('add_other_biblio.html.twig');
+	}
 }
 else {
 	$template_info["content"] ='Requested page does not exist. Contact site admin. ';

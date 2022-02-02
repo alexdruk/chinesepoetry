@@ -290,10 +290,26 @@ elseif ( ($_GET['action'] == 'show')  && ($_GET['poem_id'] > 0) ){
     $template_info["fromcycle"] = $fromcycle;
     $template_info["subcycle"] = $subcycle;
     $template_info["biblio"] = false;
+    $template_info["pub_array"] = false;
     if ($biblio_id) {
         list($biblio_ref_name) = getBiblioByID($biblio_id);
         $biblio = array($biblio_ref_name, $biblio_id);
         $template_info["biblio"] = $biblio;
+        $otherpublications = getOther_biblio_ids($poems_id, $biblio_id);
+        if ($otherpublications) {
+            $otherpublicationsIDs = array();
+            foreach ($otherpublications as $publication) {
+                array_push($otherpublicationsIDs, $publication[2]);
+            }
+            $pub_array = array();
+            foreach ($otherpublicationsIDs as $key => $value) {
+                list($add_biblio_ref_name) = getBiblioByID($value);
+                $additional_biblio = array($add_biblio_ref_name, $value);
+                array_push($pub_array, $additional_biblio);
+            }
+            #        asort($pub_array);
+            $template_info["pub_array"] = $pub_array;
+        }
     }
     $template_info["title"] = $template_info["title"].' | '.$poem_name_ru;
     $transl = strip_tags($translator);

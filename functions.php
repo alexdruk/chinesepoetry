@@ -3018,3 +3018,67 @@ function makeOrigFinalArray($records)
 	}
 	return $final;
 }
+/**
+ * insert a new records into table otherbiblio
+ *
+ * @param int  poems_id
+ * @param int  main_biblio_id
+ * @param int  other_biblio_id
+ * @return inserted record id
+ * @throws DBException
+ */
+function insert_other_biblio_id($poems_id, $main_biblio_id, $other_biblio_id)
+{
+	$db = UserConfig::getDB();
+	$r_id = NULL;
+	if ($stmt = $db->prepare('INSERT INTO otherbiblio (poems_id, main_biblio_id, other_biblio_id) 
+		VALUES (?, ?, ?)')) {
+		if (!$stmt->bind_param('iii', $poems_id, $main_biblio_id, $other_biblio_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		$r_id = $stmt->insert_id;
+		$stmt->close();
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+	return $r_id;
+}
+/**
+ * select other_biblio_ids from  table otherbiblio by $poems_id, $main_biblio_id
+ *
+ * @param int  poems_id
+ * @param int  main_biblio_id
+ * @param int  other_biblio_id
+ * @return inserted record id
+ * @throws DBException
+ */
+function getOther_biblio_ids($poems_id, $main_biblio_id)
+{
+	$db = UserConfig::getDB();
+	$record = null;
+	$records = array();
+	if ($stmt = $db->prepare('SELECT poems_id, main_biblio_id, other_biblio_id FROM  otherbiblio   WHERE poems_id=? AND main_biblio_id=? ORDER BY id ASC;')) {
+		if (!$stmt->bind_param('ii', $poems_id, $main_biblio_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($poems_id, $main_biblio_id, $other_biblio_id)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($poems_id, $main_biblio_id, $other_biblio_id);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+

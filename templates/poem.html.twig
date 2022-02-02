@@ -132,13 +132,30 @@
   {% endif %}
  {% if biblio %}
   <div class="d-flex align-items-end">
-    <cite title="{{ biblio[0] | raw }}"
-      ><a href="./biblio.php?biblio_id={{ biblio[1] }}" id="biblio_poems"
-        >Источник: {{ biblio[0] }}</a
-      ></cite
-    >
+    <cite title="{{ biblio[0] | raw }}"><a href="./biblio.php?biblio_id={{ biblio[1] }}" id="biblio_poems"
+        >Источник: {{ biblio[0] }}</a></cite>
+
   </div>
-  {% endif %} {% if siteURL %}
+  {% endif %}
+  {% if pub_array %}
+    <script>
+      function showHide(id) {
+        var x = document.getElementById(id);;
+        if ((x.style.display === "none")||(x.style.display === "")) {
+          x.style.display = "block";
+        } else {
+          x.style.display = "none";
+        }
+    }
+    </script>
+      <button type="button" class="btn  btn btn-link btn-sm" onclick="showHide('otherpublications')"style="margin:10px;">Другие публикации</button>
+      <ol id="otherpublications" style="display:none">
+        {% for rec in pub_array %}
+        <li><cite title="{{ rec[0] | raw }}"><a href="./biblio.php?biblio_id={{ rec[1] }}">{{ rec[0] }}</a></cite></li>
+        {% endfor %}
+      </ol>
+  {% endif %} 
+  {% if siteURL %}
   <div class="d-flex align-items-end">
     <cite
       ><a href="{{ siteURL }}" id="biblio_poems">Источник: {{ site }}</a></cite

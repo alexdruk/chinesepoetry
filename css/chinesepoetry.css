@@ -349,10 +349,13 @@ span.author.name {
 #inputPoemSearch {
   border: 1px solid black;
 }
-#biblio_poems {
+#biblio_poems, #otherpublications{
   margin-left: 10px;
-  font-size: 85%;
+  font-size: 95%;
   font-style: italic;
+
+}
+#biblio_poems {
   color: #6c757d;
 }
 .chrono.desc {
@@ -426,7 +429,7 @@ cite,
 cite a,
 #biblio_poems {
   margin-left: 10px;
-  font-size: 85%;
+  font-size: 95%;
   font-style: italic;
   color: #6c757d;
 }
