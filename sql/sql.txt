@@ -1223,3 +1223,17 @@ delete from selectedpoems where poems_id=0;
 
 alter table poetry.biblio add column iframe varchar(200) default null;
 CREATE FULLTEXT INDEX poem_text_ft_ind ON poems (poem_name_ru,poem_text);
+
+CREATE TABLE `otherbiblio` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `poems_id` int(11) NOT NULL,
+  `main_biblio_id` int(11) NOT NULL,
+  `other_biblio_id` int(11) NOT NULL,
+  `page`  int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `poems_id` (`poems_id`,`main_biblio_id`,`other_biblio_id`, `page`),
+  KEY `main_biblio_ind` (`main_biblio_id`),
+  KEY `poems_id_ind` (`poems_id`),
+  FOREIGN KEY (poems_id) REFERENCES poems(poems_id)
+) ENGINE=MyISAM AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
+
