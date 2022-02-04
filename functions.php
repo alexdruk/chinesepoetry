@@ -1733,9 +1733,9 @@ function poems_insert_record($author_id,$translator1_id,$translator2_id,
 	$db = UserConfig::getDB();
 	$r_id = NULL;
 	if ($stmt = $db->prepare(
-	'INSERT INTO poems (author_id,translator1_id,translator2_id,
+		'INSERT INTO poems (author_id,translator1_id,translator2_id,
 	topic1_id,topic2_id,topic3_id,topic4_id,topic5_id,cycle_zh,cycle_ru,corder,subcycle_zh,subcycle_ru,scorder,
-	poem_name_zh,poem_name_ru,poem_code,biblio_id,poem_text,poem_hash,totallines,fulllines,genres,site,siteURL) 
+	poem_name_zh,poem_name_ru,poem_code,biblio_id,`page`,poem_text,poem_hash,totallines,fulllines,genres,site,siteURL) 
 		VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')) {
 		if (!$stmt->bind_param(
 			'iiiiiiiissississsiissiisss',
