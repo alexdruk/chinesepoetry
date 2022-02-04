@@ -17,7 +17,7 @@
    <p>Уже введены для poems_id - {{ already[0][0] }} main_biblio_id - {{ already[0][1] }}: </p>
 
      {% for rec in already %}
-     {{ rec[2] }}, 
+     {{ rec[2] }} - {{ rec[3] }}, 
      {% endfor %}
 
     <p>&nbsp;</p>
@@ -36,6 +36,10 @@
         <div class="col-auto">
             <label for="inputother-bibli_id">Добавочный biblio_ID</label>
             <input type="text" class="form-control" name="other_biblio_id" id="inputother-bibli_id" required>
+        </div>
+        <div class="col-auto">
+            <label for="inputpage">Страница</label>
+            <input type="text" class="form-control" name="page" id="inputpage" required>
         </div>
     </div>
   <button type="submit" class="btn btn-primary">Submit</button>

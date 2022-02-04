@@ -293,21 +293,33 @@ elseif ( ($_GET['action'] == 'show')  && ($_GET['poem_id'] > 0) ){
     $template_info["pub_array"] = false;
     if ($biblio_id) {
         list($biblio_ref_name) = getBiblioByID($biblio_id);
-        $biblio = array($biblio_ref_name, $biblio_id);
+        $page_id = getPageNumberByPoemsID($poem_id);
+        // bouth arrays are identical, but first one has additional [2] element - page number
+        if ($page_id) {
+            $biblio = array(0 => $biblio_ref_name, 1 => $biblio_id, 2 => $page_id);
+            $template_info["biblio_page"] = true;
+        } else {
+            $biblio = array($biblio_ref_name, $biblio_id);
+            $template_info["biblio_page"] = false;
+        }
+        // print_r($biblio);
         $template_info["biblio"] = $biblio;
         $otherpublications = getOther_biblio_ids($poems_id, $biblio_id);
         if ($otherpublications) {
+            // print_r($otherpublications);
             $otherpublicationsIDs = array();
+            $otherpublicationsPages = array();
             foreach ($otherpublications as $publication) {
                 array_push($otherpublicationsIDs, $publication[2]);
+                array_push($otherpublicationsPages, $publication[3]);
             }
             $pub_array = array();
-            foreach ($otherpublicationsIDs as $key => $value) {
-                list($add_biblio_ref_name) = getBiblioByID($value);
-                $additional_biblio = array($add_biblio_ref_name, $value);
-                array_push($pub_array, $additional_biblio);
+            for ($i = 0; $i < count($otherpublicationsIDs); $i++) {
+                $add_biblio_ref_name = getBiblioByID($otherpublicationsIDs[$i])[0];
+                $page = $otherpublicationsPages[$i];
+                // echo $add_biblio_ref_name, ' ', $page, '<br>';
+                $pub_array[$i] = array(0 => $add_biblio_ref_name, 1 => $page, 2 => $otherpublicationsIDs[$i]);
             }
-            #        asort($pub_array);
             $template_info["pub_array"] = $pub_array;
         }
     }

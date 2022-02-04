@@ -114,6 +114,7 @@ elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
     $template_info["countIP"] = false;
     $template_info["poems_id"] = $originals_id;
     $template_info["pub_array"] = false;
+    $template_info["biblio_page"] = false;
 
     $template = $twig->load('poem.html.twig');
 }

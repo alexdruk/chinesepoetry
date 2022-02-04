@@ -37,6 +37,7 @@ if (array_key_exists('action', $_GET)) {
             $poem_name_ru = $_POST['poem_name_ru']; 
             $poem_code = $_POST['poem_code']; 
             $biblio_id = $_POST['biblio_id']; 
+            $page = $_POST['page']; 
             $poem_text = $_POST['poem_text'];
             $totallines  = $_POST['totallines'];
             $fulllines  = $_POST['fulllines'];
@@ -85,6 +86,9 @@ if (array_key_exists('action', $_GET)) {
             if (array_key_exists('biblio_id', $_POST)) {
                 $biblio_id = (!empty($_POST['biblio_id'])) ? $_POST['biblio_id'] : NULL;
             }
+            if (array_key_exists('page', $_POST)) {
+                $page = (!empty($_POST['page'])) ? $_POST['page'] : NULL;
+            }
             if (array_key_exists('totallines', $_POST)) {
                 $totallines = (!empty($_POST['totallines'])) ? $_POST['totallines'] : NULL;
             }
@@ -103,7 +107,7 @@ if (array_key_exists('action', $_GET)) {
             $poem_hash = md5($poem_text);
 			$r_id = poems_insert_record($author_id,$translator1_id,$translator2_id,
 			$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$corder,$subcycle_zh,$subcycle_ru,$scorder,
-			$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$poem_hash,$totallines,$fulllines,$genres,$site,$siteURL);
+			$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$page,$poem_text,$poem_hash,$totallines,$fulllines,$genres,$site,$siteURL);
 			if ($r_id > 0) {
 				$success = 'Success! A new record was created id='.$r_id;
 			}
@@ -168,6 +172,9 @@ if (array_key_exists('action', $_GET)) {
             if (array_key_exists('biblio_id', $_POST)) {
                 $biblio_id = (!empty($_POST['biblio_id'])) ? $_POST['biblio_id'] : NULL;
             }
+            if (array_key_exists('page', $_POST)) {
+                $page = (!empty($_POST['page'])) ? $_POST['page'] : NULL;
+            }
             if (array_key_exists('totallines', $_POST)) {
                 $totallines = (!empty($_POST['totallines'])) ? $_POST['totallines'] : NULL;
             }
@@ -202,6 +209,7 @@ if (array_key_exists('action', $_GET)) {
             $template_info["poem_name_ru"] = $poem_name_ru;
             $template_info["poem_code"] = $poem_code;
             $template_info["biblio_id"] = $biblio_id;
+            $template_info["page"] = $page;
             $template_info["poem_text"] = $poem_text;
             $template_info["totallines"] = $totallines;
             $template_info["fulllines"] = $fulllines;
@@ -210,7 +218,7 @@ if (array_key_exists('action', $_GET)) {
             $template_info["siteURL"] = $siteURL;
           $r_id = updatePoemsByID($poems_id,$author_id,$translator1_id,$translator2_id,
           $topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$corder,$subcycle_zh,$subcycle_ru,$scorder,
-          $poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$totallines,$fulllines,$genres,$site,$siteURL);
+          $poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$page,$poem_text,$totallines,$fulllines,$genres,$site,$siteURL);
             if ($r_id > 0) {
                 $success = 'Success! A record was updated.';
                 $error = false;
@@ -229,7 +237,7 @@ if (array_key_exists('action', $_GET)) {
             $record = getByIDFromPoems($_GET['record_id']);
             list($author_id,$translator1_id,$translator2_id,
 			$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$corder,$subcycle_zh,$subcycle_ru,$scorder,
-			$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$totallines,$fulllines,$genres,$site, $siteURL) = $record;
+			$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$page,$poem_text,$totallines,$fulllines,$genres,$site, $siteURL) = $record;
             $template_info["record_id"] = $_GET['record_id'];
             $template_info["author_id"] = $author_id;
             $template_info["translator1_id"] = $translator1_id;
@@ -249,6 +257,7 @@ if (array_key_exists('action', $_GET)) {
             $template_info["poem_name_ru"] = $poem_name_ru;
             $template_info["poem_code"] = $poem_code;
             $template_info["biblio_id"] = $biblio_id;
+            $template_info["page"] = $page;
             $template_info["poem_text"] = $poem_text;
             $template_info["totallines"] = $totallines;
             $template_info["fulllines"] = $fulllines;

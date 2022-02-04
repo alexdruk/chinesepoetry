@@ -171,13 +171,14 @@ if (array_key_exists('action', $_GET)) {
 			$poems_id = $_POST['poems_id'];
 			$main_biblio_id = $_POST['main_biblio_id'];
 			$other_biblio_id = $_POST['other_biblio_id'];
-			$r_id = insert_other_biblio_id($poems_id, $main_biblio_id, $other_biblio_id);
+			$page = $_POST['page'];
+			$r_id = insert_other_biblio_id($poems_id, $main_biblio_id, $other_biblio_id, $page);
 			if ($r_id > 0) {
 				$success = 'Success! A new record was created id=' . $r_id;
 			} else {
 				$error = 'An error occur! See DB log files.';
 			}
-			$already = getOther_biblio_ids($poems_id, $main_biblio_id);
+			$already = getOther_biblio_ids($poems_id, $main_biblio_id, $page);
 			$template_info["already"] = $already;
 			$template_info["error"] = $error;
 			$template_info["success"] = $success;

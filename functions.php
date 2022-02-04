@@ -317,6 +317,36 @@ function getBiblioByID($biblioID) {
 		throw new DBPrepareStmtException($db);
 	}
 }
+/**
+ * get page number from poems by poems_id
+ *
+ * @return int page number or null 
+ * @throws DBException
+ */
+function getPageNumberByPoemsID($poems_id)
+{
+	$db = UserConfig::getDB();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT `page` FROM  poems  WHERE poems_id=?')) {
+		if (!$stmt->bind_param('i', $poems_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($page)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = $page;
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $record;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
 
 /**
  * get record by biblio_id from table biblio
@@ -1687,16 +1717,45 @@ function updateTopicDescByID($topic_id, $topic_desc) {
  */
 function poems_insert_record($author_id,$translator1_id,$translator2_id,
 	$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$corder,$subcycle_zh,$subcycle_ru,$scorder,
-	$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$poem_hash,$totallines,$fulllines,$genres,$site,$siteURL) {
+	$poem_name_zh,
+	$poem_name_ru,
+	$poem_code,
+	$biblio_id,
+	$page,
+	$poem_text,
+	$poem_hash,
+	$totallines,
+	$fulllines,
+	$genres,
+	$site,
+	$siteURL
+) {
 	$db = UserConfig::getDB();
 	$r_id = NULL;
-	if ($stmt = $db->prepare('INSERT INTO poems (author_id,translator1_id,translator2_id,
+	if ($stmt = $db->prepare(
+	'INSERT INTO poems (author_id,translator1_id,translator2_id,
 	topic1_id,topic2_id,topic3_id,topic4_id,topic5_id,cycle_zh,cycle_ru,corder,subcycle_zh,subcycle_ru,scorder,
 	poem_name_zh,poem_name_ru,poem_code,biblio_id,poem_text,poem_hash,totallines,fulllines,genres,site,siteURL) 
-		VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')) {
-		if (!$stmt->bind_param('iiiiiiiissississsissiisss', $author_id,$translator1_id,$translator2_id,
+		VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)')) {
+		if (!$stmt->bind_param(
+			'iiiiiiiissississsiissiisss',
+			$author_id,
+			$translator1_id,
+			$translator2_id,
 		$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$corder,$subcycle_zh,$subcycle_ru,$scorder,
-		$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$poem_hash,$totallines,$fulllines,$genres,$site,$siteURL)) {
+			$poem_name_zh,
+			$poem_name_ru,
+			$poem_code,
+			$biblio_id,
+			$page,
+			$poem_text,
+			$poem_hash,
+			$totallines,
+			$fulllines,
+			$genres,
+			$site,
+			$siteURL
+		)) {
 			throw new DBBindParamException($db, $stmt);
 		}
 		if (!$stmt->execute()) {
@@ -1718,9 +1777,10 @@ function poems_insert_record($author_id,$translator1_id,$translator2_id,
 function getByIDFromPoems($poems_id) {
 	$db = UserConfig::getDB();
 	$record = null;
-	if ($stmt = $db->prepare('SELECT author_id,translator1_id,translator2_id,
+	if ($stmt = $db->prepare(
+	'SELECT author_id,translator1_id,translator2_id,
 	topic1_id,topic2_id,topic3_id,topic4_id,topic5_id,cycle_zh,cycle_ru,corder,subcycle_zh,subcycle_ru,scorder,
-	poem_name_zh,poem_name_ru,poem_code,biblio_id,poem_text,totallines,fulllines,genres,`site`,`siteURL` FROM  poems WHERE poems_id=?;')) {
+	poem_name_zh,poem_name_ru,poem_code,biblio_id,`page`,poem_text,totallines,fulllines,genres,`site`,`siteURL` FROM  poems WHERE poems_id=?;')) {
 		if (!$stmt->bind_param('i', $poems_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
@@ -1729,13 +1789,25 @@ function getByIDFromPoems($poems_id) {
 		}
 		if (!$stmt->bind_result($author_id,$translator1_id,$translator2_id,
 		$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$corder,$subcycle_zh,$subcycle_ru,$scorder,
-		$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$totallines,$fulllines,$genres,$site,$siteURL)) {
+			$poem_name_zh,
+			$poem_name_ru,
+			$poem_code,
+			$biblio_id,
+			$page,
+			$poem_text,
+			$totallines,
+			$fulllines,
+			$genres,
+			$site,
+			$siteURL
+		)) {
 			throw new DBBindResultException($db, $stmt);
 		}
 		while ($stmt->fetch() === TRUE) {
 			$record = array($author_id,$translator1_id,$translator2_id,
 			$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$corder,$subcycle_zh,$subcycle_ru,$scorder,
-			$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$totallines,$fulllines,$genres,$site,$siteURL);
+				$poem_name_zh, $poem_name_ru, $poem_code, $biblio_id, $page, $poem_text, $totallines, $fulllines, $genres, $site, $siteURL
+			);
 		}
 		$stmt->free_result();
 		$stmt->close();
@@ -1752,17 +1824,44 @@ function getByIDFromPoems($poems_id) {
  */
 function updatePoemsByID($poems_id,$author_id,$translator1_id,$translator2_id,
 $topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$corder,$subcycle_zh,$subcycle_ru,$scorder,
-$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$totallines,$fulllines,$genres,$site,$siteURL) {
+	$poem_name_zh,
+	$poem_name_ru,
+	$poem_code,
+	$biblio_id,
+	$page,
+	$poem_text,
+	$totallines,
+	$fulllines,
+	$genres,
+	$site,
+	$siteURL
+) {
 	$db = UserConfig::getDB();
 	$r_id = NULL;
 	if ($stmt = $db->prepare('UPDATE `poems` SET 
 	author_id=?,translator1_id=?,translator2_id=?,
 	topic1_id=?,topic2_id=?,topic3_id=?,topic4_id=?,topic5_id=?,cycle_zh=?,cycle_ru=?,corder=?,subcycle_zh=?,subcycle_ru=?,scorder=?,
-	poem_name_zh=?,poem_name_ru=?,poem_code=?,biblio_id=?,poem_text=?,totallines=?,fulllines=?,genres=?,`site`=?, `siteURL`=?
+	poem_name_zh=?,poem_name_ru=?,poem_code=?,biblio_id=?,`page`=?,poem_text=?,totallines=?,fulllines=?,genres=?,`site`=?, `siteURL`=?
 	  WHERE `poems_id`=?')) {
-		if (!$stmt->bind_param('iiiiiiiissississsisiisssi', $author_id,$translator1_id,$translator2_id,
+		if (!$stmt->bind_param(
+			'iiiiiiiissississsiisiisssi',
+			$author_id,
+			$translator1_id,
+			$translator2_id,
 		$topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$corder,$subcycle_zh,$subcycle_ru,$scorder,
-		$poem_name_zh,$poem_name_ru,$poem_code,$biblio_id,$poem_text,$totallines,$fulllines,$genres,$site,$siteURL,$poems_id)) {
+			$poem_name_zh,
+			$poem_name_ru,
+			$poem_code,
+			$biblio_id,
+			$page,
+			$poem_text,
+			$totallines,
+			$fulllines,
+			$genres,
+			$site,
+			$siteURL,
+			$poems_id
+		)) {
 			throw new DBBindParamException($db, $stmt);
 		}
 		if (!$stmt->execute()) {
@@ -3027,13 +3126,13 @@ function makeOrigFinalArray($records)
  * @return inserted record id
  * @throws DBException
  */
-function insert_other_biblio_id($poems_id, $main_biblio_id, $other_biblio_id)
+function insert_other_biblio_id($poems_id, $main_biblio_id, $other_biblio_id, $page)
 {
 	$db = UserConfig::getDB();
 	$r_id = NULL;
-	if ($stmt = $db->prepare('INSERT INTO otherbiblio (poems_id, main_biblio_id, other_biblio_id) 
-		VALUES (?, ?, ?)')) {
-		if (!$stmt->bind_param('iii', $poems_id, $main_biblio_id, $other_biblio_id)) {
+	if ($stmt = $db->prepare('INSERT INTO otherbiblio (`poems_id`, `main_biblio_id`, `other_biblio_id`, `page`) 
+		VALUES (?, ?, ?, ?)')) {
+		if (!$stmt->bind_param('iiii', $poems_id, $main_biblio_id, $other_biblio_id, $page)) {
 			throw new DBBindParamException($db, $stmt);
 		}
 		if (!$stmt->execute()) {
@@ -3060,18 +3159,18 @@ function getOther_biblio_ids($poems_id, $main_biblio_id)
 	$db = UserConfig::getDB();
 	$record = null;
 	$records = array();
-	if ($stmt = $db->prepare('SELECT poems_id, main_biblio_id, other_biblio_id FROM  otherbiblio   WHERE poems_id=? AND main_biblio_id=? ORDER BY id ASC;')) {
+	if ($stmt = $db->prepare('SELECT `poems_id`, `main_biblio_id`, `other_biblio_id`, `page` FROM  otherbiblio   WHERE poems_id=? AND main_biblio_id=? ORDER BY id ASC;')) {
 		if (!$stmt->bind_param('ii', $poems_id, $main_biblio_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
-		if (!$stmt->bind_result($poems_id, $main_biblio_id, $other_biblio_id)) {
+		if (!$stmt->bind_result($poems_id, $main_biblio_id, $other_biblio_id, $page)) {
 			throw new DBBindResultException($db, $stmt);
 		}
 		while ($stmt->fetch() === TRUE) {
-			$record = array($poems_id, $main_biblio_id, $other_biblio_id);
+			$record = array($poems_id, $main_biblio_id, $other_biblio_id, $page);
 			array_push($records, $record);
 		}
 		$stmt->free_result();

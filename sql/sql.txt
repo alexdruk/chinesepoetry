@@ -1237,3 +1237,6 @@ CREATE TABLE `otherbiblio` (
   FOREIGN KEY (poems_id) REFERENCES poems(poems_id)
 ) ENGINE=MyISAM AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
 
+
+alter table poems add column `page` int default null  after biblio_id;
+alter table originals add column `page` int default null  after biblio_id;
