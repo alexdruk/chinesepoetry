@@ -9,6 +9,7 @@
         {{ error }}
     </div>
     {% endif %}
+    {% if maintables %}
     <div class="col-auto">
     <p>&nbsp;</p>
     <p style="color:red">Действуйте только если уверены. Востановить запись будет нельзя!</p>
@@ -20,4 +21,22 @@
         <button type="submit " class="btn btn-primary" value="Submit" name="submit">Submit</button>
     </form>
     </div>
+    {% else %}
+    <div class="col-auto">
+    <p>&nbsp;</p>
+    <p style="color:red">Действуйте только если уверены. Востановить запись будет нельзя!</p>
+    <form action="./admin_delete_record.php?table={{ type }}&posted=1" method="POST">
+        <div class="form-group">
+            <label for="poem_id">Введите ID перевода:</label>
+            <input type="text" name="poem_id" id="poem_id"  maxlength="4" size="4" required></br>
+        </div>
+        <div class="form-group">
+            <label for="main_biblio_id">Введите ID основного biblio_id: </label>
+            <input type="text" name="main_biblio_id" id="main_biblio_id"  maxlength="4" size="4" required></br>
+        </div>
+        <button type="submit " class="btn btn-primary" value="Submit" name="submit">Submit</button>
+    </form>
+    </div>
+
+    {% endif %}
 {% endblock %}
