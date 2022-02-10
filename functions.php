@@ -2971,8 +2971,8 @@ function makeFinalArray ($records) {
 				preg_match('/\d+/',$match[0], $match1);
 				$translator_id = $match1[0];
 				#            $poem[2] = makeTranslator($poem[2], $poem[3]);
-				$cycle = '<span class="cycle zh"><a href="/cycles.php?cycle_zh=' . urlencode($poem[9]) . '">' . $poem[9] . '</a></span><span class="cycle ru"><a href="/cycles.php?translator=' . $translator_id . '&author=' . $author_id . '&cycle=' . urlencode($poem[10]) . '">' . $poem[10] . '</a></span>';
-				$subcycle = '<span class="subcycle zh"><a href="/cycles.php?subcycle_zh=' . urlencode($poem[11]) . '">' . $poem[11] . '</a></span> <span class="subcycle ru"><a href="/cycles.php?translator=' . $translator_id . '&author=' . $author_id . '&subcycle=' . urlencode($poem[12]) . '">' . $poem[12] . '</a></span>';
+				$cycle = '<span class="cycle zh"><a href="/cycles.php?cycle_zh=' . urlencode($poem[9]) . '">' . $poem[9] . '</a></span><span class="cycle ru"><a href="/cycles.php?translator=' . $translator_id . '&cycle=' . urlencode($poem[10]) . '">' . $poem[10] . '</a></span>';
+				$subcycle = '<span class="subcycle zh"><a href="/cycles.php?subcycle_zh=' . urlencode($poem[11]) . '">' . $poem[11] . '</a></span> <span class="subcycle ru"><a href="/cycles.php?translator=' . $translator_id . '&subcycle=' . urlencode($poem[12]) . '">' . $poem[12] . '</a></span>';
 			}
 			else {
 //				echo 'no translator';
@@ -3053,8 +3053,8 @@ function makeFinaTranslatorslArray ($records) {
 			preg_match('/record_id=(\d+)">/',$translator,$match);
 			preg_match('/\d+/',$match[0], $match1);
 			$translator_id = $match1[0];
-			$cycle = '<span class="cycle zh"><a href="/cycles.php?cycle_zh=' . urlencode($poem[9]) . '">' . $poem[9] . '</a></span> <span class="cycle ru"><a href="/cycles.php?translator=' . $translator_id . '&author=' . $author_id . '&cycle=' . urlencode($poem[10]) . '">' . $poem[10] . '</a></span>';
-			$subcycle = '<span class="subcycle zh"><a href="/cycles.php?subcycle_zh=' . urlencode($poem[11]) . '">' . $poem[11] . '</a></span> <span class="subcycle ru"><a href="/cycles.php?translator=' . $translator_id . '&author=' . $author_id . '&subcycle=' . urlencode($poem[12]) . '">' . $poem[12] . '</a></span>';
+			$cycle = '<span class="cycle zh"><a href="/cycles.php?cycle_zh=' . urlencode($poem[9]) . '">' . $poem[9] . '</a></span> <span class="cycle ru"><a href="/cycles.php?translator=' . $translator_id .  '&cycle=' . urlencode($poem[10]) . '">' . $poem[10] . '</a></span>';
+			$subcycle = '<span class="subcycle zh"><a href="/cycles.php?subcycle_zh=' . urlencode($poem[11]) . '">' . $poem[11] . '</a></span> <span class="subcycle ru"><a href="/cycles.php?translator=' . $translator_id . '&subcycle=' . urlencode($poem[12]) . '">' . $poem[12] . '</a></span>';
 			if (((strpos($cycle, 'cycle_zh=">') > 0) && (strpos($cycle, 'cycle=">') > 0)) || ((strpos($cycle, 'cycle zh"></span>') > 0) && (strpos($cycle, 'cycle ru"></span>') > 0))) {
 				$cycle = 'default'.$i;
 			}			
