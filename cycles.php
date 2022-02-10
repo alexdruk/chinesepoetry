@@ -4,14 +4,11 @@ $records = array();
 if (isset($_GET['cycle']) && isset($_GET['translator'])) {
     $cycle = $_GET['cycle'];
     $translator_id = $_GET['translator'];
-    // if (isset($_GET['author']) and $_GET['author'] != '') {
-    //     $author_id = $_GET['author'];
-    //     $records = getPoemsByCycleTranslatorAuthor($cycle, $translator_id, $author_id);
-    // } else {
-        $records = getPoemsByCycleTranslator($cycle, $translator_id);
-        $author_id = $records[0][1];
-    // }
+
+    $records = getPoemsByCycleTranslator($cycle, $translator_id);
+
     $records = sortRecordsWithoutSubcycle($records);
+    $author_id = $records[0][1];
     // print_r($records);
     list($author_html, $proper_name,  $dates,  $epoch) = makeAuthor($author_id);
     list($poems_id, $author_id, $proper_name, $dates, $epoch, $translator1_id, $translator2_id,
