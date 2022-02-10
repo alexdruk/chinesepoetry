@@ -1337,8 +1337,9 @@ function getPoemsByPoemID($poem_id) {
 	}
 }
 /**
- * get a record from table poems with poem_id
- *
+ * get a record from table poems with translator and cycle
+ * @param int translator_id
+ * @param string cycle
  * @return array array of records
  * @throws DBException
  */
@@ -1374,6 +1375,48 @@ function getPoemsByCycleTranslator($cycle, $translator_id) {
 		throw new DBPrepareStmtException($db);
 	}
 }
+
+/**
+ * get a record from table poems with translator and cycle
+ * @param int translator_id
+ * @param int author_id
+ * @param string cycle
+ * @return array array of records
+ * @throws DBException
+ */
+function getPoemsByCycleTranslatorAuthor($cycle, $translator_id, $author_id) {
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT p.poems_id, a.author_id, a.proper_name, a.dates, a.epoch, p.translator1_id, p.translator2_id,
+	 p.cycle_zh, p.cycle_ru, p.subcycle_zh, p.subcycle_ru, p.poem_name_zh, p.poem_name_ru, p.poem_text 
+	 FROM  poems p 
+	 INNER JOIN authors a ON a.author_id = p.author_id 
+	 WHERE p.cycle_ru = ?  and (p.translator1_id = ? or p.translator2_id = ?) and p.author_id =?
+	 ORDER BY  p.scorder, p.subcycle_ru, cast(p.poem_name_ru as UNSIGNED INTEGER),a.author_id, p.poem_name_ru, p.corder, p.cycle_ru, p.poems_id ASC;')) {
+		if (!$stmt->bind_param('siii', $cycle, $translator_id, $translator_id, $author_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($poems_id,$author_id, $proper_name, $dates, $epoch, $translator1_id,$translator2_id,
+		$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,$poem_name_zh,$poem_name_ru,$poem_text)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($poems_id,$author_id, $proper_name, $dates, $epoch, $translator1_id,$translator2_id,
+			$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,$poem_name_zh,$poem_name_ru,$poem_text);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+
 /**
  * get a record from table poems with poem_id
  *
@@ -2927,9 +2970,9 @@ function makeFinalArray ($records) {
 				preg_match('/record_id=(\d+)">/',$translator,$match);
 				preg_match('/\d+/',$match[0], $match1);
 				$translator_id = $match1[0];
-	#            $poem[2] = makeTranslator($poem[2], $poem[3]);
-				$cycle = '<span class="cycle zh"><a href="/cycles.php?cycle_zh='.urlencode($poem[9]).'">'.$poem[9].'</a></span><span class="cycle ru"><a href="/cycles.php?translator='.$translator_id.'&cycle='.urlencode($poem[10]).'">'.$poem[10].'</a></span>';
-				$subcycle = '<span class="subcycle zh"><a href="/cycles.php?subcycle_zh='.urlencode($poem[11]).'">'.$poem[11].'</a></span> <span class="subcycle ru"><a href="/cycles.php?translator='.$translator_id.'&subcycle='.urlencode($poem[12]).'">'.$poem[12].'</a></span>';
+				#            $poem[2] = makeTranslator($poem[2], $poem[3]);
+				$cycle = '<span class="cycle zh"><a href="/cycles.php?cycle_zh=' . urlencode($poem[9]) . '">' . $poem[9] . '</a></span><span class="cycle ru"><a href="/cycles.php?translator=' . $translator_id . '&author=' . $author_id . '&cycle=' . urlencode($poem[10]) . '">' . $poem[10] . '</a></span>';
+				$subcycle = '<span class="subcycle zh"><a href="/cycles.php?subcycle_zh=' . urlencode($poem[11]) . '">' . $poem[11] . '</a></span> <span class="subcycle ru"><a href="/cycles.php?translator=' . $translator_id . '&author=' . $author_id . '&subcycle=' . urlencode($poem[12]) . '">' . $poem[12] . '</a></span>';
 			}
 			else {
 //				echo 'no translator';
@@ -3010,8 +3053,8 @@ function makeFinaTranslatorslArray ($records) {
 			preg_match('/record_id=(\d+)">/',$translator,$match);
 			preg_match('/\d+/',$match[0], $match1);
 			$translator_id = $match1[0];
-            $cycle = '<span class="cycle zh"><a href="/cycles.php?cycle_zh='.urlencode($poem[9]).'">'.$poem[9].'</a></span> <span class="cycle ru"><a href="/cycles.php?translator='.$translator_id.'&cycle='.urlencode($poem[10]).'">'.$poem[10].'</a></span>';
-            $subcycle = '<span class="subcycle zh"><a href="/cycles.php?subcycle_zh='.urlencode($poem[11]).'">'.$poem[11].'</a></span> <span class="subcycle ru"><a href="/cycles.php?translator='.$translator_id.'&subcycle='.urlencode($poem[12]).'">'.$poem[12].'</a></span>';
+			$cycle = '<span class="cycle zh"><a href="/cycles.php?cycle_zh=' . urlencode($poem[9]) . '">' . $poem[9] . '</a></span> <span class="cycle ru"><a href="/cycles.php?translator=' . $translator_id . '&author=' . $author_id . '&cycle=' . urlencode($poem[10]) . '">' . $poem[10] . '</a></span>';
+			$subcycle = '<span class="subcycle zh"><a href="/cycles.php?subcycle_zh=' . urlencode($poem[11]) . '">' . $poem[11] . '</a></span> <span class="subcycle ru"><a href="/cycles.php?translator=' . $translator_id . '&author=' . $author_id . '&subcycle=' . urlencode($poem[12]) . '">' . $poem[12] . '</a></span>';
 			if (((strpos($cycle, 'cycle_zh=">') > 0) && (strpos($cycle, 'cycle=">') > 0)) || ((strpos($cycle, 'cycle zh"></span>') > 0) && (strpos($cycle, 'cycle ru"></span>') > 0))) {
 				$cycle = 'default'.$i;
 			}			

@@ -4,9 +4,15 @@ $records = array();
 if (isset($_GET['cycle']) && isset($_GET['translator'])) {
     $cycle = $_GET['cycle'];
     $translator_id = $_GET['translator'];
-    $records = getPoemsByCycleTranslator($cycle, $translator_id);
+    if ($_GET['author']) {
+        $author_id = $_GET['author'];
+        $records = getPoemsByCycleTranslatorAuthor($cycle, $translator_id, $author_id);
+    } else {
+        $records = getPoemsByCycleTranslator($cycle, $translator_id);
+        $author_id = $records[0][1];
+    }
     $records = sortRecordsWithoutSubcycle($records);
-    $author_id = $records[0][1];
+    // print_r($records);
     list($author_html, $proper_name,  $dates,  $epoch) = makeAuthor($author_id);
     list($poems_id, $author_id, $proper_name, $dates, $epoch, $translator1_id, $translator2_id,
     $cycle_zh, $cycle_ru, $subcycle_zh, $subcycle_ru, $poem_name_zh, $poem_name_ru, $poem_text) = $records[0];
@@ -33,7 +39,8 @@ if (isset($_GET['cycle']) && isset($_GET['translator'])) {
                 $prev_auth = $current_auth;
             }    
         }
-    }    
+    }
+    // print_r($records);
 
     $cycle = makeCycle($cycle_ru, $cycle_zh,$translator_id );
     $subcycle = makeSubCycle($subcycle_ru, $subcycle_zh,$translator_id);
