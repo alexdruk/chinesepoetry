@@ -1240,3 +1240,13 @@ CREATE TABLE `otherbiblio` (
 
 alter table poems add column `page` int default null  after biblio_id;
 alter table originals add column `page` int default null  after biblio_id;
+
+use poetry;
+ALTER TABLE originals MODIFY cycle_zh TEXT;
+ALTER TABLE originals MODIFY cycle_ru TEXT;
+ALTER TABLE originals MODIFY subcycle_zh TEXT;
+ALTER TABLE originals MODIFY subcycle_ru TEXT;
+ALTER TABLE originals MODIFY poem_name_zh TEXT;
+ALTER TABLE originals MODIFY poem_name_ru TEXT;
+ALTER TABLE originals drop index originals_ft_ind;
+CREATE FULLTEXT INDEX originals_ft_ind ON originals (poem_text);
