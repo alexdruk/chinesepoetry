@@ -3252,3 +3252,33 @@ function getOther_biblio_ids($poems_id, $main_biblio_id)
 	}
 }
 
+/**
+ * get record by originals_id from table audio
+ *
+ * @return array array of values
+ * @throws DBException
+ */
+function getByIDFromAudio($originals_id)
+{
+	$db = UserConfig::getDB();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT `url`,`type` FROM audio WHERE originals_id = ?;')) {
+		if (!$stmt->bind_param('i', $originals_id)) {
+			throw new DBBindParamException($db, $stmt);
+		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($url, $type)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($url, $type);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $record;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}

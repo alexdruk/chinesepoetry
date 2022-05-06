@@ -105,6 +105,7 @@ elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
     else {
         $melody = false;
     }
+    list($audio_url, $audio_type) = getByIDFromAudio($originals_id);
     $template_info["melody"] = $melody;
     $template_info["fromcycle"] = $fromcycle;
     $template_info["genres"] = $genres;
@@ -114,6 +115,8 @@ elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
     $template_info["countIP"] = false;
     $template_info["poems_id"] = $originals_id;
     $template_info["pub_array"] = false;
+    $template_info["audio_url"] = $audio_url;
+    $template_info["audio_type"] = $audio_type;
     $template_info["biblio_page"] = false;
 
     $template = $twig->load('poem.html.twig');

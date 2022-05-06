@@ -1250,3 +1250,8 @@ ALTER TABLE originals MODIFY poem_name_zh TEXT;
 ALTER TABLE originals MODIFY poem_name_ru TEXT;
 ALTER TABLE originals drop index originals_ft_ind;
 CREATE FULLTEXT INDEX originals_ft_ind ON originals (poem_text);
+
+
+SET sql_safe_updates = off;
+SET @count = 0;
+UPDATE `audio` SET `audio`.`id` = @count:= @count + 1;
