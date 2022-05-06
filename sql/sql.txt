@@ -1255,3 +1255,13 @@ CREATE FULLTEXT INDEX originals_ft_ind ON originals (poem_text);
 SET sql_safe_updates = off;
 SET @count = 0;
 UPDATE `audio` SET `audio`.`id` = @count:= @count + 1;
+
+use poetry;
+CREATE TABLE `audio` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `originals_id` int(11) NOT NULL,
+  `url` text  NOT NULL,
+  `type` varchar(20) default NULL,
+  PRIMARY KEY (`id`),
+  KEY `originals_ind` (`originals_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=60 DEFAULT CHARSET=utf8;
