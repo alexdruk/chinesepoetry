@@ -359,6 +359,8 @@ elseif ( ($_GET['action'] == 'show')  && ($_GET['poem_id'] > 0) ){
     }
     $template_info["countIP"] = $countIP;
     $template_info["poems_id"] = $poems_id;
+    $template_info["audio_url"] = false;
+    $template_info["audio_type"] = false;
     $template = $twig->load('poem.html.twig');
 }
 else {

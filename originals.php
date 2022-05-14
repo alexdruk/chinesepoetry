@@ -105,6 +105,8 @@ elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
     else {
         $melody = false;
     }
+    $audio_url = false;
+    $audio_type = false;
     list($audio_url, $audio_type) = getByIDFromAudio($originals_id);
     $template_info["melody"] = $melody;
     $template_info["fromcycle"] = $fromcycle;
