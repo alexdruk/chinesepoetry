@@ -60,7 +60,7 @@
                         {% set numofpoems = fin.numofpoems %}
                         {% if numofpoems > showlimit %}
                         <script>
-                            function showAllPoems(id) {
+                            function showAllPoems{{ fin.translatorID }}(id) {
                                 let x = document.getElementById(id);
                                 let b = document.getElementById('but_numofpoems{{ fin.translatorID }}');
                                 if ((x.style.display === "none")||(x.style.display === "")) {
@@ -72,7 +72,7 @@
                                 }
                             }   
                         </script>
-                        <button  type="button" id="but_numofpoems{{ fin.translatorID }}" class="btn  btn-outline-warning btn-sm" onclick="showAllPoems({{ fin.translatorID }})">Показать все {{ numofpoems }}</button>
+                        <button  type="button" id="but_numofpoems{{ fin.translatorID }}" class="btn  btn-outline-warning btn-sm" onclick="showAllPoems{{ fin.translatorID }}({{ fin.translatorID }})">Показать все {{ numofpoems }}</button>
                         <ul id="{{ fin.translatorID }}" style="display: none">
                         {% else %}
                         <ul id="{{ fin.translatorID }}">
