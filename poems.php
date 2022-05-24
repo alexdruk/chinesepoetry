@@ -166,7 +166,7 @@ elseif  ( ($_GET['action'] == 'show') && (array_key_exists('author_id', $_GET)) 
     else {
         $final = array();
     }
-//    print_r($final);
+#    print_r($final);
     list($author_html, $proper_name,  $dates,  $epoch) = makeAuthor($author_id);
     $template_info["header"] = $author_html;
     $template_info["byAuthor"] = false;
@@ -175,11 +175,15 @@ elseif  ( ($_GET['action'] == 'show') && (array_key_exists('author_id', $_GET)) 
 #now try to get record from originals
     $orig_records = getOriginalsByAuthorID($author_id);
     $template_info["has_originals"] = false;
-    if (count($orig_records) > 0 ) {
+    $numoforig = count($orig_records);
+    if ($numoforig > 0) {
         $template_info["has_originals"] = true;
         $orig_final = makeFinalArray($orig_records);
         $template_info["orig_final"] = $orig_final;
-#print_r($orig_final);
+        $template_info["numoforig"] = $numoforig;
+        #print_r($orig_final);
+    } else {
+        $template_info["numoforig"] = 0;
     }
     list($junk, , $proper_name,  $dates,  $epoch, ) = getByIDFromAuthors($author_id);
     $template_info["title"] ='Все стихи '.$proper_name.' '.$dates;

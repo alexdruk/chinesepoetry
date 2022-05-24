@@ -1,5 +1,6 @@
 {% extends 'page_root.html.twig' %} {% block content %}
 <!-- at_list.html.twig -->
+{% set showlimit = 25 %}
 <div class="jumbotron" id="originals_jumbotron">
     <div class="row">
         <div class="col-10 mx-auto">
@@ -10,8 +11,26 @@
                 {% if has_originals %}                
                     <div class="poems originals list"><h4>Оригиналы:</h4></div>
                     {% for fin in orig_final %}
-                        <ol><ul>
-                            {% for cycle in fin.poems|keys %}
+                        {% if numoforig > showlimit %}
+                        <script>
+                            function showAllOriginals() {
+                                let x = document.getElementById('numoforig');
+                                let b = document.getElementById('but_numoforig');
+                                if ((x.style.display === "none")||(x.style.display === "")) {
+                                    x.style.display = "block";
+                                    b.style.display = "none";
+                                } else {
+                                    x.style.display = "none";
+                                    b.style.display = "block";
+                                }
+                            }   
+                        </script>
+                        <button  type="button" id="but_numoforig" class="btn  btn-outline-warning btn-sm" onclick="showAllOriginals()" style="margin-left:40px">Показать все {{ numoforig }}</button>
+                        <ol><ul id="numoforig" style="display: none">
+                        {% else %}
+                        <ol><ul id="numoforig">
+                        {% endif %}
+                           {% for cycle in fin.poems|keys %}
                                 {% if not (cycle starts with  'default') %}                        
                                     <li class="cycle">{{ cycle|raw }}<ul>
                                 {% endif %}
@@ -20,7 +39,7 @@
                                         <li  class="subcycle">{{ subcycle|raw }}<ul>
                                     {% endif %}
                                         {% for poem in fin.poems[cycle][subcycle] %}
-                                        <li class="poem_name"><a href="./originals.php?action=show&record_id={{ poem[0] }}">
+                                        <li id="o{{ poem[0] }}" class="poem_name"><a href="./originals.php?action=show&record_id={{ poem[0] }}">
                                             <span class="poem_name zh">{{ poem[13]|raw }}</span> <span class="poem_name ru">{{ poem[14]|raw }}</span></a></li>
                                         {% endfor %}
                                                     
@@ -38,7 +57,26 @@
             <ol>
                 {% for fin in final %}
                 <li class="poems translators list"><h4>Перевод: {{ fin.translator|raw }}</h4></li>
-                    <ul>
+                        {% set numofpoems = fin.numofpoems %}
+                        {% if numofpoems > showlimit %}
+                        <script>
+                            function showAllPoems(id) {
+                                let x = document.getElementById(id);
+                                let b = document.getElementById('but_numofpoems{{ fin.translatorID }}');
+                                if ((x.style.display === "none")||(x.style.display === "")) {
+                                    x.style.display = "block";
+                                    b.style.display = "none";
+                                } else {
+                                    x.style.display = "none";
+                                    b.style.display = "block";
+                                }
+                            }   
+                        </script>
+                        <button  type="button" id="but_numofpoems{{ fin.translatorID }}" class="btn  btn-outline-warning btn-sm" onclick="showAllPoems({{ fin.translatorID }})">Показать все {{ numofpoems }}</button>
+                        <ul id="{{ fin.translatorID }}" style="display: none">
+                        {% else %}
+                        <ul id="{{ fin.translatorID }}">
+                        {% endif %}
                         {% for cycle in fin.poems|keys %}
                             {% if not (cycle starts with  'default') %}                        
                                 <li class="cycle">{{ cycle|raw }}<ul>

@@ -3069,7 +3069,8 @@ function makeFinaTranslatorslArray ($records) {
             }
             array_push($poems[$cycle][$subcycle], $poem);
         }
-        array_push($final, array('translator' => $translator, 'poems' => $poems));
+		// translatorID may not be unique because show only first id if several translators are listed
+		array_push($final, array('translator' => $translator, 'translatorID' => $translator_id, 'numofpoems' => $i, 'poems' => $poems));
     }
     return $final;
 }
