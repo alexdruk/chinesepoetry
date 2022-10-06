@@ -2,7 +2,7 @@
 require_once dirname(__DIR__).'/globals.php';
 $template_info["ERROR"] = $ERROR;
 $template_info["title"] ='Стихи';
-$template_info["page_description"] = 'Антология современной и старинной китайской поэзии. Свыше 3000 стихов 429 авторов от VI в. до н.э. вплоть до наших дней в лучших переводах.';
+$template_info["page_description"] = 'Антология современной и старинной китайской поэзии. Стихи сотен авторов от VI в. до н.э. вплоть до наших дней в лучших переводах.';
 $template_info["error"] = false;
 $template_info["success"] = false;
 if (array_key_exists('action', $_GET)) { 
