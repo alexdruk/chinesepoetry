@@ -15,8 +15,10 @@
                     x.style.display = "none";
                   }
                 }
-                </script>
-                
+            </script>
+            {% if final is empty %}
+                <p style="text-align: center">Нет стихов</p>
+            {% endif %}
             <div id="originals_content_table">
             <ol>
                 {% for fin in final %}
