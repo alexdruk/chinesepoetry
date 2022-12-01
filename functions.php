@@ -214,23 +214,15 @@ function topics_insert_record($topic_name, $synonym, $presentAntology) {
 /**
  * get a list of all full biblio names from table biblio
  *
- * @param int  present 0 - нет, 1 - есть, 2 - будет,-1 - нет книги
  * @return array array of records
  * @throws DBException
  */
-function getFullBiblio($present) {
+function getFullBiblio()
+{
 	$db = UserConfig::getDB();
 	$records = array();
 	$record = null;
-	if ($present == 4) {
-		$sql ='SELECT `biblio_name` FROM biblio ORDER BY `biblio_name` ASC';
-	}
-	elseif ($present == 1) {
-		$sql ='SELECT `biblio_name` FROM biblio WHERE `present`=1  ORDER BY `biblio_name` ASC';
-	}
-	elseif ($present == -1) {
-		$sql ='SELECT `biblio_name` FROM biblio WHERE `present`=-1  ORDER BY `biblio_name` ASC';
-	}
+	$sql = 'SELECT `biblio_name`, `biblio_id`, `iframe` FROM biblio ORDER BY `biblio_name` ASC';
 	if ($stmt = $db->prepare($sql)) {
 /*		if (!$stmt->bind_param('i', $present)) {
 			throw new DBBindParamException($db, $stmt);
@@ -238,11 +230,11 @@ function getFullBiblio($present) {
 */		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
-		if (!$stmt->bind_result($biblio_name)) {
+		if (!$stmt->bind_result($biblio_name, $biblio_id, $iframe)) {
 			throw new DBBindResultException($db, $stmt);
 		}
 		while ($stmt->fetch() === TRUE) {
-			$record = $biblio_name;
+			$record = array($biblio_name, $biblio_id, $iframe);
 			array_push($records, $record);
 		}
 		$stmt->free_result();
@@ -267,18 +259,18 @@ function searchBiblio($pattern) {
 	$val = str_replace("%", "", $pattern);
 	$val = str_replace("_", "", $val);
 	$like = '%'.$val.'%';
-	$sql = "SELECT biblio_name FROM biblio WHERE MATCH (author,book_name,translator,ref_name,seria,publisher,code,biblio_name) against ('$pattern' IN NATURAL LANGUAGE MODE)
+	$sql = "SELECT `biblio_name`, `biblio_id`, `iframe` FROM biblio WHERE MATCH (author,book_name,translator,ref_name,seria,publisher,code,biblio_name) against ('$pattern' IN NATURAL LANGUAGE MODE)
 	UNION DISTINCT 
-	SELECT biblio_name FROM biblio WHERE biblio_name LIKE '$like'";
+	SELECT biblio_name, `biblio_id`, `iframe` FROM biblio WHERE biblio_name LIKE '$like'";
 	if ($stmt = $db->prepare($sql)) {
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
-		if (!$stmt->bind_result($biblio_name)) {
+		if (!$stmt->bind_result($biblio_name, $biblio_id, $iframe)) {
 			throw new DBBindResultException($db, $stmt);
 		}
 		while ($stmt->fetch() === TRUE) {
-			$record = $biblio_name;
+			$record = array($biblio_name, $biblio_id, $iframe);
 			array_push($records, $record);
 		}
 		$stmt->free_result();
