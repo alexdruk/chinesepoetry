@@ -28,7 +28,8 @@ if (array_key_exists('action', $_GET)) {
             $dates = $_POST['dates']; 
             $epoch = $_POST['epoch']; 
             $present = $_POST['present'];
-			$r_id = authors_insert_record($full_name, $proper_name,  $dates,  $epoch, $present);
+            $sex = $_POST['sex'];
+            $r_id = authors_insert_record($full_name, $proper_name,  $dates,  $epoch, $present, $sex);
 			if ($r_id > 0) {
 				$success = 'Success! A new record was created id='.$r_id;
 			}
@@ -135,13 +136,17 @@ if (array_key_exists('action', $_GET)) {
             if (array_key_exists('present', $_POST)) {
                 $present = (!empty($_POST['present'])) ? $_POST['present'] : NULL;
             }
+                if (array_key_exists('sex', $_POST)) {
+                    $sex = (!empty($_POST['sex'])) ? $_POST['sex'] : 0;
+                }
             $template_info["record_id"] = $author_id;
             $template_info["full_name"] = $full_name;
             $template_info["proper_name"] = $proper_name;
             $template_info["dates"] = $dates;
             $template_info["epoch"] = $epoch;
             $template_info["present"] = $present;
-            $r_id = updateAuthorsByID($author_id, $full_name, $proper_name, $dates, $epoch, $present);
+                $template_info["sex"] = $sex;
+                $r_id = updateAuthorsByID($author_id, $full_name, $proper_name, $dates, $epoch, $present, $sex);
             if ($r_id > 0) {
                 $success = 'Success! A record was updated.';
                 $error = false;
@@ -158,13 +163,14 @@ if (array_key_exists('action', $_GET)) {
         else {
             $record = array();
             $record = getByIDFromAuthors($_GET['record_id']);
-            list($author_id, $full_name, $proper_name,  $dates, $epoch, $present) = $record;
+                list($author_id, $full_name, $proper_name,  $dates, $epoch, $present, $sex) = $record;
             $template_info["record_id"] = $author_id;
             $template_info["full_name"] = $full_name;
             $template_info["proper_name"] = $proper_name;
             $template_info["dates"] = $dates;
             $template_info["epoch"] = $epoch;
             $template_info["present"] = $present;
+                $template_info["sex"] = $sex;
             $error = false;
             $template_info["error"] = $error;
             $template_info["success"] = false;

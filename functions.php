@@ -437,16 +437,18 @@ function getAllfromAuthors() {
  * @param string  proper_name Правильное имя required
  * @param string  dates Годы жизни required
  * @param string  epoch Эпоха required
-* @param int 	  Наличие в антологии 0 or 1 required
+ * @param int 	  Наличие в антологии 0 or 1 required
+ * @param int 	  Sex, 0 or 1 required
  * @return inserted record id
  * @throws DBException
  */
-function authors_insert_record($full_name, $proper_name, $dates, $epoch, $present) {
+function authors_insert_record($full_name, $proper_name, $dates, $epoch, $present, $sex)
+{
 	$db = UserConfig::getDB();
 	$r_id = NULL;
-	if ($stmt = $db->prepare('INSERT INTO authors (full_name, proper_name,  dates,  epoch, present) 
-		VALUES (?, ?, ?, ?, ?)')) {
-		if (!$stmt->bind_param('ssssi', $full_name, $proper_name,  $dates,  $epoch, $present)) {
+	if ($stmt = $db->prepare('INSERT INTO authors (full_name, proper_name,  dates,  epoch, present, $sex) 
+		VALUES (?, ?, ?, ?, ?, ?)')) {
+		if (!$stmt->bind_param('ssssii', $full_name, $proper_name,  $dates,  $epoch, $present, $sex)) {
 			throw new DBBindParamException($db, $stmt);
 		}
 		if (!$stmt->execute()) {
@@ -468,14 +470,16 @@ function authors_insert_record($full_name, $proper_name, $dates, $epoch, $presen
  * @param string  dates Годы жизни
  * @param string  epoch Эпоха
  * @param int present Наличие в антологии if author is present in antology, can be 0, 1
+ * @param int sex Sex, 1 for women, 1 for men
  * @return inserted record id
  * @throws DBException
  */
-function updateAuthorsByID($author_id, $full_name, $proper_name,  $dates,  $epoch, $present) {
+function updateAuthorsByID($author_id, $full_name, $proper_name,  $dates,  $epoch, $present, $sex)
+{
 	$db = UserConfig::getDB();
 	$r_id = NULL;
-	if ($stmt = $db->prepare('UPDATE `authors` SET `full_name`=?, `proper_name`=?, `dates`=?,  `epoch`=?, `present`=?  WHERE `author_id`=?')) {
-		if (!$stmt->bind_param('ssssii', $full_name, $proper_name,  $dates,  $epoch, $present, $author_id)) {
+	if ($stmt = $db->prepare('UPDATE `authors` SET `full_name`=?, `proper_name`=?, `dates`=?,  `epoch`=?, `present`=?, `sex`=?  WHERE `author_id`=?')) {
+		if (!$stmt->bind_param('ssssiii', $full_name, $proper_name,  $dates,  $epoch, $present, $sex, $author_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
 		if (!$stmt->execute()) {
@@ -497,7 +501,7 @@ function updateAuthorsByID($author_id, $full_name, $proper_name,  $dates,  $epoc
 function getByIDFromAuthors($author_id) {
 	$db = UserConfig::getDB();
 	$record = null;
-	if ($stmt = $db->prepare('SELECT a.author_id, a.full_name, a.proper_name,  a.dates,  a.epoch, a.present, b.zh_trad, b.zh_simple
+	if ($stmt = $db->prepare('SELECT a.author_id, a.full_name, a.proper_name,  a.dates,  a.epoch, a.present, a.sex, b.zh_trad, b.zh_simple
 		FROM  authors a
 		INNER JOIN  authors_atrib b ON b.author_id = a.author_id 
 		WHERE a.author_id=?;')) {
@@ -507,11 +511,11 @@ function getByIDFromAuthors($author_id) {
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}
-		if (!$stmt->bind_result($author_id, $full_name, $proper_name,  $dates,  $epoch, $present, $zh_trad, $zh_simple)) {
+		if (!$stmt->bind_result($author_id, $full_name, $proper_name,  $dates,  $epoch, $present, $sex, $zh_trad, $zh_simple)) {
 			throw new DBBindResultException($db, $stmt);
 		}
 		while ($stmt->fetch() === TRUE) {
-			$record = array($author_id, $full_name, $proper_name, $dates, $epoch, $present, $zh_trad, $zh_simple);
+			$record = array($author_id, $full_name, $proper_name, $dates, $epoch, $present, $sex, $zh_trad, $zh_simple);
 		}
 		$stmt->free_result();
 		$stmt->close();
@@ -537,6 +541,38 @@ function getAllfromAuthorsByEpoch($epoch) {
 		if (!$stmt->bind_param('s', $epoch)) {
 			throw new DBBindParamException($db, $stmt);
 		}
+		if (!$stmt->execute()) {
+			throw new DBExecuteStmtException($db, $stmt);
+		}
+		if (!$stmt->bind_result($author_id, $full_name, $proper_name,  $dates,  $epoch, $present, $zh_trad, $zh_simple)) {
+			throw new DBBindResultException($db, $stmt);
+		}
+		while ($stmt->fetch() === TRUE) {
+			$record = array($author_id, $full_name, $proper_name, $dates,  $epoch, $present, $zh_trad, $zh_simple);
+			array_push($records, $record);
+		}
+		$stmt->free_result();
+		$stmt->close();
+		return $records;
+	} else {
+		throw new DBPrepareStmtException($db);
+	}
+}
+/**
+ * get a list of all records from table authors by epoch name
+ *
+ * @return array array of records
+ * @throws DBException
+ */
+function getAllfromAuthorsBySex()
+{
+	$db = UserConfig::getDB();
+	$records = array();
+	$record = null;
+	if ($stmt = $db->prepare('SELECT a.author_id, a.full_name, a.proper_name,  a.dates,  a.epoch, a.present, b.zh_trad, b.zh_simple 
+	FROM  authors a 
+	INNER JOIN  authors_atrib b ON b.author_id = a.author_id 
+	WHERE a.sex=1 ORDER BY a.full_name ASC;')) {
 		if (!$stmt->execute()) {
 			throw new DBExecuteStmtException($db, $stmt);
 		}

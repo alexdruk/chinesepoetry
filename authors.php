@@ -31,6 +31,16 @@ elseif ($_GET['action'] == 'byEpoch') {
         $template_info["byAuthor"] = false;
         $template = $twig->load('authors_byEpoch.html.twig');
     }
+} elseif ($_GET['action'] == 'sex') {
+    $template_info["header"] = 'Поэтессы';
+    $template_info["showall"] = true;
+    $template_info["show_alphabet"] = false;
+    $template_info["search"] = false;
+    $records = getAllfromAuthorsBySex();
+    $template_info["records"] = $records;
+    $template = $twig->load('authors_showall.html.twig');
+    $template_info["title"] = 'Все поэтессы';
+    $template_info["page_description"] = 'Список всех поэтесс';
 }
 elseif ($_GET['action'] == 'search') {
     $template_info["header"] ='Поиск по именам авторов';
