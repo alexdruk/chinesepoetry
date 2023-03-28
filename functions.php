@@ -2930,9 +2930,9 @@ function makeTranslator($translator1_id, $translator2_id) {
 }
 function makeAuthor($author_id){
 	list($author_id, $full_name, $proper_name,  $dates,  $epoch, $present, $sex, $zh_trad, $zh_simple) = getByIDFromAuthors($author_id);
-    $author = '<a href="./authors.php?action=show&record_id='.$author_id.'"><span class="author name">'.$proper_name.'</span>
-    &nbsp;<span class="author dates">'.$dates.'</span></a>';
-	echo 'zh_trad = ' . $zh_trad . 'zh_simple=' . $zh_simple . '<br>';
+    $author = '<a href="./authors.php?action=show&record_id='.$author_id.'"><span class="author name">'.$proper_name.
+	'</span>
+    &nbsp;<span class="author dates">' . $dates . '</span></a>';
 	if ($zh_trad) {
         $author .= '&nbsp;<span class="name zh">'.$zh_trad.'</span>';
     }
