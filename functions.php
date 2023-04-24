@@ -446,7 +446,7 @@ function authors_insert_record($full_name, $proper_name, $dates, $epoch, $presen
 {
 	$db = UserConfig::getDB();
 	$r_id = NULL;
-	if ($stmt = $db->prepare('INSERT INTO authors (full_name, proper_name,  dates,  epoch, present, $sex) 
+	if ($stmt = $db->prepare('INSERT INTO authors (full_name, proper_name,  dates,  epoch, present, sex) 
 		VALUES (?, ?, ?, ?, ?, ?)')) {
 		if (!$stmt->bind_param('ssssii', $full_name, $proper_name,  $dates,  $epoch, $present, $sex)) {
 			throw new DBBindParamException($db, $stmt);
