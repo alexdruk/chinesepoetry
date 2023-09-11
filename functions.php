@@ -2840,7 +2840,7 @@ function deleteRecordFromOriginals($record_id) {
 	$db = UserConfig::getDB();
 	$r_id = NULL;
 	$record_id = trim($record_id);
-	if ($stmt = $db->prepare('DELETE FROM `originals` WHERE `poems_id`=?')) {
+	if ($stmt = $db->prepare('DELETE FROM `originals` WHERE `originals_id`=?')) {
 		if (!$stmt->bind_param('i', $record_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
