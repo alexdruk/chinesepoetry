@@ -1297,11 +1297,13 @@ function getWithoutPoem_textFromPoemsByTranslatorID($translator_id) {
 	$db = UserConfig::getDB();
 	$records = array();
 	$record = null;
-	if ($stmt = $db->prepare('SELECT `poems_id`,`author_id`,`translator1_id`,`translator2_id`,
+	if ($stmt = $db->prepare(
+		'SELECT `poems_id`,`author_id`,`translator1_id`,`translator2_id`,
 	`topic1_id`,`topic2_id`,`topic3_id`,`topic4_id`,`topic5_id`,`cycle_zh`,`cycle_ru`,`subcycle_zh`,`subcycle_ru`,
 	`poem_name_zh`,`poem_name_ru`,`poem_code`,`biblio_id` FROM  poems WHERE 
 	translator1_id = ? OR translator2_id = ? 
-	ORDER BY `scorder`,`subcycle_ru`, `author_id`, cast(`poem_name_ru` as UNSIGNED INTEGER),`poem_name_ru`, `corder`,`cycle_ru`, `poems_id` ASC;')) {
+	ORDER BY `scorder`,`subcycle_ru`, `author_id`, cast(`poem_name_ru` as UNSIGNED INTEGER), `corder`,`poem_name_ru`,`cycle_ru`, `poems_id` ASC;'
+	)) {
 		if (!$stmt->bind_param('ii', $translator_id,$translator_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
@@ -1375,12 +1377,14 @@ function getPoemsByCycleTranslator($cycle, $translator_id) {
 	$db = UserConfig::getDB();
 	$records = array();
 	$record = null;
-	if ($stmt = $db->prepare('SELECT p.poems_id, a.author_id, a.proper_name, a.dates, a.epoch, p.translator1_id, p.translator2_id,
+	if ($stmt = $db->prepare(
+		'SELECT p.poems_id, a.author_id, a.proper_name, a.dates, a.epoch, p.translator1_id, p.translator2_id,
 	 p.cycle_zh, p.cycle_ru, p.subcycle_zh, p.subcycle_ru, p.poem_name_zh, p.poem_name_ru, p.poem_text 
 	 FROM  poems p 
 	 INNER JOIN authors a ON a.author_id = p.author_id 
 	 WHERE p.cycle_ru = ?  and (p.translator1_id = ? or p.translator2_id = ?) 
-	 ORDER BY  p.scorder, p.subcycle_ru, cast(p.poem_name_ru as UNSIGNED INTEGER),a.author_id, p.poem_name_ru, p.corder, p.cycle_ru, p.poems_id ASC;')) {
+	 ORDER BY  p.scorder, p.subcycle_ru, cast(p.poem_name_ru as UNSIGNED INTEGER),a.author_id, p.corder, p.poem_name_ru,  p.cycle_ru, p.poems_id ASC;'
+	)) {
 		if (!$stmt->bind_param('sii', $cycle, $translator_id, $translator_id)) {
 			throw new DBBindParamException($db, $stmt);
 		}
@@ -1493,12 +1497,13 @@ function getOriginalsByCycleZH($cycle_zh) {
 	$db = UserConfig::getDB();
 	$records = array();
 	$record = null;
-	if ($stmt = $db->prepare('SELECT p.originals_id, a.author_id, a.proper_name, a.dates, a.epoch,
+	if ($stmt = $db->prepare(
+	'SELECT p.originals_id, a.author_id, a.proper_name, a.dates, a.epoch,
 	 p.cycle_zh, p.cycle_ru, p.subcycle_zh, p.subcycle_ru,  p.poem_name_zh, p.poem_name_ru, p.poem_text 
 	 FROM  originals p 
 	 INNER JOIN authors a ON a.author_id = p.author_id 
 	 WHERE p.cycle_zh = ? 
-	 ORDER BY  p.scorder, p.subcycle_zh, cast(p.poem_name_ru as UNSIGNED INTEGER),a.author_id, p.poem_name_ru, p.corder, p.cycle_ru,  p.originals_id ASC;')) {
+	 ORDER BY  p.scorder, p.subcycle_zh, cast(p.poem_name_ru as UNSIGNED INTEGER),a.author_id, p.corder, p.poem_name_ru, p.cycle_ru,  p.originals_id ASC;')) {
 		if (!$stmt->bind_param('s', $cycle_zh)) {
 			throw new DBBindParamException($db, $stmt);
 		}
