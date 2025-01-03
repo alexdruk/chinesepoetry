@@ -7,5 +7,6 @@ $records = getLimitedNewsWithoutFullText();
 $template_info["records"] = $records;
 $last =  count($records);
 $template_info["floor"] = floor(($last)/5);
+$template_info["canonical"] = "https://chinese-poetry.ru/";
 $template = $twig->load('home.html.twig');
 echo $template->display($template_info);

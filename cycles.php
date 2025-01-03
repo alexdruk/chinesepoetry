@@ -4,6 +4,7 @@ $records = array();
 if (isset($_GET['cycle']) && isset($_GET['translator'])) {
     $cycle = $_GET['cycle'];
     $translator_id = $_GET['translator'];
+    $template_info["canonical"] = "https://chinese-poetry.ru/cycles.php?translator=" . $translator_id . "&cycle=" . $cycle;
 
     $records = getPoemsByCycleTranslator($cycle, $translator_id);
 
@@ -56,6 +57,7 @@ if (isset($_GET['cycle']) && isset($_GET['translator'])) {
 elseif ((isset($_GET['subcycle'])) && isset($_GET['translator'])) {
     $subcycle = $_GET['subcycle'];
     $translator_id = $_GET['translator'];
+    $template_info["canonical"] = "https://chinese-poetry.ru/cycles.php?translator=" . $translator_id . "&subcycle=" . $subcycle;
     $records = getPoemsBySubCycleTranslator($subcycle, $translator_id);
     $records = sortRecordsWithoutSubcycle($records);
     $author_id = $records[0][1];
@@ -94,6 +96,7 @@ elseif ((isset($_GET['subcycle'])) && isset($_GET['translator'])) {
 elseif (isset($_GET['cycle_zh'])) {
     $cycle_zh = $_GET['cycle_zh'];
     $records = getOriginalsByCycleZH($cycle_zh );
+    $template_info["canonical"] = "https://chinese-poetry.ru/cycles.php?cycle_zh=" . $cycle_zh;
     // print_r($records);
     $records = sortRecordsWithoutSubcycleOrig($records);
     list($originals_id,$author_id, $proper_name, $dates, $epoch,
@@ -158,6 +161,7 @@ elseif (isset($_GET['cycle_zh'])) {
 }
 elseif (isset($_GET['subcycle_zh'])) {
     $subcycle_zh = $_GET['subcycle_zh'];
+    $template_info["canonical"] = "https://chinese-poetry.ru/cycles.php?subcycle_zh=" . $subcycle_zh;
     $records = getOriginalsBySubCycleZH($subcycle_zh );
     $records = sortRecordsWithoutSubcycleOrig($records);
     list($originals_id,$author_id, $proper_name, $dates, $epoch,

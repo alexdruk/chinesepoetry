@@ -44,6 +44,7 @@ if (array_key_exists('action', $_GET)) {
 elseif ($_GET['biblio_id']) {
     if ( ($_GET['biblio_id']) > 0) {
         $b_id = $_GET['biblio_id'];
+        $template_info["canonical"] = "https://chinese-poetry.ru/authors.php?biblio.php?biblio_id=" . $b_id;    
         $template_info["header"] ='Литературный источник';
         $records = getFullBiblioByID($b_id);
         // print_r($records);

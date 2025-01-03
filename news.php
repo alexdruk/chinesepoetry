@@ -6,9 +6,10 @@ $records = array();
 $max = getMaxIDFromNews();
 if (array_key_exists('from', $_GET)) {
     $from = $_GET['from'];
+    $template_info["canonical"] = "https://chinese-poetry.ru/news.php?from=" . $from;
 }
 else {
-    $from = $max;
+    $from = $max; //not defined max
 }
 $records = getAllNews($from); 
 

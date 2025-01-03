@@ -66,6 +66,7 @@ elseif ($_GET['action'] == 'search') {
 }
 elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
     $record_id = $_GET['record_id'];
+    $template_info["canonical"] = "https://chinese-poetry.ru/authors.php?action=show&record_id=" . $record_id;
     list($proper_name, $dates, $epoch, $doc_text) = getDocByIDFromAuthors($record_id);
     $template_info["epoch"] = '<span class="epoch">'.$epoch.'</span>';
     $template_info["author_id"] = $record_id;

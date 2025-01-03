@@ -9,3 +9,4 @@ require_once __DIR__.'/functions.php';
 $loader = new \Twig\Loader\FilesystemLoader([__DIR__.'/templates', __DIR__.'/admin/admintemplates']);
 $twig = new \Twig\Environment($loader, ['debug' => true, 'strict_variables'=> true]);
 $ERROR  = '';
+$template_info["canonical"] = false;

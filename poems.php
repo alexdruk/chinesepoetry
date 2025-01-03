@@ -5,6 +5,7 @@ $template_info["page_description"] = 'Антология современной 
 
 $records = array();
 if ($_GET['action'] == 'byAuthor') {
+    $template_info["canonical"] = "https://chinese-poetry.ru/poems.php?action=byAuthor";
     $template_info["header"] ='По авторам';
     $records = getAllfromAuthors();
 //    list($author_id, $full_name, $proper_name, $dates,  $epoch, $present, $zh_trad, $zh_simple) = $records;
@@ -21,6 +22,7 @@ if ($_GET['action'] == 'byAuthor') {
     $template = $twig->load('authors_showall.html.twig');
 }
 elseif ($_GET['action'] == 'byTranslator') {
+    $template_info["canonical"] = "https://chinese-poetry.ru/poems.php?action=byTranslator";
     $template_info["header"] ='По переводчикам';
     $records = getAllfromPresentTranslators();
 #    list($translator_id, $full_name, $lit_name, $real_name, $first_name, $father_name, $pseudonyms, $born, $born_place, $died, $died_place, $present) = $records;
@@ -41,7 +43,8 @@ elseif ($_GET['action'] == 'byEpoch') {
     $template_info["byTopic"] = false;
     $template_info["byAuthor"] = true;
     if (array_key_exists('posted', $_GET)) {
-        $epoch = $_GET['epoch']; 
+        $epoch = $_GET['epoch'];
+        $template_info["canonical"] = "https://chinese-poetry.ru/poems.php?action=byEpoch&posted=1&epoch=" . $epoch;
         $records = getAllfromAuthorsByEpoch($epoch);
         $template_info["records"] = $records;
         $template_info["title"] ='Все стихи эпохи: "'.$epoch.'"';
@@ -49,6 +52,7 @@ elseif ($_GET['action'] == 'byEpoch') {
         $template = $twig->load('poems_showall.html.twig');
     }
     else {
+        $template_info["canonical"] = "https://chinese-poetry.ru/poems.php?action=byEpoch";
         $template = $twig->load('authors_byEpoch.html.twig');
     }
 }
@@ -58,7 +62,8 @@ elseif ($_GET['action'] == 'byTopic') {
     $template_info["byAuthor"] = false;
     $template_info["byTopic"] = true;
     if (array_key_exists('posted', $_GET)) {
-        $topic_id = $_GET['topic_id']; 
+        $topic_id = $_GET['topic_id'];
+        $template_info["canonical"] = "https://chinese-poetry.ru/poems.php?action=byTopic&posted=1&topic_id=" . $topic_id;
         $records = getAllfromAuthorsByTopic($topic_id);
         $new_records = array();
 //        print_r($records);
@@ -75,6 +80,7 @@ elseif ($_GET['action'] == 'byTopic') {
         $template = $twig->load('poems_showall.html.twig');
     }
     else {
+        $template_info["canonical"] = "https://chinese-poetry.ru/poems.php?action=byTopic";
         $template_info["header"] ='По темам';
         $template_info["byTopic"] = true;
         $template = $twig->load('authors_byTopic.html.twig');
@@ -82,6 +88,7 @@ elseif ($_GET['action'] == 'byTopic') {
 }
 elseif  ( ($_GET['action'] == 'bySource') && (array_key_exists('biblio_id', $_GET))  ){
     $biblio_id = $_GET['biblio_id'];
+    $template_info["canonical"] = "https://chinese-poetry.ru/poems.php?action=bySource&biblio_id=" . $biblio_id;
     $records = getWithoutPoem_textFromPoemsByBiblioID($biblio_id);
     $template_info["header"] = 'Из источника';
     $template_info["byAuthor"] = true;
@@ -132,6 +139,7 @@ elseif ($_GET['action'] == 'selected') {
 elseif ($_GET['action'] == 'search') {
     $template_info["header"] ='Полнотекстный поиск по переводам стихов';
     if (array_key_exists('posted', $_GET)) {
+        $template_info["canonical"] = "https://chinese-poetry.ru/poems.php?action=search&posted=1";
         $template_info["search"] = false;
         $template_info["byTranslator"] = false;
         $template_info["byTopic"] = false;
@@ -149,6 +157,7 @@ elseif ($_GET['action'] == 'search') {
         $template = $twig->load('at_list.html.twig');
     }
     else {
+        $template_info["canonical"] = "https://chinese-poetry.ru/poems.php?action=search";
         $template_info["search"] = true;
         $template_info["byTranslator"] = false;
         $template_info["byTopic"] = false;
@@ -159,6 +168,7 @@ elseif ($_GET['action'] == 'search') {
 elseif  ( ($_GET['action'] == 'show') && (array_key_exists('author_id', $_GET)) && 
     (!array_key_exists('topic_id', $_GET)) && (!array_key_exists('poem_id', $_GET)) ){
     $author_id = $_GET['author_id'];
+    $template_info["canonical"] = "https://chinese-poetry.ru/poems.php?action=show&author_id=" . $author_id;
     $records = getWithoutPoem_textFromPoemsByAuthorID($author_id);
     if (!empty($records)) {
         $final = makeFinaTranslatorslArray ($records);
@@ -192,6 +202,7 @@ elseif  ( ($_GET['action'] == 'show') && (array_key_exists('author_id', $_GET)) 
 
 elseif  ( ($_GET['action'] == 'show') && (array_key_exists('translator_id', $_GET)) && (!array_key_exists('poem_id', $_GET)) ){
     $translator_id = $_GET['translator_id'];
+    $template_info["canonical"] = "https://chinese-poetry.ru/poems.php?action=show&translator_id=" . $translator_id;
     $records = getWithoutPoem_textFromPoemsByTranslatorID($translator_id);
     list($junk, $tr_full_name, , , , , , , , , , ) = getByIDFromTranslators($translator_id);
     $translator = '<a href="./translators.php?action=show&record_id='.$translator_id.'">'.$tr_full_name.'</a>';
@@ -210,6 +221,7 @@ elseif  ( ($_GET['action'] == 'show') && (array_key_exists('topic_id', $_GET)) &
     (array_key_exists('author_id', $_GET)) && (!array_key_exists('poem_id', $_GET)) ){
     $topic_id = $_GET['topic_id'];
     $author_id = $_GET['author_id'];
+    $template_info["canonical"] = "https://chinese-poetry.ru/poems.php?action=show&topic_id=" . $topic_id . "&author_id=" . $author_id;
     $records = getWithoutPoem_textFromPoemsByTopicID($topic_id);
     $recordsForAuthor = array();
     foreach ($records as $record) {
@@ -232,6 +244,7 @@ elseif ( ($_GET['action'] == 'show')  && ($_GET['poem_id'] > 0) ){
     #MAIN CODE TO SHOW POEMS
     $poem_id = $_GET['poem_id'];
     $records = getPoemsByPoemID($poem_id);
+    $template_info["canonical"] = "https://chinese-poetry.ru/poem_id=" . $poem_id;
 
     list($poems_id,$author_id,$translator1_id,$translator2_id,
     $topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,

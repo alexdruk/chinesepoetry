@@ -11,7 +11,9 @@
     <meta name="description" content="{{ page_description }}" />
 
     <meta name="”robots”" content="index, follow" />
-
+    {% if canonical %}
+    <link rel="canonical" href="{{ canonical }}" />
+    {% endif %}
     <link
       rel="stylesheet"
       type="text/css"

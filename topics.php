@@ -17,6 +17,7 @@ if ($_GET['action'] == 'show') {
         else {
             $header = $topic_name.' <span class ="topic_synonym">('.$topic_synonym.')</span)';
         }
+        $template_info["canonical"] = "https://chinese-poetry.ru/topics.php?action=show&record_id=" . $record_id;
         $template_info["header"] = $header;
         $template_info["title"] = $template_info["title"].':  "'.$topic_name.'"';
         $template_info["page_description"] = 'Описание темы "'.$topic_name.'"';
@@ -24,6 +25,7 @@ if ($_GET['action'] == 'show') {
         $template_info["topic_id"] = $topics_id;
     }
     else {
+        $template_info["canonical"] = "https://chinese-poetry.ru/topics.php?action=show";
         $template_info["showall"] = true;
         $template_info["desc"] = false;
         $template_info["search"] = false;

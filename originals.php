@@ -18,6 +18,7 @@ if ($_GET['action'] == 'showall') {
 }
 elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
     $record_id = $_GET['record_id'];
+    $template_info["canonical"] = "https://chinese-poetry.ru/originals.php?action=show&record_id=" . $record_id;
     list($originals_id,$author_id,$proper_name, $dates,$epoch,$cycle_zh, $cycle_ru,$corder, $subcycle_zh, $subcycle_ru,$scorder,
     $poem_name_zh, $poem_name_ru,$poem_code,$biblio_id,$poem_text,$genres,$size, $zh_trad, $zh_simple, $site, $siteURL) = getOriginalsByPoemID($record_id);
     $zname = '';
@@ -126,6 +127,7 @@ elseif ( ($_GET['action'] == 'show') && ($_GET['record_id'] > 0) ){
 elseif ($_GET['action'] == 'search') {
     $template_info["header"] ='Поиск по оригиналам стихов';
     if (array_key_exists('posted', $_GET)) {
+        $template_info["canonical"] = "https://chinese-poetry.ru/originals.php?action=search&posted=1";
         $template_info["showall"] = true;
         $template_info["search"] = false;
         $pattern = $_POST['pattern'];
@@ -149,6 +151,7 @@ elseif ($_GET['action'] == 'search') {
     else {
         $template_info["search"] = true;
         $template_info["showall"] = false;
+        $template_info["canonical"] = "https://chinese-poetry.ru/originals.php?action=search";
     }
     $template_info["title"] ='Поиск по оригиналам стихов';
     $template = $twig->load('originals_list.html.twig');
