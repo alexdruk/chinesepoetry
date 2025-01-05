@@ -1,3 +1,10 @@
+<<<<<<< HEAD
 User-agent: *
 Allow: /
 Disallow: /admin/
+=======
+# Group 1
+User-agent: *
+Allow: /
+Disallow: /admin/
+>>>>>>> 61b5e094646b26c45b045b34faac9589ed1c2fd0
