@@ -244,7 +244,7 @@ elseif ( ($_GET['action'] == 'show')  && ($_GET['poem_id'] > 0) ){
     #MAIN CODE TO SHOW POEMS
     $poem_id = $_GET['poem_id'];
     $records = getPoemsByPoemID($poem_id);
-    $template_info["canonical"] = "https://chinese-poetry.ru/action=show&amp;poem_id=" . $poem_id;
+    $template_info["canonical"] = "https://chinese-poetry.ru/action=show&poem_id=" . $poem_id;
 
     list($poems_id,$author_id,$translator1_id,$translator2_id,
     $topic1_id,$topic2_id,$topic3_id,$topic4_id,$topic5_id,$cycle_zh,$cycle_ru,$subcycle_zh,$subcycle_ru,
