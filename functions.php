@@ -195,7 +195,7 @@ function topics_insert_record($topic_name, $synonym, $presentAntology) {
 	$db = UserConfig::getDB();
 	$synonym = (!empty($synonym)) ? $synonym : NULL;
 	$r_id = NULL;
-	if ($stmt = $db->prepare('INSERT INTO topics (topic_name, topic_synonym, presentAntology) 
+	if ($stmt = $db->prepare('INSERT INTO topics (topic_name, topic_synonym, present) 
 		VALUES (?, ?, ?)')) {
 		if (!$stmt->bind_param('ssi', $topic_name, $synonym, $presentAntology)) {
 			throw new DBBindParamException($db, $stmt);
